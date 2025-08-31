@@ -1,0 +1,8 @@
+model_name: "meta-llama/Llama-3.1-8B-Instruct"
+dataset: cnn_dailymail
+
+temps: [0.0, 0.0]
+num_trials: [1, 1]
+styles: [sun, economist]
+
+splits: [test] # Skipping others for now
