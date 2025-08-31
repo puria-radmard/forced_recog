@@ -45,6 +45,7 @@ def elicit_choices_for_split(
     split_name: str,
     temps: List[float],
     num_trials: List[int],
+    styles: List[str | None],
     run_name: str
 ) -> None:
     """
@@ -57,6 +58,7 @@ def elicit_choices_for_split(
         split_name: Name of split (test/validation/train)
         temps: List of temperatures used in generation
         num_trials: List of number of trials per temperature
+        styles: List of styles to prompt with, keys to prompts.STYLE_SYSTEM_PROMPTS
         run_name: Name of the run
     """
     # Create output directory and initialise results file
@@ -66,8 +68,8 @@ def elicit_choices_for_split(
 
     header_df = pd.DataFrame(columns=[
         'document_idx', 
-        'summary1_temp', 'summary1_trial', 
-        'summary2_temp', 'summary2_trial', 
+        'summary1_temp', 'summary1_trial', 'summary1_style',
+        'summary2_temp', 'summary2_trial', 'summary2_style',
         'order', 'prob_choice_1', 'prob_choice_2'
     ])
     header_df.to_csv(results_file, index=False)
@@ -79,18 +81,19 @@ def elicit_choices_for_split(
         document_idx = row['document_idx']
         article = row['article']
         
+        # FIXME: this logic definitely needs to get fixed for larger datasets!!
         # Load all generated summaries for this document
         summaries = {}
-        for temp, num_trial in zip(temps, num_trials):
+        for temp, num_trial, style in zip(temps, num_trials, styles):
             for trial_idx in range(num_trial):
                 try:
-                    summary_df = load_model_summaries(run_name, split_name, temp, trial_idx)
+                    summary_df = load_model_summaries(run_name, split_name, temp, trial_idx, style)
                     # Find this document's summary
                     doc_summary = summary_df[summary_df['document_idx'] == document_idx]
                     if len(doc_summary) > 0:
-                        summaries[(temp, trial_idx)] = doc_summary['summary'].iloc[0]
+                        summaries[(temp, trial_idx, style)] = doc_summary['summary'].iloc[0]
                 except FileNotFoundError:
-                    print(f"Warning: Missing summary file for T={temp}, trial={trial_idx}")
+                    print(f"Warning: Missing summary file for T={temp}, style = {style}, trial={trial_idx}")
                     continue
         
         cache_info = chat_wrapper.create_prompt_cache(
@@ -99,19 +102,19 @@ def elicit_choices_for_split(
             user_message_unfinished = True
         )
         
-        # Compare T=0.0 summaries vs T=1.0 summaries
-        t_low_summaries = [(temp, trial) for temp, trial in summaries.keys() if temp == temps[0]]  # T=0.0
-        t_high_summaries = [(temp, trial) for temp, trial in summaries.keys() if temp == temps[1]]  # T=1.0
-        
-        for t_low_key in t_low_summaries:
-            for t_high_key in t_high_summaries:
+        all_keys = list(summaries.keys())
+        for setting_key_1 in all_keys:
+            for setting_key_2 in all_keys:
 
-                t_low_summary = summaries[t_low_key]
-                t_high_summary = summaries[t_high_key]
+                # Only compare unique combinations (order dealt with below)
+                if setting_key_1 == setting_key_2:
+                    break
+
+                summary_1 = summaries[setting_key_1]
+                summary_2 = summaries[setting_key_2]
                 
-                # Forward order: T=0.0 as Summary1, T=1.0 as Summary2
                 forward_prompt_raw = (
-                    DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY.format(summary_1 = t_low_summary, summary_2 = t_high_summary) 
+                    DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY.format(summary_1 = summary_1, summary_2 = summary_2) 
                     + DETECTION_PROMPT_TEMPLATE_VS_MODEL_QUESTION
                 )
 
@@ -131,9 +134,8 @@ def elicit_choices_for_split(
                     forward_output.logits, choice_tokens
                 )
                 
-                # Backward order: T=1.0 as Summary1, T=0.0 as Summary2  
                 backward_prompt_raw = (
-                    DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY.format(summary_1 = t_high_summary, summary_2 = t_low_summary) 
+                    DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY.format(summary_1 = summary_2, summary_2 = summary_1) 
                     + DETECTION_PROMPT_TEMPLATE_VS_MODEL_QUESTION
                 )
 
@@ -157,21 +159,23 @@ def elicit_choices_for_split(
                 new_results = pd.DataFrame([
                     {
                         'document_idx': document_idx,
-                        'summary1_temp': t_low_key[0],
-                        'summary1_trial': t_low_key[1], 
-                        'summary2_temp': t_high_key[0],
-                        'summary2_trial': t_high_key[1],
-                        'order': 'forward',
+                        'summary1_temp': setting_key_1[0],
+                        'summary1_trial': setting_key_1[1], 
+                        'summary1_style': setting_key_1[2], 
+                        'summary2_temp': setting_key_2[0],
+                        'summary2_trial': setting_key_2[1],
+                        'summary2_style': setting_key_2[2],
                         'prob_choice_1': forward_probs[0, 0].item(),
                         'prob_choice_2': forward_probs[0, 1].item()
                     },
                     {
                         'document_idx': document_idx,
-                        'summary1_temp': t_high_key[0],
-                        'summary1_trial': t_high_key[1],
-                        'summary2_temp': t_low_key[0], 
-                        'summary2_trial': t_low_key[1],
-                        'order': 'backward',
+                        'summary1_temp': setting_key_2[0],
+                        'summary1_trial': setting_key_2[1],
+                        'summary1_style': setting_key_2[2],
+                        'summary2_temp': setting_key_1[0], 
+                        'summary2_trial': setting_key_1[1],
+                        'summary2_style': setting_key_1[2],
                         'prob_choice_1': backward_probs[0, 0].item(),
                         'prob_choice_2': backward_probs[0, 1].item()
                     }

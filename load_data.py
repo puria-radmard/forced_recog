@@ -60,7 +60,7 @@ def load_dataset(dataset_name, splits: List[str] = ["train", "test", "validation
     return processed_splits["train"], processed_splits["test"], processed_splits["validation"]
 
 
-def load_model_summaries(run_name, sub_dataset_name, temperature, trial_idx):
+def load_model_summaries(run_name, sub_dataset_name, temperature, trial_idx, style):
     """
     Load model summaries from experiment results
     
@@ -69,11 +69,17 @@ def load_model_summaries(run_name, sub_dataset_name, temperature, trial_idx):
         sub_dataset_name: str, dataset split ("train", "test", "validation") 
         temperature: float, temperature used for generation
         trial_idx: int, trial number for this temperature
+        styles: style that summary was prompted with, key to prompts.STYLE_SYSTEM_PROMPTS
         
     Returns:
         pandas.DataFrame with columns [document_idx, summary]
     """
-    file_path = f"results_and_data/results/e1_temperature_comparison/{run_name}/{sub_dataset_name}/T{temperature}_trial{trial_idx}.csv"
+    file_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{sub_dataset_name}"
+    if style is None:
+        file_name = f"T{temperature}_trial{trial_idx}.csv"
+    else:
+        file_name = f"T{temperature}_trial{trial_idx}_style{style}.csv"
+    file_path = os.path.join(file_dir, file_name)
     
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Model summary file not found: {file_path}")
