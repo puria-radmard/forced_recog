@@ -1,0 +1,9 @@
+# Initial two temperatures test (no styles)
+python -m generate_hf configs/llama_3_temp_test.yaml
+python -m pairwise_hf configs/llama_3_temp_test.yaml
+python -m two_temp_bt configs/llama_3_temp_test.yaml
+
+
+# Initial three styles test (no temperatures)
+python -m generate_hf configs/llama_3_style_test.yaml
+python -m pairwise_hf configs/llama_3_style_test.yaml

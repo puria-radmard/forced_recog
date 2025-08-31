@@ -40,20 +40,18 @@ def process_to_bradley_terry_format(results_df: pd.DataFrame) -> pd.DataFrame:
         prob_choice_2_norm = row['prob_choice_2'] / total_prob
         
         # Convert to Bradley-Terry format
-        if row['order'] == 'forward':
+        if row['summary1_temp'] == 0.0 and row['summary2_temp'] == 1.0:
             # Forward: T=0.0 first, T=1.0 second
-            assert row['summary1_temp'] == 0.0 and row['summary2_temp'] == 1.0
             o = +1  # T=0.0 is in first position
             y = prob_choice_1_norm  # Probability of choosing T=0.0
             
-        elif row['order'] == 'backward':
+        elif row['summary1_temp'] == 1.0 and row['summary2_temp'] == 0.0:
             # Backward: T=1.0 first, T=0.0 second  
-            assert row['summary1_temp'] == 1.0 and row['summary2_temp'] == 0.0
             o = -1  # T=0.0 is in second position
             y = prob_choice_2_norm  # Probability of choosing T=0.0
             
         else:
-            raise ValueError(f"Unknown order: {row['order']}")
+            raise ValueError(f"Unknown temperature combination: {row['summary1_temp']} and {row['summary2_temp']}")
         
         processed_rows.append({
             'document_idx': row['document_idx'],
