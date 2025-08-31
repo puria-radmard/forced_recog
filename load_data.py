@@ -74,11 +74,8 @@ def load_model_summaries(run_name, sub_dataset_name, temperature, trial_idx, sty
     Returns:
         pandas.DataFrame with columns [document_idx, summary]
     """
-    file_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{sub_dataset_name}"
-    if style is None:
-        file_name = f"T{temperature}_trial{trial_idx}.csv"
-    else:
-        file_name = f"T{temperature}_trial{trial_idx}_style{style}.csv"
+    file_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{sub_dataset_name}/model_summaries"
+    file_name = f"T{temperature}_trial{trial_idx}_style{style}.csv"
     file_path = os.path.join(file_dir, file_name)
     
     if not os.path.exists(file_path):
@@ -97,5 +94,3 @@ if __name__ == "__main__":
     print(f"CNN/DailyMail - Train: {len(train)}, Test: {len(test)}, Val: {len(val)}")
     print(f"Columns: {train.columns.tolist()}")
     print(f"Sample: {train.iloc[0]['article'][:100]}...")
-
-    import pdb; pdb.set_trace()

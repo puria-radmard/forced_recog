@@ -1,0 +1,33 @@
+Logged run to: results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/forwardsft_runs.txt
+Loading model: meta-llama/Llama-3.1-8B-Instruct
+Loading checkpoint shards: 100%|██████████████████████████████████████████████| 4/4 [00:06<00:00,  1.51s/it]
+Loading SFT training data...
+Loading results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/model_summaries/T0.0_trial0_stylesun.csv
+Found 1 trial files
+Combined data: 588 training examples from 1 trials
+Loaded 588 training examples
+Creating training pairs...
+Creating training pairs:   0%|                                                      | 0/588 [01:24<?, ?it/s]
+> /homes/pr450/repos/mr_repos/forced_recog/forward_sft.py(99)create_training_pairs()
+-> target = row['summary']
+document_idx                                                    0
+article         LONDON, England (Reuters) -- Harry Potter star...
+summary_x       Harry Potter star Daniel Radcliffe gets £20M f...
+summary_y       Daniel Radcliffe turns 18 and inherits £20m fo...
+trial_idx                                                       0
+Name: 0, dtype: object
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/homes/pr450/repos/mr_repos/forced_recog/forward_sft.py", line 392, in <module>
+  File "/homes/pr450/repos/mr_repos/forced_recog/forward_sft.py", line 284, in main
+  File "/homes/pr450/repos/mr_repos/forced_recog/forward_sft.py", line 99, in create_training_pairs
+    training_pairs.append({
+             ^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/bdb.py", line 90, in trace_dispatch
+    return self.dispatch_line(frame)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/bdb.py", line 115, in dispatch_line
+    if self.quitting: raise BdbQuit
+                      ^^^^^^^^^^^^^
+bdb.BdbQuit

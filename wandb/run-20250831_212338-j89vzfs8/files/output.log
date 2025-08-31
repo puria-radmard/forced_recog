@@ -1,0 +1,95 @@
+Logged run to: results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/forwardsft_runs.txt
+Loading model: meta-llama/Llama-3.1-8B-Instruct
+Loading checkpoint shards: 100%|██████████████████████████████████████████████| 4/4 [00:06<00:00,  1.50s/it]
+Loading SFT training data...
+Loading results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/model_summaries/T0.0_trial0_stylesun.csv
+Found 1 trial files
+Combined data: 622 training examples from 1 trials
+Loaded 622 training examples
+Creating training pairs...
+Creating training pairs: 100%|██████████████████████████████████████████| 622/622 [00:00<00:00, 6561.92it/s]
+> /homes/pr450/repos/mr_repos/forced_recog/forward_sft.py(286)main()
+-> print("Setting up LoRA...")
+Setting up LoRA...
+LoRA model setup complete. Trainable parameters: 6815744
+Starting training: 3 epochs, 622 examples, batch size 4
+
+Epoch 1/3
+Epoch 1:   0%|                                                                      | 0/156 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/homes/pr450/repos/mr_repos/forced_recog/forward_sft.py", line 390, in <module>
+  File "/homes/pr450/repos/mr_repos/forced_recog/forward_sft.py", line 328, in main
+    lora_model,
+      ^^^^^^^^
+  File "/homes/pr450/repos/mr_repos/forced_recog/forward_sft.py", line 145, in train_step
+    outputs = model(
+              ^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/peft/peft_model.py", line 1850, in forward
+    return self.base_model(
+           ^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/peft/tuners/tuners_utils.py", line 222, in forward
+    return self.model.forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/accelerate/hooks.py", line 175, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 553, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 441, in forward
+    layer_outputs = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/modeling_layers.py", line 83, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/accelerate/hooks.py", line 175, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 306, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/accelerate/hooks.py", line 175, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 151, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 132.00 MiB. GPU 0 has a total capacity of 23.57 GiB of which 118.69 MiB is free. Process 2211020 has 10.05 GiB memory in use. Including non-PyTorch memory, this process has 13.36 GiB memory in use. Of the allocated memory 12.91 GiB is allocated by PyTorch, and 207.75 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

@@ -64,13 +64,13 @@ def elicit_choices_for_split(
     # Create output directory and initialise results file
     output_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}"
     os.makedirs(output_dir, exist_ok=True)
-    results_file = f"{output_dir}/choice_results.csv"
+    results_file = f"{output_dir}/initial_choices/choice_results.csv"
 
     header_df = pd.DataFrame(columns=[
         'document_idx', 
         'summary1_temp', 'summary1_trial', 'summary1_style',
         'summary2_temp', 'summary2_trial', 'summary2_style',
-        'order', 'prob_choice_1', 'prob_choice_2'
+        'prob_choice_1', 'prob_choice_2'
     ])
     header_df.to_csv(results_file, index=False)
 
@@ -224,6 +224,7 @@ if __name__ == "__main__":
             split_name=split_name,
             temps=args.temps,
             num_trials=args.num_trials,
+            styles=args.styles,
             run_name=args.args_name
         )
     

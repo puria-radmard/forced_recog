@@ -19,7 +19,7 @@ def generate_summaries_for_split(
     split_name: str,
     temps: List[float],
     num_trials: List[int],
-    styles: List[str | None],
+    styles: List[str],
     run_name: str
 ) -> None:
     """
@@ -36,7 +36,7 @@ def generate_summaries_for_split(
         run_name: Name of the run (for saving)
     """
     # Create output directories
-    base_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}"
+    base_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}/model_summaries"
     os.makedirs(base_dir, exist_ok=True)
     
     # Get system prompt and user prompt template
@@ -63,15 +63,12 @@ def generate_summaries_for_split(
             for trial_idx in range(num_trial):
             
                 # Initialize CSV files if they don't exist
-                if style is not None:
-                    output_file = f"{base_dir}/T{temp}_trial{trial_idx}_style{style}.csv"
-                else:
-                    output_file = f"{base_dir}/T{temp}_trial{trial_idx}.csv"
+                output_file = f"{base_dir}/T{temp}_trial{trial_idx}_style{style}.csv"
                 if not os.path.exists(output_file):
                     pd.DataFrame(columns=['document_idx', 'summary']).to_csv(output_file, index=False)
 
                 # FIXME This should be hidden away please.
-                extra_chat = "-" if style is None else f'-\n\n{STYLE_PROMPT_ADDENDUM[style]}'
+                extra_chat = "-" if style == 'natural' else f'-\n\n{STYLE_PROMPT_ADDENDUM[style]}'
                 extra_chat_with_tags = chat_wrapper.format_chat(user_message = extra_chat, prefiller="").removeprefix(chat_wrapper.format_chat(user_message="-", user_message_unfinished=True))
 
                 # Generate summary with empty chat (continues from cache)

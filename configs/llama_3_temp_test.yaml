@@ -3,6 +3,6 @@ dataset: cnn_dailymail
 
 temps: [0.0, 1.0]
 num_trials: [1, 1]
-styles: [None, None]
+styles: [natural, natural]
 
 splits: [test] # Skipping others for now
