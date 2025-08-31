@@ -54,29 +54,35 @@ def generate_summaries_for_split(
         cache_info = chat_wrapper.create_prompt_cache(
             system_prompt=system_prompt,
             user_message=user_message,
+            user_message_unfinished=True
         )
-        
+
         # Generate for each temp/trial combination
         for temp, num_trial, style in zip(temps, num_trials, styles):
-            output_file = f"{base_dir}/T{temp}_trial0.csv"
-            
-            # Initialize CSV files if they don't exist
-            if not os.path.exists(output_file):
-                pd.DataFrame(columns=['document_idx', 'summary']).to_csv(output_file, index=False)
             
             for trial_idx in range(num_trial):
+            
+                # Initialize CSV files if they don't exist
+                if style is not None:
+                    output_file = f"{base_dir}/T{temp}_trial{trial_idx}_style{style}.csv"
+                else:
+                    output_file = f"{base_dir}/T{temp}_trial{trial_idx}.csv"
+                if not os.path.exists(output_file):
+                    pd.DataFrame(columns=['document_idx', 'summary']).to_csv(output_file, index=False)
+
+                # FIXME This should be hidden away please.
+                extra_chat = "-" if style is None else f'-\n\n{STYLE_PROMPT_ADDENDUM[style]}'
+                extra_chat_with_tags = chat_wrapper.format_chat(user_message = extra_chat, prefiller="").removeprefix(chat_wrapper.format_chat(user_message="-", user_message_unfinished=True))
+
                 # Generate summary with empty chat (continues from cache)
-
-                extra_chat = "" if style is None else f'\n{STYLE_PROMPT_ADDENDUM[style]}'
-
                 generation_result = chat_wrapper.generate(
-                    chats=[""],  # Empty string starts from cache point
+                    chats=[extra_chat_with_tags],  # Empty string starts from cache point
                     past_key_values=copy.deepcopy(cache_info["cache"]),
                     past_key_values_str=cache_info["formatted_prompt"],
                     max_new_tokens=100,
                     temperature=temp,
                     do_sample=(temp > 0.0),
-                    use_cache_position = True,
+                    use_cache_position = False,
                     skip_special_tokens = True,
                     return_full_text = False,
                 )
@@ -84,16 +90,11 @@ def generate_summaries_for_split(
                 summary = generation_result["generated_texts"][0].strip().replace('\n', '\\n')
                 
                 # Save to appropriate trial file
-                trial_output_file = f"{base_dir}/T{temp}_trial{trial_idx}.csv"
                 result_row = pd.DataFrame({
                     'document_idx': [document_idx],
                     'summary': [summary]
                 })
-                
-                if os.path.exists(trial_output_file):
-                    result_row.to_csv(trial_output_file, mode='a', header=False, index=False)
-                else:
-                    result_row.to_csv(trial_output_file, mode='w', header=True, index=False)
+                result_row.to_csv(output_file, mode='a', header=False, index=False)
 
 
 def main():

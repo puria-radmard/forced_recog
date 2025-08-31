@@ -65,8 +65,10 @@ def elicit_choices_for_split(
     results_file = f"{output_dir}/choice_results.csv"
 
     header_df = pd.DataFrame(columns=[
-        'document_idx', 'summary1_temp', 'summary1_trial', 'summary2_temp', 
-        'summary2_trial', 'order', 'prob_choice_1', 'prob_choice_2'
+        'document_idx', 
+        'summary1_temp', 'summary1_trial', 
+        'summary2_temp', 'summary2_trial', 
+        'order', 'prob_choice_1', 'prob_choice_2'
     ])
     header_df.to_csv(results_file, index=False)
 

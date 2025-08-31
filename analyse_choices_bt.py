@@ -163,7 +163,7 @@ def run_bradley_terry_mcmc(bt_data: pd.DataFrame,
     }
         
 
-def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, split_name: str) -> None:
+def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str) -> None:
     """
     Create visualizations of Bradley-Terry posterior distributions.
     
@@ -268,7 +268,7 @@ def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, split_nam
     plt.tight_layout()
     
     # Save the plot
-    plot_file = os.path.join(output_dir, f'bradley_terry_posteriors_{split_name}.png')
+    plot_file = os.path.join(output_dir, f'bradley_terry_posteriors.png')
     plt.savefig(plot_file, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
     
@@ -313,7 +313,7 @@ def analyze_bradley_terry(run_name: str, split_name: str,
     )
     
     # Create visualizations
-    plot_bradley_terry_posteriors(mcmc_results, results_dir, split_name)
+    plot_bradley_terry_posteriors(mcmc_results, results_dir)
     
     # Save results
     results_file = os.path.join(results_dir, "bradley_terry_mcmc.pkl")
