@@ -15,7 +15,7 @@ from model.load import load_model
 from prompts import DATASET_SYSTEM_PROMPTS, SUMMARIZE_PROMPT_TEMPLATES
 from utils.util import YamlConfig
 
-from sft_utils.lora import setup_lora_model
+from sft_utils.lora import setup_lora_model, save_lora_as_artifact
 
 
 def load_sft_data(run_name: str, dataset_name: str, temp: float, style: str) -> pd.DataFrame:
@@ -170,28 +170,6 @@ def parse_sft_key(sft_key: str):
     
     return temp, style_str
 
-
-def save_lora_as_artifact(model, step: int, temp: float, style: str):
-    """Save LoRA adapters as WandB artifact."""
-    import tempfile
-    import shutil
-    
-    # Create temporary directory
-    with tempfile.TemporaryDirectory() as temp_dir:
-        adapter_path = os.path.join(temp_dir, "adapter")
-        model.save_pretrained(adapter_path)
-        
-        # Create artifact
-        artifact_name = f"lora_adapters_step_{step}"
-        artifact = wandb.Artifact(
-            artifact_name,
-            type="model",
-            description=f"LoRA adapters at step {step} for temp={temp}, style={style}"
-        )
-        artifact.add_dir(adapter_path)
-        wandb.log_artifact(artifact)
-        
-        print(f"Logged LoRA adapters artifact: {artifact_name}")
 
 
 def main():
@@ -348,7 +326,7 @@ def main():
             })
             
             # Save LoRA adapters as artifact every 20 steps
-            if step % 20 == 0:
+            if step % 50 == 0:
                 avg_loss = total_loss / step
                 print(f"Step {step}: Loss = {current_loss:.4f}, Avg Loss = {avg_loss:.4f}")
                 save_lora_as_artifact(lora_model, step, temp, style)

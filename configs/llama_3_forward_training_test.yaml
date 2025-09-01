@@ -16,5 +16,5 @@ forwardsft_temp0.0_stylesun:
   target_modules: ["q_proj", "v_proj"]
   learning_rate: 0.0005
   num_epochs: 3
-  batch_size: 4
+  batch_size: 1
   max_seq_length: 2048

@@ -1,0 +1,411 @@
+Logged run to: results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/forwardsft_runs.txt
+Loading model: meta-llama/Llama-3.1-8B-Instruct
+Loading checkpoint shards: 100%|██████████████████████████████████████████████| 4/4 [00:06<00:00,  1.59s/it]
+Loading SFT training data...
+Loading results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/model_summaries/T0.0_trial0_stylesun.csv
+Found 1 trial files
+Combined data: 850 training examples from 1 trials
+Loaded 850 training examples
+Creating training pairs...
+Creating training pairs: 100%|██████████████████████████████████████████| 850/850 [00:00<00:00, 7086.16it/s]
+Setting up LoRA...
+LoRA model setup complete. Trainable parameters: 6815744
+Starting training: 3 epochs, 850 examples, batch size 1
+
+Epoch 1/3
+Epoch 1:   2%|█▎                                                           | 19/850 [00:12<07:36,  1.82it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpp6y43enu/adapter)... Done. 0.5s
+Step 20: Loss = 0.4923, Avg Loss = 0.6461
+Logged LoRA adapters artifact: lora_adapters_step_20
+Epoch 1:   5%|██▊                                                          | 39/850 [00:23<07:47,  1.73it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp56174xw7/adapter)... Done. 0.4s
+Step 40: Loss = 0.4858, Avg Loss = 0.5868
+Logged LoRA adapters artifact: lora_adapters_step_40
+Epoch 1:   7%|████▏                                                        | 59/850 [00:37<08:55,  1.48it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpwc8k5m31/adapter)... Done. 0.5s
+Step 60: Loss = 0.3494, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_60
+Epoch 1:   9%|█████▋                                                       | 79/850 [00:50<07:47,  1.65it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp20vkkcw5/adapter)... Done. 0.4s
+Step 80: Loss = 0.3452, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_80
+Epoch 1:  12%|███████                                                      | 99/850 [01:01<06:07,  2.04it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpgmiyw1ge/adapter)... Done. 0.4s
+Step 100: Loss = 0.4747, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_100
+Epoch 1:  14%|████████▍                                                   | 119/850 [01:14<07:28,  1.63it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpow3ck_nn/adapter)... Done. 0.4s
+Step 120: Loss = 0.4479, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_120
+Epoch 1:  16%|█████████▊                                                  | 139/850 [01:27<07:44,  1.53it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp9_opvlxi/adapter)... Done. 0.4s
+Step 140: Loss = 0.6987, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_140
+Epoch 1:  19%|███████████▏                                                | 159/850 [01:37<05:31,  2.08it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpsyxxuuoq/adapter)... Done. 0.4s
+Step 160: Loss = 0.3960, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_160
+Epoch 1:  21%|████████████▋                                               | 179/850 [01:49<06:12,  1.80it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpsxs7z28o/adapter)... Done. 0.4s
+Step 180: Loss = 0.4631, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_180
+Epoch 1:  23%|██████████████                                              | 199/850 [02:02<05:56,  1.83it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpdlrbllyu/adapter)... Done. 0.4s
+Step 200: Loss = 0.3610, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_200
+Epoch 1:  26%|███████████████▍                                            | 219/850 [02:14<04:37,  2.27it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpie1adn7l/adapter)... Done. 0.4s
+Step 220: Loss = 0.6379, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_220
+Epoch 1:  28%|████████████████▊                                           | 239/850 [02:27<05:36,  1.82it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpzl365zqa/adapter)... Done. 0.4s
+Step 240: Loss = 0.3681, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_240
+Epoch 1:  30%|██████████████████▎                                         | 259/850 [02:39<06:05,  1.62it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpl25wgdza/adapter)... Done. 0.4s
+Step 260: Loss = 0.4729, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_260
+Epoch 1:  33%|███████████████████▋                                        | 279/850 [02:52<03:52,  2.46it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpafevp5tx/adapter)... Done. 0.4s
+Step 280: Loss = 0.6603, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_280
+Epoch 1:  35%|█████████████████████                                       | 299/850 [03:06<05:05,  1.81it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpn6_ptbet/adapter)... Done. 0.4s
+Step 300: Loss = 0.6445, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_300
+Epoch 1:  38%|██████████████████████▌                                     | 319/850 [03:17<03:55,  2.25it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmplmkvrmun/adapter)... Done. 0.4s
+Step 320: Loss = 0.3172, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_320
+Epoch 1:  40%|███████████████████████▉                                    | 339/850 [03:27<03:48,  2.23it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmphum760l2/adapter)... Done. 0.4s
+Step 340: Loss = 0.7978, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_340
+Epoch 1:  42%|█████████████████████████▎                                  | 359/850 [03:40<05:39,  1.45it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp_sii4nha/adapter)... Done. 0.4s
+Step 360: Loss = 0.8712, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_360
+Epoch 1:  45%|██████████████████████████▊                                 | 379/850 [03:53<04:46,  1.65it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpyprwe4v3/adapter)... Done. 0.4s
+Step 380: Loss = 0.5833, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_380
+Epoch 1:  47%|████████████████████████████▏                               | 399/850 [04:05<04:16,  1.76it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpp9qaferw/adapter)... Done. 0.4s
+Step 400: Loss = 0.4761, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_400
+Epoch 1:  49%|█████████████████████████████▌                              | 419/850 [04:18<05:05,  1.41it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpaj1crtlk/adapter)... Done. 0.5s
+Step 420: Loss = 0.3132, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_420
+Epoch 1:  52%|██████████████████████████████▉                             | 439/850 [04:31<04:44,  1.44it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpz8be8c16/adapter)... Done. 0.5s
+Step 440: Loss = 0.5004, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_440
+Epoch 1:  54%|████████████████████████████████▍                           | 459/850 [04:43<04:00,  1.62it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpnld6myef/adapter)... Done. 0.5s
+Step 460: Loss = 0.3932, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_460
+Epoch 1:  56%|█████████████████████████████████▊                          | 479/850 [04:55<03:13,  1.91it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmph6_ai24k/adapter)... Done. 0.4s
+Step 480: Loss = 0.9330, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_480
+Epoch 1:  59%|███████████████████████████████████▏                        | 499/850 [05:09<03:31,  1.66it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpyzznk40c/adapter)... Done. 0.4s
+Step 500: Loss = 0.9184, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_500
+Epoch 1:  61%|████████████████████████████████████▋                       | 519/850 [05:20<02:18,  2.39it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp5jx85lxp/adapter)... Done. 0.4s
+Step 520: Loss = 0.6062, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_520
+Epoch 1:  63%|██████████████████████████████████████                      | 539/850 [05:33<03:38,  1.43it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp4c_24rpa/adapter)... Done. 0.5s
+Step 540: Loss = 0.6511, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_540
+Epoch 1:  66%|███████████████████████████████████████▍                    | 559/850 [05:44<02:28,  1.96it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpyfop05dx/adapter)... Done. 0.4s
+Step 560: Loss = 0.6175, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_560
+Epoch 1:  68%|████████████████████████████████████████▊                   | 579/850 [05:57<03:03,  1.48it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmppxrpu6t5/adapter)... Done. 0.4s
+Step 580: Loss = 0.5154, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_580
+Epoch 1:  70%|██████████████████████████████████████████▎                 | 599/850 [06:09<02:26,  1.71it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpj_g4fko5/adapter)... Done. 0.4s
+Step 600: Loss = 0.4992, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_600
+Epoch 1:  73%|███████████████████████████████████████████▋                | 619/850 [06:22<02:30,  1.54it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpnwp02hme/adapter)... Done. 0.4s
+Step 620: Loss = 0.5393, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_620
+Epoch 1:  75%|█████████████████████████████████████████████               | 639/850 [06:34<01:51,  1.88it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmppzwyvsgb/adapter)... Done. 0.4s
+Step 640: Loss = 0.8169, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_640
+Epoch 1:  78%|██████████████████████████████████████████████▌             | 659/850 [06:47<01:26,  2.22it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpi7653h86/adapter)... Done. 0.4s
+Step 660: Loss = 0.2999, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_660
+Epoch 1:  80%|███████████████████████████████████████████████▉            | 679/850 [06:59<01:22,  2.08it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp4x92vqh1/adapter)... Done. 0.4s
+Step 680: Loss = 0.8151, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_680
+Epoch 1:  82%|█████████████████████████████████████████████████▎          | 699/850 [07:09<01:00,  2.51it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp_e_f_i7i/adapter)... Done. 0.5s
+Step 700: Loss = 0.4450, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_700
+Epoch 1:  85%|██████████████████████████████████████████████████▊         | 719/850 [07:23<01:05,  1.99it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpchpqdt4p/adapter)... Done. 0.5s
+Step 720: Loss = 1.0303, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_720
+Epoch 1:  87%|████████████████████████████████████████████████████▏       | 739/850 [07:36<00:49,  2.24it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpm8t5tx1j/adapter)... Done. 0.4s
+Step 740: Loss = 0.6432, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_740
+Epoch 1:  89%|█████████████████████████████████████████████████████▌      | 759/850 [07:47<00:37,  2.45it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp0u74vwbc/adapter)... Done. 0.5s
+Step 760: Loss = 0.4529, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_760
+Epoch 1:  92%|██████████████████████████████████████████████████████▉     | 779/850 [08:00<00:46,  1.53it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp8wfwxik6/adapter)... Done. 0.4s
+Step 780: Loss = 0.5289, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_780
+Epoch 1:  94%|████████████████████████████████████████████████████████▍   | 799/850 [08:14<00:27,  1.83it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpglepr4bh/adapter)... Done. 0.4s
+Step 800: Loss = 0.4065, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_800
+Epoch 1:  96%|█████████████████████████████████████████████████████████▊  | 819/850 [08:27<00:15,  1.95it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpv6balkhz/adapter)... Done. 0.4s
+Step 820: Loss = 0.7618, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_820
+Epoch 1:  99%|███████████████████████████████████████████████████████████▏| 839/850 [08:40<00:05,  2.17it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp56q4yu4r/adapter)... Done. 0.5s
+Step 840: Loss = 0.5115, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_840
+Epoch 1: 100%|████████████████████████████████████████████████████████████| 850/850 [08:48<00:00,  1.61it/s]
+Epoch 1 complete. Average loss: nan
+
+Epoch 2/3
+Epoch 2:   1%|▋                                                             | 9/850 [00:05<07:38,  1.83it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpfj74_k4e/adapter)... Done. 0.5s
+Step 860: Loss = 0.5867, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_860
+Epoch 2:   3%|██                                                           | 29/850 [00:16<05:41,  2.40it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpxhlydtbq/adapter)... Done. 0.4s
+Step 880: Loss = 0.7152, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_880
+Epoch 2:   6%|███▌                                                         | 49/850 [00:28<07:04,  1.89it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpy0citkt6/adapter)... Done. 0.4s
+Step 900: Loss = 0.2643, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_900
+Epoch 2:   8%|████▉                                                        | 69/850 [00:41<08:02,  1.62it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpfmmqz98l/adapter)... Done. 0.4s
+Step 920: Loss = 0.3792, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_920
+Epoch 2:  10%|██████▍                                                      | 89/850 [00:54<07:16,  1.75it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpra8ou2ol/adapter)... Done. 0.4s
+Step 940: Loss = 0.1438, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_940
+Epoch 2:  13%|███████▋                                                    | 109/850 [01:06<05:12,  2.37it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp0tmkq70h/adapter)... Done. 0.4s
+Step 960: Loss = 0.5626, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_960
+Epoch 2:  15%|█████████                                                   | 129/850 [01:17<06:09,  1.95it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpwybf_ixi/adapter)... Done. 0.5s
+Step 980: Loss = 0.2231, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_980
+Epoch 2:  18%|██████████▌                                                 | 149/850 [01:30<09:29,  1.23it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpwzs1dh33/adapter)... Done. 0.5s
+Step 1000: Loss = 0.1510, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1000
+Epoch 2:  20%|███████████▉                                                | 169/850 [01:42<06:51,  1.65it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpo4c3yjtx/adapter)... Done. 0.4s
+Step 1020: Loss = 0.2351, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1020
+Epoch 2:  22%|█████████████▎                                              | 189/850 [01:56<06:09,  1.79it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpoohwumve/adapter)... Done. 0.4s
+Step 1040: Loss = 0.4189, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1040
+Epoch 2:  25%|██████████████▊                                             | 209/850 [02:07<05:28,  1.95it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpka2vkywt/adapter)... Done. 0.4s
+Step 1060: Loss = 0.7301, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1060
+Epoch 2:  27%|████████████████▏                                           | 229/850 [02:19<05:49,  1.78it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp64yv_ad0/adapter)... Done. 0.4s
+Step 1080: Loss = 0.4632, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1080
+Epoch 2:  29%|█████████████████▌                                          | 249/850 [02:31<05:29,  1.82it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp3iih6vsy/adapter)... Done. 0.4s
+Step 1100: Loss = 0.2594, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1100
+Epoch 2:  32%|██████████████████▉                                         | 269/850 [02:44<05:08,  1.88it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpnr7pm_p9/adapter)... Done. 0.4s
+Step 1120: Loss = 0.6137, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1120
+Epoch 2:  34%|████████████████████▍                                       | 289/850 [02:56<04:20,  2.15it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpbvao95g1/adapter)... Done. 0.5s
+Step 1140: Loss = 0.4967, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1140
+Epoch 2:  36%|█████████████████████▊                                      | 309/850 [03:07<03:22,  2.67it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp3snrum5w/adapter)... Done. 0.4s
+Step 1160: Loss = 0.5512, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1160
+Epoch 2:  39%|███████████████████████▏                                    | 329/850 [03:20<05:41,  1.53it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp30yq9_q_/adapter)... Done. 0.4s
+Step 1180: Loss = 0.4733, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1180
+Epoch 2:  41%|████████████████████████▋                                   | 349/850 [03:32<05:16,  1.58it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmplfj766x9/adapter)... Done. 0.4s
+Step 1200: Loss = 0.3484, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1200
+Epoch 2:  43%|██████████████████████████                                  | 369/850 [03:44<04:34,  1.75it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpf_6r1xzo/adapter)... Done. 0.4s
+Step 1220: Loss = 0.4482, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1220
+Epoch 2:  46%|███████████████████████████▍                                | 389/850 [03:56<04:52,  1.58it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp_sohm9lg/adapter)... Done. 0.4s
+Step 1240: Loss = 0.4858, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1240
+Epoch 2:  48%|████████████████████████████▊                               | 409/850 [04:09<04:40,  1.57it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmppj9d_20x/adapter)... Done. 0.6s
+Step 1260: Loss = 0.3857, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1260
+Epoch 2:  50%|██████████████████████████████▎                             | 429/850 [04:21<03:28,  2.02it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpt75gol9o/adapter)... Done. 0.5s
+Step 1280: Loss = 0.3623, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1280
+Epoch 2:  53%|███████████████████████████████▋                            | 449/850 [04:34<04:45,  1.41it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpis0k_hfl/adapter)... Done. 0.5s
+Step 1300: Loss = 0.3259, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1300
+Epoch 2:  55%|█████████████████████████████████                           | 469/850 [04:47<03:26,  1.85it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmptgyt_ywt/adapter)... Done. 0.4s
+Step 1320: Loss = 0.3896, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1320
+Epoch 2:  58%|██████████████████████████████████▌                         | 489/850 [04:59<02:52,  2.10it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp__x6lxcz/adapter)... Done. 0.4s
+Step 1340: Loss = 0.5717, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1340
+Epoch 2:  60%|███████████████████████████████████▉                        | 509/850 [05:12<03:16,  1.73it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpjavnooak/adapter)... Done. 0.4s
+Step 1360: Loss = 0.2661, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1360
+Epoch 2:  62%|█████████████████████████████████████▎                      | 529/850 [05:25<03:49,  1.40it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpkqhrro1c/adapter)... Done. 0.4s
+Step 1380: Loss = 0.6741, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1380
+Epoch 2:  65%|██████████████████████████████████████▊                     | 549/850 [05:36<02:15,  2.22it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpjqy8y3km/adapter)... Done. 0.4s
+Step 1400: Loss = 0.2961, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1400
+Epoch 2:  67%|████████████████████████████████████████▏                   | 569/850 [05:48<02:37,  1.79it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmphukuaap2/adapter)... Done. 0.4s
+Step 1420: Loss = 0.5552, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1420
+Epoch 2:  69%|█████████████████████████████████████████▌                  | 589/850 [06:01<03:00,  1.44it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpqjnd_pay/adapter)... Done. 0.4s
+Step 1440: Loss = 0.3177, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1440
+Epoch 2:  72%|██████████████████████████████████████████▉                 | 609/850 [06:13<02:13,  1.80it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpx865g226/adapter)... Done. 0.4s
+Step 1460: Loss = 0.6369, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1460
+Epoch 2:  74%|████████████████████████████████████████████▍               | 629/850 [06:26<01:54,  1.93it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpzedc08w3/adapter)... Done. 0.4s
+Step 1480: Loss = 0.3620, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1480
+Epoch 2:  76%|█████████████████████████████████████████████▊              | 649/850 [06:40<01:56,  1.73it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpa9x7be5p/adapter)... Done. 0.4s
+Step 1500: Loss = 0.7545, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1500
+Epoch 2:  79%|███████████████████████████████████████████████▏            | 669/850 [06:52<01:22,  2.20it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpbefh_bqd/adapter)... Done. 0.4s
+Step 1520: Loss = 0.6557, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1520
+Epoch 2:  81%|████████████████████████████████████████████████▋           | 689/850 [07:06<01:49,  1.47it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpsszcs2by/adapter)... Done. 0.4s
+Step 1540: Loss = 0.2824, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1540
+Epoch 2:  83%|██████████████████████████████████████████████████          | 709/850 [07:18<01:01,  2.30it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpin0sk04y/adapter)... Done. 0.4s
+Step 1560: Loss = 0.7431, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1560
+Epoch 2:  86%|███████████████████████████████████████████████████▍        | 729/850 [07:30<01:31,  1.32it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpsjkzf30n/adapter)... Done. 0.4s
+Step 1580: Loss = 0.2934, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1580
+Epoch 2:  88%|████████████████████████████████████████████████████▊       | 749/850 [07:43<00:57,  1.76it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp4_ciif8b/adapter)... Done. 0.5s
+Step 1600: Loss = 0.4092, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1600
+Epoch 2:  90%|██████████████████████████████████████████████████████▎     | 769/850 [07:56<00:44,  1.83it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpb0i8xyyh/adapter)... Done. 0.4s
+Step 1620: Loss = 0.2899, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1620
+Epoch 2:  93%|███████████████████████████████████████████████████████▋    | 789/850 [08:08<00:29,  2.07it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp20kf2joe/adapter)... Done. 0.5s
+Step 1640: Loss = 0.6576, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1640
+Epoch 2:  95%|█████████████████████████████████████████████████████████   | 809/850 [08:21<00:24,  1.66it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpicc94g0g/adapter)... Done. 0.4s
+Step 1660: Loss = 0.7068, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1660
+Epoch 2:  98%|██████████████████████████████████████████████████████████▌ | 829/850 [08:36<00:16,  1.24it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp38kxnkwq/adapter)... Done. 0.5s
+Step 1680: Loss = 0.3662, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1680
+Epoch 2: 100%|███████████████████████████████████████████████████████████▉| 849/850 [08:48<00:00,  1.83it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpyi6z4mdl/adapter)... Done. 0.4s
+Step 1700: Loss = 0.4241, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1700
+Epoch 2: 100%|████████████████████████████████████████████████████████████| 850/850 [08:49<00:00,  1.60it/s]
+Epoch 2 complete. Average loss: nan
+
+Epoch 3/3
+Epoch 3:   2%|█▎                                                           | 19/850 [00:11<06:07,  2.26it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpz0yrvi53/adapter)... Done. 0.4s
+Step 1720: Loss = 0.2492, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1720
+Epoch 3:   5%|██▊                                                          | 39/850 [00:23<06:20,  2.13it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpz8of18ln/adapter)... Done. 0.4s
+Step 1740: Loss = 0.3105, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1740
+Epoch 3:   7%|████▏                                                        | 59/850 [00:35<07:13,  1.82it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpxsrh4v98/adapter)... Done. 0.5s
+Step 1760: Loss = 0.2044, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1760
+Epoch 3:   9%|█████▋                                                       | 79/850 [00:46<05:27,  2.35it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpeod34du5/adapter)... Done. 0.4s
+Step 1780: Loss = 0.2297, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1780
+Epoch 3:  12%|███████                                                      | 99/850 [00:59<07:41,  1.63it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpovbmlxfk/adapter)... Done. 0.4s
+Step 1800: Loss = 0.1378, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1800
+Epoch 3:  14%|████████▍                                                   | 119/850 [01:11<06:09,  1.98it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmph9dwbp6k/adapter)... Done. 0.4s
+Step 1820: Loss = 0.4276, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1820
+Epoch 3:  16%|█████████▊                                                  | 139/850 [01:23<05:36,  2.11it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpqyp1t92e/adapter)... Done. 0.4s
+Step 1840: Loss = 0.0967, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1840
+Epoch 3:  19%|███████████▏                                                | 159/850 [01:35<06:07,  1.88it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmponnw66rs/adapter)... Done. 0.4s
+Step 1860: Loss = 0.3505, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1860
+Epoch 3:  21%|████████████▋                                               | 179/850 [01:48<06:34,  1.70it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpppcofz3b/adapter)... Done. 0.4s
+Step 1880: Loss = 0.3108, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1880
+Epoch 3:  23%|██████████████                                              | 199/850 [02:02<05:06,  2.13it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp7zukg16_/adapter)... Done. 0.4s
+Step 1900: Loss = 0.2027, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1900
+Epoch 3:  26%|███████████████▍                                            | 219/850 [02:16<05:19,  1.98it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpnqg1eocm/adapter)... Done. 0.4s
+Step 1920: Loss = 0.1479, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1920
+Epoch 3:  28%|████████████████▊                                           | 239/850 [02:29<08:02,  1.27it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpbtt5j10_/adapter)... Done. 0.4s
+Step 1940: Loss = 0.3286, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1940
+Epoch 3:  30%|██████████████████▎                                         | 259/850 [02:41<06:18,  1.56it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpy4dekwxt/adapter)... Done. 0.4s
+Step 1960: Loss = 0.5265, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1960
+Epoch 3:  33%|███████████████████▋                                        | 279/850 [02:53<06:14,  1.53it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpfm2fv13q/adapter)... Done. 0.4s
+Step 1980: Loss = 0.2336, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_1980
+Epoch 3:  35%|█████████████████████                                       | 299/850 [03:39<06:34,  1.40it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp4mj3xm2f/adapter)... Done. 0.4s
+Step 2000: Loss = 0.3020, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2000
+Epoch 3:  38%|██████████████████████▌                                     | 319/850 [03:52<05:18,  1.66it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpy3xb_o2t/adapter)... Done. 0.4s
+Step 2020: Loss = 0.4107, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2020
+Epoch 3:  40%|███████████████████████▉                                    | 339/850 [04:02<03:38,  2.34it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpydppkusj/adapter)... Done. 0.4s
+Step 2040: Loss = 0.3112, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2040
+Epoch 3:  42%|█████████████████████████▎                                  | 359/850 [04:15<05:42,  1.44it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp32bjyh1z/adapter)... Done. 0.4s
+Step 2060: Loss = 0.1634, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2060
+Epoch 3:  45%|██████████████████████████▊                                 | 379/850 [04:27<04:43,  1.66it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpsm3_o7jn/adapter)... Done. 0.4s
+Step 2080: Loss = 0.5659, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2080
+Epoch 3:  47%|████████████████████████████▏                               | 399/850 [04:39<03:35,  2.09it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpuq343ko2/adapter)... Done. 0.5s
+Step 2100: Loss = 0.1597, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2100
+Epoch 3:  49%|█████████████████████████████▌                              | 419/850 [04:52<03:30,  2.05it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmplcy1kfpq/adapter)... Done. 0.4s
+Step 2120: Loss = 0.2330, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2120
+Epoch 3:  52%|██████████████████████████████▉                             | 439/850 [05:06<04:28,  1.53it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpz2lffi72/adapter)... Done. 0.4s
+Step 2140: Loss = 0.4087, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2140
+Epoch 3:  54%|████████████████████████████████▍                           | 459/850 [05:17<03:38,  1.79it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpi4ktvrjs/adapter)... Done. 0.4s
+Step 2160: Loss = 0.0841, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2160
+Epoch 3:  56%|█████████████████████████████████▊                          | 479/850 [05:30<02:27,  2.52it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpdqnf2__k/adapter)... Done. 0.4s
+Step 2180: Loss = 0.1709, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2180
+Epoch 3:  59%|███████████████████████████████████▏                        | 499/850 [05:43<03:56,  1.48it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp7w8blph7/adapter)... Done. 0.4s
+Step 2200: Loss = 0.2720, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2200
+Epoch 3:  61%|████████████████████████████████████▋                       | 519/850 [05:56<02:58,  1.85it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp1cyik6wp/adapter)... Done. 0.4s
+Step 2220: Loss = 0.4649, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2220
+Epoch 3:  63%|██████████████████████████████████████                      | 539/850 [06:09<02:59,  1.73it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpvx33xdze/adapter)... Done. 0.4s
+Step 2240: Loss = 0.2350, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2240
+Epoch 3:  66%|███████████████████████████████████████▍                    | 559/850 [06:20<02:24,  2.02it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpz0z5y6rr/adapter)... Done. 0.4s
+Step 2260: Loss = 0.3301, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2260
+Epoch 3:  68%|████████████████████████████████████████▊                   | 579/850 [06:31<02:29,  1.82it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmphn9_us11/adapter)... Done. 0.4s
+Step 2280: Loss = 0.1640, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2280
+Epoch 3:  70%|██████████████████████████████████████████▎                 | 599/850 [06:44<02:10,  1.93it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpq14rusa4/adapter)... Done. 0.4s
+Step 2300: Loss = 0.6605, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2300
+Epoch 3:  73%|███████████████████████████████████████████▋                | 619/850 [06:57<02:40,  1.44it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmplj2l9xba/adapter)... Done. 0.4s
+Step 2320: Loss = 0.0875, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2320
+Epoch 3:  75%|█████████████████████████████████████████████               | 639/850 [07:11<02:07,  1.66it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpjax34kuq/adapter)... Done. 0.4s
+Step 2340: Loss = 0.2337, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2340
+Epoch 3:  78%|██████████████████████████████████████████████▌             | 659/850 [07:24<01:49,  1.74it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp0cgfs6t9/adapter)... Done. 0.4s
+Step 2360: Loss = 0.2819, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2360
+Epoch 3:  80%|███████████████████████████████████████████████▉            | 679/850 [07:37<01:31,  1.86it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpwi8ylkst/adapter)... Done. 0.4s
+Step 2380: Loss = 0.2204, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2380
+Epoch 3:  82%|█████████████████████████████████████████████████▎          | 699/850 [07:49<01:23,  1.80it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpzyy7s0up/adapter)... Done. 0.7s
+Step 2400: Loss = 0.2980, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2400
+Epoch 3:  85%|██████████████████████████████████████████████████▊         | 719/850 [08:01<01:14,  1.75it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpt9np30x_/adapter)... Done. 0.4s
+Step 2420: Loss = 0.1629, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2420
+Epoch 3:  87%|████████████████████████████████████████████████████▏       | 739/850 [08:15<01:11,  1.56it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpvtppeam5/adapter)... Done. 0.4s
+Step 2440: Loss = 0.2871, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2440
+Epoch 3:  89%|█████████████████████████████████████████████████████▌      | 759/850 [08:27<00:55,  1.65it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpfhoklx_f/adapter)... Done. 0.4s
+Step 2460: Loss = 0.2192, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2460
+Epoch 3:  92%|██████████████████████████████████████████████████████▉     | 779/850 [08:39<00:37,  1.89it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp3ur91w0i/adapter)... Done. 0.4s
+Step 2480: Loss = 0.4278, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2480
+Epoch 3:  94%|████████████████████████████████████████████████████████▍   | 799/850 [08:51<00:31,  1.61it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpl7cypr5d/adapter)... Done. 0.5s
+Step 2500: Loss = 0.3017, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2500
+Epoch 3:  96%|█████████████████████████████████████████████████████████▊  | 819/850 [09:03<00:20,  1.51it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp5yofyyh0/adapter)... Done. 0.4s
+Step 2520: Loss = 0.3765, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2520
+Epoch 3:  99%|███████████████████████████████████████████████████████████▏| 839/850 [09:16<00:06,  1.75it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp23yiclhj/adapter)... Done. 0.4s
+Step 2540: Loss = 0.1927, Avg Loss = nan
+Logged LoRA adapters artifact: lora_adapters_step_2540
+Epoch 3: 100%|████████████████████████████████████████████████████████████| 850/850 [09:22<00:00,  1.51it/s]
+Epoch 3 complete. Average loss: nan
+Training complete! Saving final adapters...
+[34m[1mwandb[0m: Adding directory to artifact (/tmp/tmptd3yy3_m/adapter)... Done. 0.4s
+Logged LoRA adapters artifact: lora_adapters_step_2550
+Total steps: 2550
+Final average loss: nan
