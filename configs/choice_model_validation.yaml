@@ -1,19 +1,19 @@
 # Bradley-Terry Parameter Recovery Validation Configuration
 
-# Experiment name (used for output filename)
-args_name: "bt_validation_grid_9x9"
-
 # Theta (setting preference) parameter grid
-theta_min: -0.5      # Minimum theta value
-theta_max: 0.5       # Maximum theta value  
-theta_num: 9         # Number of theta grid points
+theta_min: 0.0       # Minimum theta value
+theta_max: 1.0       # Maximum theta value  
+theta_num: 20        # Number of theta grid points
 theta_std: 0.5       # Standard deviation of noise added to theta
 
 # Alpha (position bias) parameter grid
-alpha_min: -5.0      # Minimum alpha value
-alpha_max: 5.0       # Maximum alpha value
-alpha_num: 9         # Number of alpha grid points  
-alpha_std: 0.5       # Standard deviation of noise added to alpha
+alpha_min: 0.0       # Minimum alpha value
+alpha_max: 3.0       # Maximum alpha valuez
+alpha_num: 20        # Number of alpha grid points  
+alpha_std: 0.3       # Standard deviation of noise added to alpha
+
+# Kappa (beta concentration multiplier)
+kappa_fixed: 10.0
 
 # Data generation parameters
 num_data: 100        # Number of comparison pairs per experiment (200 total observations)
@@ -26,3 +26,5 @@ n_warmup: 1000       # Number of warmup samples
 # Prior parameters (should match your real analysis)
 theta_prior_sigma: 1.0    # Prior std for theta ~ N(0, theta_prior_sigma)
 alpha_prior_sigma: 0.5    # Prior std for alpha ~ N(0, alpha_prior_sigma)
+kappa_prior_alpha: 2.0  # Gamma prior during inference
+kappa_prior_beta: 1.0   # Gamma prior during inference

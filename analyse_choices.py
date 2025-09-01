@@ -13,11 +13,11 @@ import arviz as az
 import pytensor.tensor as pt
 
 
-def process_to_bradley_terry_format(results_df: pd.DataFrame, 
-                                  positive_temp: float, positive_style: str,
-                                  negative_temp: float, negative_style: str) -> pd.DataFrame:
+def process_to_choice_format(results_df: pd.DataFrame, 
+                            positive_temp: float, positive_style: str,
+                            negative_temp: float, negative_style: str) -> pd.DataFrame:
     """
-    Convert raw choice results to Bradley-Terry format for specific (temp, style) comparison.
+    Convert raw choice results to choice model format for specific (temp, style) comparison.
     
     For each comparison, we want:
     - y: probability of choosing the positive setting (positive_temp, positive_style)
@@ -26,10 +26,10 @@ def process_to_bradley_terry_format(results_df: pd.DataFrame,
     Args:
         results_df: Raw results with [document_idx, summary1_temp, summary1_trial, summary1_style,
                    summary2_temp, summary2_trial, summary2_style, prob_choice_1, prob_choice_2]
-        positive_temp: Temperature of the "positive" setting in Bradley-Terry model
-        positive_style: Style of the "positive" setting in Bradley-Terry model
-        negative_temp: Temperature of the "negative" setting in Bradley-Terry model  
-        negative_style: Style of the "negative" setting in Bradley-Terry model
+        positive_temp: Temperature of the "positive" setting in choice model
+        positive_style: Style of the "positive" setting in choice model
+        negative_temp: Temperature of the "negative" setting in choice model  
+        negative_style: Style of the "negative" setting in choice model
     
     Returns:
         DataFrame with [document_idx, o, y]
@@ -57,7 +57,7 @@ def process_to_bradley_terry_format(results_df: pd.DataFrame,
         prob_choice_1_norm = row['prob_choice_1'] / total_prob
         prob_choice_2_norm = row['prob_choice_2'] / total_prob
         
-        # Convert to Bradley-Terry format
+        # Convert to choice model format
         if setting1 == positive_setting and setting2 == negative_setting:
             # Forward: positive setting first, negative setting second
             o = +1  # positive setting is in first position
@@ -81,23 +81,29 @@ def process_to_bradley_terry_format(results_df: pd.DataFrame,
     return pd.DataFrame(processed_rows)
 
 
-def run_bradley_terry_mcmc(bt_data: pd.DataFrame, 
-                          theta_prior_sigma: float = 1.0,
-                          alpha_prior_sigma: float = 0.5,
-                          n_samples: int = 2000,
-                          n_warmup: int = 1000) -> dict:
+def run_choice_model_mcmc(choice_data: pd.DataFrame, 
+                         theta_prior_sigma: float = 1.0,
+                         alpha_prior_sigma: float = 0.5,
+                         kappa_prior_alpha: float = 2.0,
+                         kappa_prior_beta: float = 1.0,
+                         n_samples: int = 2000,
+                         n_warmup: int = 1000) -> dict:
     """
-    Run MCMC inference on Bradley-Terry model with position bias.
+    Run MCMC inference on choice model with Beta likelihood and position bias.
     
     Model:
-    θ ~ N(0, theta_prior_sigma)    # Setting preference  
-    α ~ N(0, alpha_prior_sigma)    # Position bias
-    y_n ~ Bernoulli(sigmoid(θ + 2*o_n*α))
+    θ ~ N(0, theta_prior_sigma)           # Setting preference  
+    α ~ N(0, alpha_prior_sigma)           # Position bias
+    κ ~ Gamma(kappa_prior_alpha, kappa_prior_beta)  # Concentration parameter
+    p_n = sigmoid(θ + 2*o_n*α)            # Expected positive choice probability
+    y_n ~ Beta(κ*p_n, κ*(1-p_n))         # Positive choice probability with Beta noise
     
     Args:
-        bt_data: DataFrame with [document_idx, o, y]
+        choice_data: DataFrame with [document_idx, o, y]
         theta_prior_sigma: Prior std for setting preference
         alpha_prior_sigma: Prior std for position bias  
+        kappa_prior_alpha: Prior shape parameter for concentration
+        kappa_prior_beta: Prior rate parameter for concentration
         n_samples: Number of posterior samples
         n_warmup: Number of warmup samples
         
@@ -105,29 +111,32 @@ def run_bradley_terry_mcmc(bt_data: pd.DataFrame,
         Dictionary with posterior samples and diagnostics
     """
     
-    print(f"\nBradley-Terry MCMC Setup:")
-    print(f"  Data: {len(bt_data)} comparisons")
-    print(f"  Order counts: {bt_data['o'].value_counts().to_dict()}")
-    print(f"  Mean y (prob choose positive): {bt_data['y'].mean():.4f}")
-    print(f"  Priors: θ~N(0,{theta_prior_sigma}), α~N(0,{alpha_prior_sigma})")
+    print(f"\nChoice Model MCMC Setup:")
+    print(f"  Data: {len(choice_data)} comparisons")
+    print(f"  Order counts: {choice_data['o'].value_counts().to_dict()}")
+    print(f"  Mean y (prob choose positive): {choice_data['y'].mean():.4f}")
+    print(f"  Priors: θ~N(0,{theta_prior_sigma}), α~N(0,{alpha_prior_sigma}), κ~Gamma({kappa_prior_alpha},{kappa_prior_beta})")
     print(f"  Sampling: {n_samples} samples, {n_warmup} warmup")
 
-    y_obs = bt_data['y'].values
-    o_obs = bt_data['o'].values
+    y_obs = choice_data['y'].values
+    o_obs = choice_data['o'].values
     
     with pm.Model() as model:
         # Priors
         theta = pm.Normal('theta', mu=0.0, sigma=theta_prior_sigma)
         alpha = pm.Normal('alpha', mu=0.0, sigma=alpha_prior_sigma)
+        kappa = pm.Gamma('kappa', alpha=kappa_prior_alpha, beta=kappa_prior_beta)
         
         # Linear predictor: θ + 2*o*α
         logit_p = theta + 2 * o_obs * alpha
         predicted_p = pm.math.sigmoid(logit_p)
         
-        # Binary cross-entropy likelihood
-        pm.Potential('likelihood', 
-                 pt.sum(y_obs * pt.log(predicted_p) + 
-                        (1 - y_obs) * pt.log(1 - predicted_p)))
+        # Beta parameters: α = κ*p, β = κ*(1-p)
+        alpha_beta = kappa * predicted_p
+        beta_beta = kappa * (1 - predicted_p)
+        
+        # Beta likelihood
+        pm.Beta('y', alpha=alpha_beta, beta=beta_beta, observed=y_obs)
         
         # Sample
         print("\nRunning MCMC with NUTS sampler...")
@@ -137,12 +146,14 @@ def run_bradley_terry_mcmc(bt_data: pd.DataFrame,
     # Extract results
     theta_samples = trace.posterior['theta'].values.flatten()
     alpha_samples = trace.posterior['alpha'].values.flatten()
+    kappa_samples = trace.posterior['kappa'].values.flatten()
     summary = az.summary(trace)
     
     # Diagnostics
     r_hat_theta = float(summary.loc['theta', 'r_hat'])
     r_hat_alpha = float(summary.loc['alpha', 'r_hat'])
-    converged = r_hat_theta < 1.01 and r_hat_alpha < 1.01
+    r_hat_kappa = float(summary.loc['kappa', 'r_hat'])
+    converged = r_hat_theta < 1.01 and r_hat_alpha < 1.01 and r_hat_kappa < 1.01
     
     # Interpretations
     prob_prefer_positive = (theta_samples > 0).mean()
@@ -151,20 +162,24 @@ def run_bradley_terry_mcmc(bt_data: pd.DataFrame,
     print(f"\nMCMC Results:")
     print(f"  θ (setting preference): {theta_samples.mean():.4f} ± {theta_samples.std():.4f}")
     print(f"  α (position bias): {alpha_samples.mean():.4f} ± {alpha_samples.std():.4f}")
-    print(f"  R-hat: θ={r_hat_theta:.3f}, α={r_hat_alpha:.3f}")
+    print(f"  κ (concentration): {kappa_samples.mean():.4f} ± {kappa_samples.std():.4f}")
+    print(f"  R-hat: θ={r_hat_theta:.3f}, α={r_hat_alpha:.3f}, κ={r_hat_kappa:.3f}")
     print(f"  Converged: {converged}")
     print(f"\nInterpretations:")
     print(f"  P(prefers positive): {prob_prefer_positive:.3f}")
     print(f"  P(first position bias): {prob_first_bias:.3f}")
+    print(f"  Mean concentration: {kappa_samples.mean():.3f} (higher = less probability variability)")
     
     return {
         'theta_samples': theta_samples,
         'alpha_samples': alpha_samples,
+        'kappa_samples': kappa_samples,
         'trace': trace,
         'summary': summary,
         'diagnostics': {
             'r_hat_theta': r_hat_theta,
             'r_hat_alpha': r_hat_alpha,
+            'r_hat_kappa': r_hat_kappa,
             'converged': converged
         },
         'interpretations': {
@@ -174,18 +189,20 @@ def run_bradley_terry_mcmc(bt_data: pd.DataFrame,
         'model_spec': {
             'theta_prior_sigma': theta_prior_sigma,
             'alpha_prior_sigma': alpha_prior_sigma,
+            'kappa_prior_alpha': kappa_prior_alpha,
+            'kappa_prior_beta': kappa_prior_beta,
             'n_samples': n_samples,
             'n_warmup': n_warmup
         }
     }
         
 
-def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, comparison_name: str, pos_name: str, neg_name: str) -> None:
+def plot_choice_model_posteriors(mcmc_results: dict, output_dir: str, comparison_name: str, pos_name: str, neg_name: str) -> None:
     """
-    Create visualizations of Bradley-Terry posterior distributions.
+    Create visualizations of choice model posterior distributions.
     
     Args:
-        mcmc_results: Results from run_bradley_terry_mcmc
+        mcmc_results: Results from run_choice_model_mcmc
         output_dir: Directory to save plots
         comparison_name: Name of the comparison for plot titles
     """
@@ -198,12 +215,13 @@ def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, compariso
     plt.style.use('default')
     sns.set_palette("husl")
     
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    fig.suptitle(f'Bradley-Terry Posterior Analysis\npositive: {pos_name}\nnegative: {neg_name}', 
+    fig, axes = plt.subplots(2, 3, figsize=(18, 10))
+    fig.suptitle(f'Choice Model Posterior Analysis\npositive: {pos_name}\nnegative: {neg_name}', 
                  fontsize=16, fontweight='bold')
     
     theta_samples = mcmc_results['theta_samples']
     alpha_samples = mcmc_results['alpha_samples']
+    kappa_samples = mcmc_results['kappa_samples']
     
     # Theta (setting preference) histogram
     axes[0, 0].hist(theta_samples, bins=50, alpha=0.7, color='steelblue', density=True)
@@ -227,17 +245,35 @@ def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, compariso
     axes[0, 1].legend()
     axes[0, 1].grid(True, alpha=0.3)
     
-    # Joint scatter plot
+    # Kappa (concentration) histogram
+    axes[0, 2].hist(kappa_samples, bins=50, alpha=0.7, color='darkorange', density=True)
+    axes[0, 2].axvline(kappa_samples.mean(), color='red', linestyle='-', alpha=0.8,
+                      label=f'Mean = {kappa_samples.mean():.3f}')
+    axes[0, 2].set_xlabel('κ (Concentration)')
+    axes[0, 2].set_ylabel('Density')
+    axes[0, 2].set_title('Concentration Parameter\nHigher κ = Lower Recongition Probability Variability')
+    axes[0, 2].legend()
+    axes[0, 2].grid(True, alpha=0.3)
+    
+    # Joint scatter plot (theta vs alpha)
     axes[1, 0].scatter(theta_samples[::10], alpha_samples[::10], alpha=0.3, s=10, color='purple')
     axes[1, 0].axhline(0, color='red', linestyle='--', alpha=0.5)
     axes[1, 0].axvline(0, color='red', linestyle='--', alpha=0.5)
     axes[1, 0].set_xlabel('θ (Setting Preference)')
     axes[1, 0].set_ylabel('α (Position Bias)')
-    axes[1, 0].set_title('Joint Posterior Distribution')
+    axes[1, 0].set_title('Joint θ-α Distribution')
     axes[1, 0].grid(True, alpha=0.3)
     
+    # Joint scatter plot (theta vs kappa)
+    axes[1, 1].scatter(theta_samples[::10], kappa_samples[::10], alpha=0.3, s=10, color='brown')
+    axes[1, 1].axvline(0, color='red', linestyle='--', alpha=0.5)
+    axes[1, 1].set_xlabel('θ (Setting Preference)')
+    axes[1, 1].set_ylabel('κ (Concentration)')
+    axes[1, 1].set_title('Joint θ-κ Distribution')
+    axes[1, 1].grid(True, alpha=0.3)
+    
     # Summary statistics and interpretations
-    axes[1, 1].axis('off')
+    axes[1, 2].axis('off')
     
     # Calculate key statistics
     prob_prefer_positive = mcmc_results['interpretations']['prob_prefer_positive']
@@ -245,9 +281,11 @@ def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, compariso
     
     theta_ci = np.percentile(theta_samples, [2.5, 97.5])
     alpha_ci = np.percentile(alpha_samples, [2.5, 97.5])
+    kappa_ci = np.percentile(kappa_samples, [2.5, 97.5])
     
     r_hat_theta = mcmc_results['diagnostics']['r_hat_theta']
     r_hat_alpha = mcmc_results['diagnostics']['r_hat_alpha']
+    r_hat_kappa = mcmc_results['diagnostics']['r_hat_kappa']
     converged = mcmc_results['diagnostics']['converged']
     
     summary_text = f"""
@@ -264,6 +302,11 @@ def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, compariso
     Std:  {alpha_samples.std():.4f}
     95% CI: [{alpha_ci[0]:.4f}, {alpha_ci[1]:.4f}]
     
+    Concentration (κ):
+    Mean: {kappa_samples.mean():.4f}
+    Std:  {kappa_samples.std():.4f}
+    95% CI: [{kappa_ci[0]:.4f}, {kappa_ci[1]:.4f}]
+    
     Interpretations:
     ──────────────────────
     P(prefers positive): {prob_prefer_positive:.3f}
@@ -273,19 +316,22 @@ def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, compariso
     ──────────────────────
     R̂ (θ): {r_hat_theta:.3f}
     R̂ (α): {r_hat_alpha:.3f}
+    R̂ (κ): {r_hat_kappa:.3f}
     Converged: {converged}
     
-    Model: y ~ Bernoulli(σ(θ + 2oα))
+    Model: 
+    p = σ(θ + 2oα)
+    y ~ Beta(κp, κ(1-p))
     """
     
-    axes[1, 1].text(0.1, 0.9, summary_text, transform=axes[1, 1].transAxes,
+    axes[1, 2].text(0.1, 0.9, summary_text, transform=axes[1, 2].transAxes,
                     fontsize=10, verticalalignment='top', fontfamily='monospace',
                     bbox=dict(boxstyle="round,pad=0.5", facecolor="lightgray", alpha=0.8))
     
     plt.tight_layout()
     
     # Save the plot
-    plot_file = os.path.join(output_dir, f'bradley_terry_posteriors_{comparison_name}.png')
+    plot_file = os.path.join(output_dir, f'choice_model_posteriors_{comparison_name}.png')
     plt.savefig(plot_file, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
     
@@ -298,16 +344,17 @@ def format_setting_name(temp: float, style: str) -> str:
     return f"temp{temp}_{style_str}"
 
 
-def analyze_bradley_terry(run_name: str, split_name: str,
-                         positive_temp: float, positive_style: str,
-                         negative_temp: float, negative_style: str,
-                         theta_prior_sigma: float, alpha_prior_sigma: float,
-                         n_samples: int, n_warmup: int,
-                         use_lora: bool = False,
-                         lora_run_name: str = None,
-                         artifact_name: str = None) -> tuple:
+def analyze_choice_model(run_name: str, split_name: str,
+                        positive_temp: float, positive_style: str,
+                        negative_temp: float, negative_style: str,
+                        theta_prior_sigma: float, alpha_prior_sigma: float,
+                        kappa_prior_alpha: float, kappa_prior_beta: float,
+                        n_samples: int, n_warmup: int,
+                        use_lora: bool = False,
+                        lora_run_name: str = None,
+                        artifact_name: str = None) -> tuple:
     """
-    Complete Bradley-Terry analysis for a specific (temp, style) comparison.
+    Complete choice model analysis for a specific (temp, style) comparison.
     
     Args:
         run_name: Name of the run
@@ -318,6 +365,8 @@ def analyze_bradley_terry(run_name: str, split_name: str,
         negative_style: Style of negative setting
         theta_prior_sigma: Prior std for setting preference
         alpha_prior_sigma: Prior std for position bias
+        kappa_prior_alpha: Prior alpha for concentration parameter
+        kappa_prior_beta: Prior beta for concentration parameter
         n_samples: Number of MCMC samples
         n_warmup: Number of MCMC warmup samples
         use_lora: Whether using LoRA results
@@ -325,7 +374,7 @@ def analyze_bradley_terry(run_name: str, split_name: str,
         artifact_name: Artifact name for LoRA
         
     Returns:
-        Tuple of (bt_data, mcmc_results)
+        Tuple of (choice_data, mcmc_results)
     """
     
     # Create comparison name for file naming
@@ -334,7 +383,7 @@ def analyze_bradley_terry(run_name: str, split_name: str,
     comparison_name = f"{pos_name}_vs_{neg_name}"
     
     print(f"\n{'='*70}")
-    print(f"Bradley-Terry Analysis: {split_name}")
+    print(f"Choice Model Analysis: {split_name}")
     print(f"Comparison: {comparison_name}")
     if use_lora:
         print(f"Using LoRA: {lora_run_name}/{artifact_name}")
@@ -365,35 +414,36 @@ def analyze_bradley_terry(run_name: str, split_name: str,
     raw_results = pd.read_csv(results_file)
     print(f"Loaded {len(raw_results)} raw comparisons")
     
-    bt_data = process_to_bradley_terry_format(
+    choice_data = process_to_choice_format(
         raw_results, positive_temp, positive_style, negative_temp, negative_style
     )
-    print(f"Processed to {len(bt_data)} Bradley-Terry format comparisons")
+    print(f"Processed to {len(choice_data)} choice model format comparisons")
     
-    if len(bt_data) == 0:
+    if len(choice_data) == 0:
         print(f"WARNING: No comparisons found for {comparison_name}")
-        return bt_data, None
+        return choice_data, None
     
     # Save processed data
-    bt_file = os.path.join(output_dir, f"bradley_terry_data_{comparison_name}.csv")
-    bt_data.to_csv(bt_file, index=False)
-    print(f"Saved Bradley-Terry data: {bt_file}")
+    choice_file = os.path.join(output_dir, f"choice_model_data_{comparison_name}.csv")
+    choice_data.to_csv(choice_file, index=False)
+    print(f"Saved choice model data: {choice_file}")
     
     # Run MCMC
-    mcmc_results = run_bradley_terry_mcmc(
-        bt_data, theta_prior_sigma, alpha_prior_sigma, n_samples, n_warmup
+    mcmc_results = run_choice_model_mcmc(
+        choice_data, theta_prior_sigma, alpha_prior_sigma, 
+        kappa_prior_alpha, kappa_prior_beta, n_samples, n_warmup
     )
     
     # Create visualizations
-    plot_bradley_terry_posteriors(mcmc_results, output_dir, comparison_name, pos_name, neg_name)
+    plot_choice_model_posteriors(mcmc_results, output_dir, comparison_name, pos_name, neg_name)
     
     # Save results
-    results_file = os.path.join(output_dir, f"bradley_terry_mcmc_{comparison_name}.pkl")
+    results_file = os.path.join(output_dir, f"choice_model_mcmc_{comparison_name}.pkl")
     with open(results_file, 'wb') as f:
         pickle.dump(mcmc_results, f)
     print(f"Saved MCMC results: {results_file}")
     
-    return bt_data, mcmc_results
+    return choice_data, mcmc_results
 
 
 def get_unique_settings(results_df: pd.DataFrame) -> list:
@@ -420,8 +470,8 @@ if __name__ == "__main__":
     
     if len(sys.argv) not in [2, 4]:
         print("Usage:")
-        print("  Base model: python bradley_terry_analysis.py /path/to/config.yaml")
-        print("  With LoRA:  python bradley_terry_analysis.py /path/to/config.yaml <wandb_run_name> <artifact_name>")
+        print("  Base model: python choice_model_analysis.py /path/to/config.yaml")
+        print("  With LoRA:  python choice_model_analysis.py /path/to/config.yaml <wandb_run_name> <artifact_name>")
         sys.exit(1)
     
     # Load configuration
@@ -431,26 +481,28 @@ if __name__ == "__main__":
     if use_lora:
         lora_run_name = sys.argv[2]
         artifact_name = sys.argv[3]
-        print(f"Running Bradley-Terry analysis on LoRA results:")
+        print(f"Running choice model analysis on LoRA results:")
         print(f"  WandB Run: {lora_run_name}")
         print(f"  Artifact: {artifact_name}")
     else:
         lora_run_name = None
         artifact_name = None
-        print("Running Bradley-Terry analysis on base model results")
+        print("Running choice model analysis on base model results")
     
     args = YamlConfig(config_path)
     
     # Extract MCMC parameters with defaults
     theta_prior_sigma = getattr(args, 'theta_prior_sigma', 1.0)
-    alpha_prior_sigma = getattr(args, 'alpha_prior_sigma', 1.0) 
+    alpha_prior_sigma = getattr(args, 'alpha_prior_sigma', 1.0)
+    kappa_prior_alpha = getattr(args, 'kappa_prior_alpha', 2.0) 
+    kappa_prior_beta = getattr(args, 'kappa_prior_beta', 1.0)
     n_samples = getattr(args, 'n_samples', 2000)
     n_warmup = getattr(args, 'n_warmup', 1000)
     
-    print(f"Bradley-Terry Analysis Configuration:")
+    print(f"Choice Model Analysis Configuration:")
     print(f"  Run: {args.args_name}")
     print(f"  Splits: {args.splits}")
-    print(f"  Priors: θ~N(0,{theta_prior_sigma}), α~N(0,{alpha_prior_sigma})")
+    print(f"  Priors: θ~N(0,{theta_prior_sigma}), α~N(0,{alpha_prior_sigma}), κ~Gamma({kappa_prior_alpha},{kappa_prior_beta})")
     print(f"  MCMC: {n_samples} samples, {n_warmup} warmup")
     
     # Run analysis for each split
@@ -489,19 +541,20 @@ if __name__ == "__main__":
                 
                 print(f"\nComparing {format_setting_name(temp1, style1)} vs {format_setting_name(temp2, style2)}")
                 
-                bt_data, mcmc_results = analyze_bradley_terry(
+                choice_data, mcmc_results = analyze_choice_model(
                     args.args_name, split_name, 
                     temp1, style1, temp2, style2,
                     theta_prior_sigma, alpha_prior_sigma, 
+                    kappa_prior_alpha, kappa_prior_beta,
                     n_samples, n_warmup,
                     use_lora, lora_run_name, artifact_name
                 )
                 
                 comparison_key = (setting1, setting2)
-                split_results[comparison_key] = (bt_data, mcmc_results)
+                split_results[comparison_key] = (choice_data, mcmc_results)
         
         all_results[split_name] = split_results
     
     print(f"\n{'='*70}")
-    print("Bradley-Terry Analysis Complete!")
+    print("Choice Model Analysis Complete!")
     print(f"{'='*70}")
