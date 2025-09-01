@@ -20,7 +20,7 @@ def setup_lora_model(model, lora_config):
 
 
 
-def save_lora_as_artifact(model, step: int, temp: float, style: str):
+def save_lora_as_artifact(model, step: int, temp: float, style: str, run_name: str):
     """Save LoRA adapters as WandB artifact."""
     
     # Create temporary directory
@@ -29,11 +29,11 @@ def save_lora_as_artifact(model, step: int, temp: float, style: str):
         model.save_pretrained(adapter_path)
         
         # Create artifact
-        artifact_name = f"lora_adapters_step_{step}"
+        artifact_name = f"{run_name}.lora_adapters_step_{step}"
         artifact = wandb.Artifact(
             artifact_name,
             type="model",
-            description=f"LoRA adapters at step {step} for temp={temp}, style={style}"
+            description=f"LoRA adapters at step {step} for temp={temp}, style={style}, run={run_name}"
         )
         artifact.add_dir(adapter_path)
         wandb.log_artifact(artifact)

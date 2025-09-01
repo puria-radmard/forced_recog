@@ -13,3 +13,4 @@ python -m analyse_bt configs/llama_3_style_test.yaml
 # Forward training
 python -m generate_hf configs/llama_3_forward_training_test.yaml
 python -m forward_sft configs/llama_3_forward_training_test.yaml temp0.0_stylesun
+python -m pairwise_hf configs/llama_3_forward_training_test.yaml llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250831_220423 lora_adapters_step_2500

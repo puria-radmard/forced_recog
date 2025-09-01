@@ -329,7 +329,7 @@ def main():
             if step % 50 == 0:
                 avg_loss = total_loss / step
                 print(f"Step {step}: Loss = {current_loss:.4f}, Avg Loss = {avg_loss:.4f}")
-                save_lora_as_artifact(lora_model, step, temp, style)
+                save_lora_as_artifact(lora_model, step, temp, style, run_name)
                 
                 # Also log running averages
                 wandb.log({
@@ -348,7 +348,7 @@ def main():
     
     # Final artifact save
     print(f"Training complete! Saving final adapters...")
-    save_lora_as_artifact(lora_model, step, temp, style)
+    save_lora_as_artifact(lora_model, step, temp, style, run_name)
     
     final_avg_loss = total_loss / step if step > 0 else 0.0
     print(f"Total steps: {step}")

@@ -6,6 +6,10 @@ from tqdm import tqdm
 from typing import List, Tuple
 import sys
 import copy
+import tempfile
+import wandb
+from peft import PeftModel
+from dotenv import load_dotenv
 
 from load_data import load_dataset, load_model_summaries
 from model.load import load_model
@@ -39,6 +43,57 @@ def get_choice_tokens(chat_wrapper: ChatTemplateWrapper) -> List[List[int]]:
     return choice_tokens
 
 
+def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: str, artifact_suffix: str):
+    """
+    Download LoRA adapters from WandB and apply them to the model.
+    
+    Args:
+        chat_wrapper: The loaded base model wrapper
+        wandb_run_name: WandB run name (used for path construction and artifact prefix)
+        artifact_suffix: Suffix of the artifact (e.g., "lora_adapters_step_100")
+        
+    Returns:
+        Updated chat_wrapper with LoRA adapters applied
+    """
+    # Construct full artifact name
+    full_artifact_name = f"{wandb_run_name}.{artifact_suffix}"
+    
+    print(f"Downloading LoRA adapters from WandB...")
+    print(f"  Run: {wandb_run_name}")
+    print(f"  Artifact suffix: {artifact_suffix}")
+    print(f"  Full artifact name: {full_artifact_name}")
+    
+    # Initialize WandB (need project name from environment)
+    load_dotenv()
+    project_name = os.getenv('WANDB_PROJECT')
+    if not project_name:
+        raise ValueError("WANDB_PROJECT environment variable not set")
+    
+    # Download artifact to temporary directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Initialize WandB API
+        api = wandb.Api()
+        
+        # Get the artifact directly by name (since names are now globally unique)
+        artifact_path = f"{project_name}/{full_artifact_name}:latest"
+        artifact = api.artifact(artifact_path)
+        
+        # Download to temp directory
+        adapter_dir = artifact.download(root=temp_dir)
+        print(f"Downloaded adapters to: {adapter_dir}")
+        
+        # Apply LoRA adapters to the model
+        print("Applying LoRA adapters to model...")
+        chat_wrapper.model = PeftModel.from_pretrained(
+            chat_wrapper.model,
+            adapter_dir,
+            is_trainable=False
+        )
+        print("LoRA adapters applied successfully!")
+    
+    return chat_wrapper
+
+
 def elicit_choices_for_split(
     chat_wrapper: ChatTemplateWrapper,
     split_data: pd.DataFrame,
@@ -46,7 +101,10 @@ def elicit_choices_for_split(
     temps: List[float],
     num_trials: List[int],
     styles: List[str | None],
-    run_name: str
+    run_name: str,
+    use_lora: bool = False,
+    lora_run_name: str = None,
+    artifact_name: str = None
 ) -> None:
     """
     Elicit pairwise self-recognition choices for a dataset split.
@@ -54,17 +112,27 @@ def elicit_choices_for_split(
     Args:
         chat_wrapper: Loaded model wrapper
         split_data: DataFrame with columns [document_idx, article, summary]
-        dataset_name: Name of dataset
         split_name: Name of split (test/validation/train)
         temps: List of temperatures used in generation
         num_trials: List of number of trials per temperature
         styles: List of styles to prompt with, keys to prompts.STYLE_SYSTEM_PROMPTS
         run_name: Name of the run
+        use_lora: Whether to use LoRA adapters
+        lora_run_name: WandB run name for LoRA adapters
+        artifact_name: Artifact name for LoRA adapters
     """
-    # Create output directory and initialise results file
-    output_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}"
+    # Determine output directory based on whether using LoRA
+    if use_lora:
+        output_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}/forward_sft_choices/{lora_run_name}/{artifact_name}"
+        results_file = f"{output_dir}/choice_results.csv"
+        print(f"Using LoRA model - saving to: {results_file}")
+    else:
+        output_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}/initial_choices"
+        results_file = f"{output_dir}/choice_results.csv"
+        print(f"Using base model - saving to: {results_file}")
+    
+    # Create output directory and initialize results file
     os.makedirs(output_dir, exist_ok=True)
-    results_file = f"{output_dir}/initial_choices/choice_results.csv"
 
     header_df = pd.DataFrame(columns=[
         'document_idx', 
@@ -187,16 +255,35 @@ def elicit_choices_for_split(
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 2:
-        print("Usage: python -m elicit_choices.py /path/to/yaml/args.yaml")
+    if len(sys.argv) not in [2, 4]:
+        print("Usage:")
+        print("  Base model: python -m elicit_choices.py /path/to/yaml/args.yaml")
+        print("  With LoRA:  python -m elicit_choices.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_name>")
         sys.exit(1)
     
     config_path = sys.argv[1]
+    use_lora = len(sys.argv) == 4
+    
+    if use_lora:
+        wandb_run_name = sys.argv[2]
+        artifact_name = sys.argv[3]
+        print(f"Running with LoRA adapters:")
+        print(f"  WandB Run: {wandb_run_name}")
+        print(f"  Artifact: {artifact_name}")
+    else:
+        wandb_run_name = None
+        artifact_name = None
+        print("Running with base model")
+    
     args = YamlConfig(config_path)
     
     # Load model
     print(f"Loading model: {args.model_name}")
     chat_wrapper = load_model(args.model_name, device='auto')
+    
+    # Apply LoRA adapters if requested
+    if use_lora:
+        chat_wrapper = download_and_apply_lora(chat_wrapper, wandb_run_name, artifact_name)
     
     # Load dataset
     print(f"Loading dataset: {args.dataset}")
@@ -225,7 +312,10 @@ if __name__ == "__main__":
             temps=args.temps,
             num_trials=args.num_trials,
             styles=args.styles,
-            run_name=args.args_name
+            run_name=args.args_name,
+            use_lora=use_lora,
+            lora_run_name=wandb_run_name,
+            artifact_name=artifact_name
         )
     
     print("Choice elicitation complete!")

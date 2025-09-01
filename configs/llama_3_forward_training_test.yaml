@@ -5,7 +5,7 @@ temps: [0.0, 0.0, 0.0]
 num_trials: [1, 1, 1]
 styles: [sun, economist, natural]
 
-splits: [train] # Skipping others for now
+splits: [test, train] # Skipping others for now
 
 wandb_project_name: selfrecognition_0925
 
