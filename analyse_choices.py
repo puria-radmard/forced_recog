@@ -285,7 +285,7 @@ def plot_bradley_terry_posteriors(mcmc_results: dict, output_dir: str, compariso
     plt.tight_layout()
     
     # Save the plot
-    plot_file = os.path.join(output_dir, f'initial_choices/bradley_terry_posteriors_{comparison_name}.png')
+    plot_file = os.path.join(output_dir, f'bradley_terry_posteriors_{comparison_name}.png')
     plt.savefig(plot_file, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
     
@@ -302,7 +302,10 @@ def analyze_bradley_terry(run_name: str, split_name: str,
                          positive_temp: float, positive_style: str,
                          negative_temp: float, negative_style: str,
                          theta_prior_sigma: float, alpha_prior_sigma: float,
-                         n_samples: int, n_warmup: int) -> tuple:
+                         n_samples: int, n_warmup: int,
+                         use_lora: bool = False,
+                         lora_run_name: str = None,
+                         artifact_name: str = None) -> tuple:
     """
     Complete Bradley-Terry analysis for a specific (temp, style) comparison.
     
@@ -317,6 +320,9 @@ def analyze_bradley_terry(run_name: str, split_name: str,
         alpha_prior_sigma: Prior std for position bias
         n_samples: Number of MCMC samples
         n_warmup: Number of MCMC warmup samples
+        use_lora: Whether using LoRA results
+        lora_run_name: WandB run name for LoRA
+        artifact_name: Artifact name for LoRA
         
     Returns:
         Tuple of (bt_data, mcmc_results)
@@ -330,11 +336,25 @@ def analyze_bradley_terry(run_name: str, split_name: str,
     print(f"\n{'='*70}")
     print(f"Bradley-Terry Analysis: {split_name}")
     print(f"Comparison: {comparison_name}")
+    if use_lora:
+        print(f"Using LoRA: {lora_run_name}/{artifact_name}")
+    else:
+        print("Using base model results")
     print(f"{'='*70}")
     
-    # Setup directories
-    results_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}"
-    results_file = os.path.join(results_dir, "initial_choices/choice_results.csv")
+    # Setup directories based on whether using LoRA
+    results_dir = f"results_and_data/results/main/{run_name}/{split_name}"
+    
+    if use_lora:
+        # Use LoRA-specific directory
+        choice_dir = f"forward_sft_choices/{lora_run_name}/{artifact_name}"
+        results_file = os.path.join(results_dir, choice_dir, "choice_results.csv")
+        output_dir = os.path.join(results_dir, choice_dir)
+    else:
+        # Use base model directory
+        choice_dir = "initial_choices"
+        results_file = os.path.join(results_dir, choice_dir, "choice_results.csv")
+        output_dir = os.path.join(results_dir, choice_dir)
     
     if not os.path.exists(results_file):
         print(f"ERROR: Results file not found: {results_file}")
@@ -355,7 +375,7 @@ def analyze_bradley_terry(run_name: str, split_name: str,
         return bt_data, None
     
     # Save processed data
-    bt_file = os.path.join(results_dir, f"initial_choices/bradley_terry_data_{comparison_name}.csv")
+    bt_file = os.path.join(output_dir, f"bradley_terry_data_{comparison_name}.csv")
     bt_data.to_csv(bt_file, index=False)
     print(f"Saved Bradley-Terry data: {bt_file}")
     
@@ -365,10 +385,10 @@ def analyze_bradley_terry(run_name: str, split_name: str,
     )
     
     # Create visualizations
-    plot_bradley_terry_posteriors(mcmc_results, results_dir, comparison_name, pos_name, neg_name)
+    plot_bradley_terry_posteriors(mcmc_results, output_dir, comparison_name, pos_name, neg_name)
     
     # Save results
-    results_file = os.path.join(results_dir, f"initial_choices/bradley_terry_mcmc_{comparison_name}.pkl")
+    results_file = os.path.join(output_dir, f"bradley_terry_mcmc_{comparison_name}.pkl")
     with open(results_file, 'wb') as f:
         pickle.dump(mcmc_results, f)
     print(f"Saved MCMC results: {results_file}")
@@ -398,12 +418,27 @@ def get_unique_settings(results_df: pd.DataFrame) -> list:
 
 if __name__ == "__main__":
     
-    if len(sys.argv) != 2:
-        print("Usage: python bradley_terry_analysis.py /path/to/config.yaml")
+    if len(sys.argv) not in [2, 4]:
+        print("Usage:")
+        print("  Base model: python bradley_terry_analysis.py /path/to/config.yaml")
+        print("  With LoRA:  python bradley_terry_analysis.py /path/to/config.yaml <wandb_run_name> <artifact_name>")
         sys.exit(1)
     
     # Load configuration
     config_path = sys.argv[1]
+    use_lora = len(sys.argv) == 4
+    
+    if use_lora:
+        lora_run_name = sys.argv[2]
+        artifact_name = sys.argv[3]
+        print(f"Running Bradley-Terry analysis on LoRA results:")
+        print(f"  WandB Run: {lora_run_name}")
+        print(f"  Artifact: {artifact_name}")
+    else:
+        lora_run_name = None
+        artifact_name = None
+        print("Running Bradley-Terry analysis on base model results")
+    
     args = YamlConfig(config_path)
     
     # Extract MCMC parameters with defaults
@@ -422,9 +457,13 @@ if __name__ == "__main__":
     all_results = {}
     for split_name in args.splits:
         
-        # Load choice results to discover available settings
-        results_dir = f"results_and_data/results/e1_temperature_comparison/{args.args_name}/{split_name}"
-        results_file = os.path.join(results_dir, "initial_choices/choice_results.csv")
+        # Determine path based on LoRA usage
+        results_dir = f"results_and_data/results/main/{args.args_name}/{split_name}"
+        
+        if use_lora:
+            results_file = os.path.join(results_dir, f"forward_sft_choices/{lora_run_name}/{artifact_name}/choice_results.csv")
+        else:
+            results_file = os.path.join(results_dir, "initial_choices/choice_results.csv")
         
         if not os.path.exists(results_file):
             print(f"ERROR: Results file not found: {results_file}")
@@ -454,7 +493,8 @@ if __name__ == "__main__":
                     args.args_name, split_name, 
                     temp1, style1, temp2, style2,
                     theta_prior_sigma, alpha_prior_sigma, 
-                    n_samples, n_warmup
+                    n_samples, n_warmup,
+                    use_lora, lora_run_name, artifact_name
                 )
                 
                 comparison_key = (setting1, setting2)

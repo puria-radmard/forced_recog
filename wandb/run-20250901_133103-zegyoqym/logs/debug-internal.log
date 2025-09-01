@@ -1,0 +1,7 @@
+{"time":"2025-09-01T13:31:03.675386476+01:00","level":"INFO","msg":"stream: starting","core version":"0.21.3"}
+{"time":"2025-09-01T13:31:03.978597878+01:00","level":"INFO","msg":"stream: created new stream","id":"zegyoqym"}
+{"time":"2025-09-01T13:31:03.978676484+01:00","level":"INFO","msg":"stream: started","id":"zegyoqym"}
+{"time":"2025-09-01T13:31:03.978773538+01:00","level":"INFO","msg":"writer: started","stream_id":"zegyoqym"}
+{"time":"2025-09-01T13:31:03.978864475+01:00","level":"INFO","msg":"handler: started","stream_id":"zegyoqym"}
+{"time":"2025-09-01T13:31:03.978943994+01:00","level":"INFO","msg":"sender: started","stream_id":"zegyoqym"}
+{"time":"2025-09-01T13:31:05.094854243+01:00","level":"INFO","msg":"stream: closing","id":"zegyoqym"}

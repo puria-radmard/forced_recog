@@ -35,7 +35,7 @@ def load_sft_data(run_name: str, dataset_name: str, temp: float, style: str) -> 
     train_data, _, _ = load_dataset(dataset_name)
     
     # Load all trial summaries for this temp/style combination
-    base_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/train/model_summaries"
+    base_dir = f"results_and_data/results/main/{run_name}/train/model_summaries"
     
     all_summaries = []
     trial_idx = 0
@@ -236,7 +236,7 @@ def main():
     )
     
     # Create output directory and log run
-    base_dir = f"results_and_data/results/e1_temperature_comparison/{args.args_name}/train"
+    base_dir = f"results_and_data/results/main/{args.args_name}/train"
     runs_file = os.path.join(base_dir, "forwardsft_runs.txt")
     os.makedirs(base_dir, exist_ok=True)
     
@@ -277,6 +277,8 @@ def main():
     # Training loop
     batch_size = sft_config['batch_size']
     num_epochs = sft_config['num_epochs']
+    max_steps = sft_config['max_steps']
+    save_frequency = sft_config['save_frequency']
     max_seq_length = sft_config['max_seq_length']
     
     # Shuffle training pairs indices
@@ -326,7 +328,7 @@ def main():
             })
             
             # Save LoRA adapters as artifact every 20 steps
-            if step % 50 == 0:
+            if step % save_frequency == 0:
                 avg_loss = total_loss / step
                 print(f"Step {step}: Loss = {current_loss:.4f}, Avg Loss = {avg_loss:.4f}")
                 save_lora_as_artifact(lora_model, step, temp, style, run_name)
@@ -336,6 +338,9 @@ def main():
                     "avg_loss": avg_loss,
                     "step": step
                 })
+            
+            if step == max_steps:
+                break
         
         avg_epoch_loss = epoch_loss / epoch_steps if epoch_steps > 0 else 0.0
         print(f"Epoch {epoch+1} complete. Average loss: {avg_epoch_loss:.4f}")
@@ -345,6 +350,9 @@ def main():
             "epoch_loss": avg_epoch_loss,
             "epoch": epoch + 1
         })
+        
+        if step == max_steps:
+            break
     
     # Final artifact save
     print(f"Training complete! Saving final adapters...")

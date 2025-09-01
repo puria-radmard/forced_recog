@@ -1,0 +1,82 @@
+Logged run to: results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/forwardsft_runs.txt
+Loading model: meta-llama/Llama-3.1-8B-Instruct
+Loading checkpoint shards: 100%|█████████████████████████████████████████████████████████████████| 4/4 [00:05<00:00,  1.42s/it]
+Loading SFT training data...
+Loading results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/model_summaries/T0.0_trial0_stylesun.csv
+Found 1 trial files
+Combined data: 850 training examples from 1 trials
+Loaded 850 training examples
+Creating training pairs...
+Creating training pairs: 100%|█████████████████████████████████████████████████████████████| 850/850 [00:00<00:00, 6971.17it/s]
+Setting up LoRA...
+LoRA model setup complete. Trainable parameters: 6815744
+Starting training: 1 epochs, 850 examples, batch size 1
+
+Epoch 1/1
+Epoch 1:   0%|                                                                                         | 0/850 [00:00<?, ?it/s][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp27dcja8l/adapter)... Done. 0.4s
+Step 1: Loss = 1.8234, Avg Loss = 1.8234
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_1
+Epoch 1:   0%|                                                                                 | 1/850 [00:02<29:10,  2.06s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp9qcktcno/adapter)... Done. 0.4s
+Step 2: Loss = 1.5063, Avg Loss = 1.6649
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_2
+Epoch 1:   0%|▏                                                                                | 2/850 [00:03<27:24,  1.94s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp5cv_ehcx/adapter)... Done. 0.4s
+Step 3: Loss = 1.2113, Avg Loss = 1.5137
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_3
+Epoch 1:   0%|▎                                                                                | 3/850 [00:06<28:56,  2.05s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmppa_771ix/adapter)... Done. 0.4s
+Step 4: Loss = 1.4519, Avg Loss = 1.4982
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_4
+Epoch 1:   0%|▍                                                                                | 4/850 [00:07<28:04,  1.99s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpo3jy36ji/adapter)... Done. 0.4s
+Step 5: Loss = 2.0112, Avg Loss = 1.6008
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_5
+Epoch 1:   1%|▍                                                                                | 5/850 [00:09<26:38,  1.89s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmphzzpb6kv/adapter)... Done. 0.4s
+Step 6: Loss = 1.0257, Avg Loss = 1.5050
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_6
+Epoch 1:   1%|▌                                                                                | 6/850 [00:11<25:17,  1.80s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp_21bxnlx/adapter)... Done. 0.5s
+Step 7: Loss = 0.4531, Avg Loss = 1.3547
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_7
+Epoch 1:   1%|▋                                                                                | 7/850 [00:13<25:34,  1.82s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpkwfpmke7/adapter)... Done. 0.6s
+Step 8: Loss = 0.9812, Avg Loss = 1.3080
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_8
+Epoch 1:   1%|▊                                                                                | 8/850 [00:14<24:31,  1.75s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmp3vqiz8sw/adapter)... Done. 0.6s
+Step 9: Loss = 1.3006, Avg Loss = 1.3072
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_9
+Epoch 1:   1%|▊                                                                                | 9/850 [00:16<23:50,  1.70s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpja5ihfli/adapter)... Done. 0.5s
+Step 10: Loss = 1.0733, Avg Loss = 1.2838
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_10
+Epoch 1:   1%|▉                                                                               | 10/850 [00:18<26:22,  1.88s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpzmb_6nzb/adapter)... Done. 0.5s
+Step 11: Loss = 0.4165, Avg Loss = 1.2049
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_11
+Epoch 1:   1%|█                                                                               | 11/850 [00:20<25:21,  1.81s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpjmkrdcni/adapter)... Done. 0.4s
+Step 12: Loss = 0.8865, Avg Loss = 1.1784
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_12
+Epoch 1:   1%|█▏                                                                              | 12/850 [00:21<24:39,  1.77s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpnaz_hudc/adapter)... Done. 0.5s
+Step 13: Loss = 1.1323, Avg Loss = 1.1749
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_13
+Epoch 1:   2%|█▏                                                                              | 13/850 [00:23<24:12,  1.74s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpk4dvrta4/adapter)... Done. 0.4s
+Step 14: Loss = 0.6429, Avg Loss = 1.1369
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_14
+Epoch 1:   2%|█▎                                                                              | 14/850 [00:25<25:52,  1.86s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmptana_xjg/adapter)... Done. 0.5s
+Step 15: Loss = 0.5412, Avg Loss = 1.0971
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_15
+Epoch 1:   2%|█▍                                                                              | 15/850 [00:27<25:43,  1.85s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpz4s_zwrd/adapter)... Done. 0.4s
+Step 16: Loss = 0.5271, Avg Loss = 1.0615
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_16
+Epoch 1:   2%|█▌                                                                              | 16/850 [00:29<24:56,  1.79s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpg3qoov_g/adapter)... Done. 0.4s
+Step 17: Loss = 0.5443, Avg Loss = 1.0311
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_17
+Epoch 1:   2%|█▌                                                                              | 17/850 [00:30<24:07,  1.74s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpjw00j5kn/adapter)... Done. 0.5s
+Step 18: Loss = 0.5208, Avg Loss = 1.0027
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_18
+Epoch 1:   2%|█▋                                                                              | 18/850 [00:32<24:33,  1.77s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpooxty993/adapter)... Done. 0.4s
+Step 19: Loss = 0.6454, Avg Loss = 0.9839
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_19
+Epoch 1:   2%|█▊                                                                              | 19/850 [00:34<25:09,  1.82s/it][34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpqz16i9d2/adapter)... Done. 0.6s
+Step 20: Loss = 0.6314, Avg Loss = 0.9663
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_20
+Epoch 1:   2%|█▊                                                                              | 19/850 [00:36<26:29,  1.91s/it]
+Epoch 1 complete. Average loss: 0.9663
+Training complete! Saving final adapters...
+[34m[1mwandb[0m: Adding directory to artifact (/tmp/tmpycigpyza/adapter)... Done. 0.6s
+Logged LoRA adapters artifact: llama_3_forward_training_test_forwardsft_temp0.0_stylesun_20250901_133248.lora_adapters_step_20
+Total steps: 20
+Final average loss: 0.9663

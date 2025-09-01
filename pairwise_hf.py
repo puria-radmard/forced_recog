@@ -123,11 +123,11 @@ def elicit_choices_for_split(
     """
     # Determine output directory based on whether using LoRA
     if use_lora:
-        output_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}/forward_sft_choices/{lora_run_name}/{artifact_name}"
+        output_dir = f"results_and_data/results/main/{run_name}/{split_name}/forward_sft_choices/{lora_run_name}/{artifact_name}"
         results_file = f"{output_dir}/choice_results.csv"
         print(f"Using LoRA model - saving to: {results_file}")
     else:
-        output_dir = f"results_and_data/results/e1_temperature_comparison/{run_name}/{split_name}/initial_choices"
+        output_dir = f"results_and_data/results/main/{run_name}/{split_name}/initial_choices"
         results_file = f"{output_dir}/choice_results.csv"
         print(f"Using base model - saving to: {results_file}")
     
@@ -145,17 +145,25 @@ def elicit_choices_for_split(
     # Get choice tokens
     choice_tokens = get_choice_tokens(chat_wrapper)
 
+    # Collect summaries
+    all_summaries = {}
+    for temp, num_trial, style in zip(temps, num_trials, styles):
+        for trial_idx in range(num_trial):
+            all_summaries[(temp, trial_idx, style)] = load_model_summaries(run_name, split_name, temp, trial_idx, style)
+
     for idx, row in tqdm(split_data.iterrows(), total=len(split_data), desc=f"Eliciting choices for {split_name}"):
+        
         document_idx = row['document_idx']
         article = row['article']
-        
+
         # FIXME: this logic definitely needs to get fixed for larger datasets!!
         # Load all generated summaries for this document
         summaries = {}
         for temp, num_trial, style in zip(temps, num_trials, styles):
             for trial_idx in range(num_trial):
                 try:
-                    summary_df = load_model_summaries(run_name, split_name, temp, trial_idx, style)
+                    # summary_df = load_model_summaries(run_name, split_name, temp, trial_idx, style)
+                    summary_df = all_summaries[(temp, trial_idx, style)]
                     # Find this document's summary
                     doc_summary = summary_df[summary_df['document_idx'] == document_idx]
                     if len(doc_summary) > 0:
@@ -164,12 +172,20 @@ def elicit_choices_for_split(
                     print(f"Warning: Missing summary file for T={temp}, style = {style}, trial={trial_idx}")
                     continue
         
-        cache_info = chat_wrapper.create_prompt_cache(
-            system_prompt=DETECTION_SYSTEM_PROMPT,
-            user_message=DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT.format(article = article),
-            user_message_unfinished = True
-        )
-        
+        if len(summaries) == 0:
+            continue
+
+        torch.cuda.empty_cache()
+
+        try:
+            cache_info = chat_wrapper.create_prompt_cache(
+                system_prompt=DETECTION_SYSTEM_PROMPT,
+                user_message=DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT.format(article = article),
+                user_message_unfinished = True
+            )
+        except torch.OutOfMemoryError:
+            continue
+
         all_keys = list(summaries.keys())
         for setting_key_1 in all_keys:
             for setting_key_2 in all_keys:

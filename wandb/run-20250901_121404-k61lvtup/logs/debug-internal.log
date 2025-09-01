@@ -1,0 +1,12 @@
+{"time":"2025-09-01T12:14:05.101755415+01:00","level":"INFO","msg":"stream: starting","core version":"0.21.3"}
+{"time":"2025-09-01T12:14:05.40537276+01:00","level":"INFO","msg":"stream: created new stream","id":"k61lvtup"}
+{"time":"2025-09-01T12:14:05.40545853+01:00","level":"INFO","msg":"stream: started","id":"k61lvtup"}
+{"time":"2025-09-01T12:14:05.405554251+01:00","level":"INFO","msg":"writer: started","stream_id":"k61lvtup"}
+{"time":"2025-09-01T12:14:05.405606802+01:00","level":"INFO","msg":"handler: started","stream_id":"k61lvtup"}
+{"time":"2025-09-01T12:14:05.405674303+01:00","level":"INFO","msg":"sender: started","stream_id":"k61lvtup"}
+{"time":"2025-09-01T12:39:41.960264391+01:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact llama_3_forward_training_test_forwardsft_temp0.0_styleeconomist_20250901_121404.lora_adapters_step_2550","runtime_seconds":1.316431724,"subtasks":[{"desc":"adapter_model.safetensors","runtime_seconds":0.672589744,"progress":"1.1MB/26.0MB"}]},{"desc":"uploading artifact llama_3_forward_training_test_forwardsft_temp0.0_styleeconomist_20250901_121404.lora_adapters_step_2550","runtime_seconds":0.171046754},{"desc":"updating run metadata","runtime_seconds":0.001570473}],"total_operations":3}}
+{"time":"2025-09-01T12:39:44.603155555+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-01T12:39:44.827633706+01:00","level":"INFO","msg":"stream: closing","id":"k61lvtup"}
+{"time":"2025-09-01T12:39:44.827701419+01:00","level":"INFO","msg":"handler: closed","stream_id":"k61lvtup"}
+{"time":"2025-09-01T12:39:44.829079549+01:00","level":"INFO","msg":"sender: closed","stream_id":"k61lvtup"}
+{"time":"2025-09-01T12:39:44.829149823+01:00","level":"INFO","msg":"stream: closed","id":"k61lvtup"}

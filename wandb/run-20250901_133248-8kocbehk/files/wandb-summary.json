@@ -1,0 +1,1 @@
+{"total_steps":20,"_runtime":59,"total_examples":850,"epoch":1,"epoch_loss":0.9663141086697579,"final_avg_loss":0.9663141086697579,"_timestamp":1.7567300294688952e+09,"_step":42,"step":20,"loss":0.631413996219635,"trainable_parameters":6815744,"avg_loss":0.9663141086697579,"_wandb":{"runtime":59}}

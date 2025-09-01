@@ -1,0 +1,26 @@
+Logged run to: results_and_data/results/e1_temperature_comparison/llama_3_forward_training_test/train/forwardsft_runs.txt
+Loading model: meta-llama/Llama-3.1-8B-Instruct
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/homes/pr450/repos/mr_repos/forced_recog/forward_sft.py", line 375, in <module>
+    main()
+  File "/homes/pr450/repos/mr_repos/forced_recog/forward_sft.py", line 250, in main
+    chat_wrapper = load_model(args.model_name, device='auto')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/homes/pr450/repos/mr_repos/forced_recog/model/load.py", line 47, in load_model
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/models/auto/tokenization_auto.py", line 1049, in from_pretrained
+    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/tokenization_utils_base.py", line 2014, in from_pretrained
+    return cls._from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/tokenization_utils_base.py", line 2260, in _from_pretrained
+    tokenizer = cls(*init_inputs, **init_kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/anaconda3/envs/myenv/lib/python3.11/site-packages/transformers/tokenization_utils_fast.py", line 117, in __init__
+    fast_tokenizer = TokenizerFast.from_file(fast_tokenizer_file)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
