@@ -501,59 +501,52 @@ if __name__ == "__main__":
     
     print(f"Choice Model Analysis Configuration:")
     print(f"  Run: {args.args_name}")
-    print(f"  Splits: {args.splits}")
     print(f"  Priors: θ~N(0,{theta_prior_sigma}), α~N(0,{alpha_prior_sigma}), κ~Gamma({kappa_prior_alpha},{kappa_prior_beta})")
     print(f"  MCMC: {n_samples} samples, {n_warmup} warmup")
+
+    # Determine path based on LoRA usage
+    split_name = "test"
+    results_dir = f"results_and_data/results/main/{args.args_name}/{split_name}"
     
-    # Run analysis for each split
-    all_results = {}
-    for split_name in args.splits:
+    if use_lora:
+        results_file = os.path.join(results_dir, f"forward_sft_choices/{lora_run_name}/{artifact_name}/choice_results.csv")
+    else:
+        results_file = os.path.join(results_dir, "initial_choices/choice_results.csv")
+    
+    if not os.path.exists(results_file):
+        raise FileNotFoundError(f"ERROR: Results file not found: {results_file}")
         
-        # Determine path based on LoRA usage
-        results_dir = f"results_and_data/results/main/{args.args_name}/{split_name}"
-        
-        if use_lora:
-            results_file = os.path.join(results_dir, f"forward_sft_choices/{lora_run_name}/{artifact_name}/choice_results.csv")
-        else:
-            results_file = os.path.join(results_dir, "initial_choices/choice_results.csv")
-        
-        if not os.path.exists(results_file):
-            print(f"ERROR: Results file not found: {results_file}")
-            continue
+    raw_results = pd.read_csv(results_file)
+    unique_settings = get_unique_settings(raw_results)
+    
+    print(f"\nFound {len(unique_settings)} unique settings in {split_name}:")
+    for setting in unique_settings:
+        temp, style = setting
+        print(f"  Temperature: {temp}, Style: {style}")
+    
+    # Run pairwise comparisons for all combinations
+    split_results = {}
+    for i, setting1 in enumerate(unique_settings):
+        for j, setting2 in enumerate(unique_settings):
+            if i >= j:  # Skip self-comparisons and duplicates
+                continue
+                
+            temp1, style1 = setting1
+            temp2, style2 = setting2
             
-        raw_results = pd.read_csv(results_file)
-        unique_settings = get_unique_settings(raw_results)
-        
-        print(f"\nFound {len(unique_settings)} unique settings in {split_name}:")
-        for setting in unique_settings:
-            temp, style = setting
-            print(f"  Temperature: {temp}, Style: {style}")
-        
-        # Run pairwise comparisons for all combinations
-        split_results = {}
-        for i, setting1 in enumerate(unique_settings):
-            for j, setting2 in enumerate(unique_settings):
-                if i >= j:  # Skip self-comparisons and duplicates
-                    continue
-                    
-                temp1, style1 = setting1
-                temp2, style2 = setting2
-                
-                print(f"\nComparing {format_setting_name(temp1, style1)} vs {format_setting_name(temp2, style2)}")
-                
-                choice_data, mcmc_results = analyze_choice_model(
-                    args.args_name, split_name, 
-                    temp1, style1, temp2, style2,
-                    theta_prior_sigma, alpha_prior_sigma, 
-                    kappa_prior_alpha, kappa_prior_beta,
-                    n_samples, n_warmup,
-                    use_lora, lora_run_name, artifact_name
-                )
-                
-                comparison_key = (setting1, setting2)
-                split_results[comparison_key] = (choice_data, mcmc_results)
-        
-        all_results[split_name] = split_results
+            print(f"\nComparing {format_setting_name(temp1, style1)} vs {format_setting_name(temp2, style2)}")
+            
+            choice_data, mcmc_results = analyze_choice_model(
+                args.args_name, split_name, 
+                temp1, style1, temp2, style2,
+                theta_prior_sigma, alpha_prior_sigma, 
+                kappa_prior_alpha, kappa_prior_beta,
+                n_samples, n_warmup,
+                use_lora, lora_run_name, artifact_name
+            )
+            
+            comparison_key = (setting1, setting2)
+            split_results[comparison_key] = (choice_data, mcmc_results)
     
     print(f"\n{'='*70}")
     print("Choice Model Analysis Complete!")

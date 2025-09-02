@@ -71,7 +71,7 @@ def generate_synthetic_choice_data(theta_true: float, alpha_true: float, kappa_t
     return pd.DataFrame(synthetic_rows)
 
 
-def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int) -> None:
+def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int, args_name: str) -> None:
     """
     Generate parameter recovery plots from current validation results.
     
@@ -190,7 +190,7 @@ def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int
     plt.tight_layout()
     
     # Save plot
-    plot_file = os.path.join(output_dir, f'recovery_analysis.png')
+    plot_file = os.path.join(output_dir, f'{args_name}.png')
     plt.savefig(plot_file, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
     
@@ -223,6 +223,8 @@ def validate_choice_model_recovery(config_path: str) -> None:
     
     num_data = args.num_data
     num_repeats = args.num_repeats
+
+    args_name = args.args_name
     
     # MCMC parameters (use defaults if not specified)
     theta_prior_sigma = getattr(args, 'theta_prior_sigma', 1.0)
@@ -255,7 +257,7 @@ def validate_choice_model_recovery(config_path: str) -> None:
     output_dir = f"results_and_data/results/choice_model_validation"
     os.makedirs(output_dir, exist_ok=True)
     
-    output_file = os.path.join(output_dir, f"{args.args_name}.csv")
+    output_file = os.path.join(output_dir, f"{args_name}.csv")
     
     # Initialize CSV file with headers
     headers = [
@@ -345,7 +347,7 @@ def validate_choice_model_recovery(config_path: str) -> None:
             # Generate recovery plots every 10 experiments
             if experiment_count % 10 == 0:
                 print(f"  Generating recovery plots at {experiment_count} experiments...")
-                plot_recovery_analysis(output_file, output_dir, experiment_count)
+                plot_recovery_analysis(output_file, output_dir, experiment_count, args_name)
     
     print(f"\n{'='*60}")
     print(f"Parameter Recovery Validation Complete!")
@@ -355,7 +357,7 @@ def validate_choice_model_recovery(config_path: str) -> None:
     # Generate final recovery plots
     if experiment_count > 0:
         print("Generating final recovery plots...")
-        plot_recovery_analysis(output_file, output_dir, experiment_count)
+        plot_recovery_analysis(output_file, output_dir, experiment_count, args_name)
     
     print(f"{'='*60}")
 

@@ -1,3 +1,5 @@
 # Forward training
 python -m generate_hf configs/mistral24b_forward_training.yaml
 python -m pairwise_hf configs/mistral24b_forward_training.yaml
+
+python -m forward_sft configs/mistral24b_forward_training.yaml temp0.0_styleeconomist

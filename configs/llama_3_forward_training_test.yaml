@@ -5,10 +5,6 @@ temps: [0.0, 0.0, 0.0]
 num_trials: [1, 1, 1]
 styles: [sun, economist, natural]
 
-splits: [test] # Skipping others for now
-
-wandb_project_name: selfrecognition_0925
-
 forwardsft_temp0.0_stylesun:
   lora_r: 16
   lora_alpha: 32

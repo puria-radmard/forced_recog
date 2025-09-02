@@ -16,7 +16,7 @@ alpha_std: 0.3       # Standard deviation of noise added to alpha
 kappa_fixed: 10.0
 
 # Data generation parameters
-num_data: 100        # Number of comparison pairs per experiment (200 total observations)
+num_data: 200        # Number of comparison pairs per experiment (200 total observations)
 num_repeats: 5       # Number of times to repeat each grid point
 
 # MCMC sampling parameters

@@ -5,9 +5,9 @@ temps: [0.0, 0.0, 0.0]
 num_trials: [1, 1, 1]
 styles: [sun, economist, natural]
 
-splits: [test] # Skipping others for now
-
-wandb_project_name: selfrecognition_0925
+splits:
+  #train: 50
+  test: 300
 
 forwardsft_temp0.0_stylesun:
   lora_r: 16
@@ -16,8 +16,8 @@ forwardsft_temp0.0_stylesun:
   target_modules: ["q_proj", "v_proj"]
   learning_rate: 0.0001
   num_epochs: 1
-  max_steps: 20
-  save_frequency: 1
+  max_steps: 100
+  save_frequency: 5
   batch_size: 1
   max_seq_length: 2048
 
@@ -28,7 +28,7 @@ forwardsft_temp0.0_styleeconomist:
   target_modules: ["q_proj", "v_proj"]
   learning_rate: 0.0001
   num_epochs: 1
-  max_steps: 20
-  save_frequency: 1
+  max_steps: 100
+  save_frequency: 5
   batch_size: 1
   max_seq_length: 2048

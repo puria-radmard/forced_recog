@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import torch
 import yaml
 from tqdm import tqdm
 from typing import List
@@ -73,6 +74,7 @@ def generate_summaries_for_split(
     split_data: pd.DataFrame,
     dataset_name: str,
     split_name: str,
+    max_generate: int,
     temps: List[float],
     num_trials: List[int],
     styles: List[str | None],
@@ -113,18 +115,25 @@ def generate_summaries_for_split(
     user_prompt_template = SUMMARIZE_PROMPT_TEMPLATES[dataset_name]
     
     for idx, row in tqdm(split_data.iterrows(), total=len(split_data), desc=f"Processing {split_name}"):
+        
+        if idx == max_generate:
+            break
+
         document_idx = row['document_idx']
         article = row['article']
         
         # Format user message
         user_message = user_prompt_template.format(article=article)
         
-        # Create cache for this document (don't close user tags in case we want to add style instructions)
-        cache_info = chat_wrapper.create_prompt_cache(
-            system_prompt=system_prompt,
-            user_message=user_message,
-            user_message_unfinished=True
-        )
+        try:
+            # Create cache for this document (don't close user tags in case we want to add style instructions)
+            cache_info = chat_wrapper.create_prompt_cache(
+                system_prompt=system_prompt,
+                user_message=user_message,
+                user_message_unfinished=True
+            )
+        except torch.OutOfMemoryError:
+            continue
 
         # Generate for each temp/trial combination
         for temp, num_trial, style in zip(temps, num_trials, styles):
@@ -197,7 +206,7 @@ if __name__ == "__main__":
     
     # Load dataset
     print(f"Loading dataset: {args.dataset}")
-    train_data, test_data, validation_data = load_dataset(args.dataset, splits=args.splits)
+    train_data, test_data, validation_data = load_dataset(args.dataset, splits=list(args.splits.__dict__.keys()))
     
     # Map split names to data
     split_data_map = {
@@ -207,7 +216,7 @@ if __name__ == "__main__":
     }
     
     # Generate summaries for each requested split
-    for split_name in args.splits:
+    for split_name, max_generate in args.splits.__dict__.items():
             
         split_data = split_data_map[split_name]
         print(f"Generating summaries for {split_name} split ({len(split_data)} documents)")
@@ -215,6 +224,7 @@ if __name__ == "__main__":
         generate_summaries_for_split(
             chat_wrapper=chat_wrapper,
             split_data=split_data,
+            max_generate=max_generate,
             dataset_name=args.dataset,
             split_name=split_name,
             temps=args.temps,

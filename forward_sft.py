@@ -172,7 +172,7 @@ def parse_sft_key(sft_key: str):
 
 
 
-def main():
+if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python -m forwardsft_script_path yaml_path.yaml temp{temp}_style{style}")
         sys.exit(1)
@@ -370,6 +370,3 @@ def main():
     
     wandb.finish()
 
-
-if __name__ == "__main__":
-    main()

@@ -313,25 +313,24 @@ if __name__ == "__main__":
     }
     
     # Elicit choices for each requested split
-    for split_name in args.splits:
-        if split_name not in split_data_map:
-            print(f"Warning: Split '{split_name}' not found. Available: {list(split_data_map.keys())}")
-            continue
-            
-        split_data = split_data_map[split_name]
-        print(f"Eliciting choices for {split_name} split ({len(split_data)} documents)")
+    split_name = "test"
+    if split_name not in split_data_map:
+        raise FileNotFoundError(f"Warning: Split '{split_name}' not found. Available: {list(split_data_map.keys())}")
         
-        elicit_choices_for_split(
-            chat_wrapper=chat_wrapper,
-            split_data=split_data,
-            split_name=split_name,
-            temps=args.temps,
-            num_trials=args.num_trials,
-            styles=args.styles,
-            run_name=args.args_name,
-            use_lora=use_lora,
-            lora_run_name=wandb_run_name,
-            artifact_name=artifact_name
-        )
+    split_data = split_data_map[split_name]
+    print(f"Eliciting choices for {split_name} split ({len(split_data)} documents)")
+    
+    elicit_choices_for_split(
+        chat_wrapper=chat_wrapper,
+        split_data=split_data,
+        split_name=split_name,
+        temps=args.temps,
+        num_trials=args.num_trials,
+        styles=args.styles,
+        run_name=args.args_name,
+        use_lora=use_lora,
+        lora_run_name=wandb_run_name,
+        artifact_name=artifact_name
+    )
     
     print("Choice elicitation complete!")
