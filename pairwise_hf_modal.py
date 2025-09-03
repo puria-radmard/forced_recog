@@ -1,5 +1,11 @@
+import os
+from dotenv import load_dotenv
 import modal
-from typing import Dict, List, Optional
+
+from typing import List, Optional
+import traceback
+import re
+import wandb
 
 from model.load import load_model
 from sft_utils.lora import download_and_apply_lora
@@ -63,7 +69,6 @@ def run_elicit_choices(
     """
     Run pairwise choice elicitation (base model or with LoRA).
     """
-
     # Decide LoRA usage
     use_lora = wandb_run_name is not None and artifact_name is not None
     if use_lora:
@@ -85,27 +90,99 @@ def run_elicit_choices(
         datasets_dir="/data",
     )
 
-    # Apply LoRA adapters if requested
-    if use_lora:
-        chat_wrapper = download_and_apply_lora(chat_wrapper, wandb_run_name, artifact_name)
+    if use_lora and artifact_name == "all":
+        # Loop over all LoRA artifacts for this run
+        print(f"Finding all LoRA artifacts for run: {wandb_run_name}")
         
-    elicit_choices_for_split(
-        chat_wrapper=chat_wrapper,
-        split_data=test_data,
-        split_name='test',
-        temps=temps,
-        num_trials=num_trials,
-        styles=styles,
-        run_name=args_name,
-        use_lora=use_lora,
-        lora_run_name=wandb_run_name,
-        artifact_name=artifact_name,
-        results_dir="/results/results",  # <-- ensure it writes to volume
-    )
+        # Initialize WandB API
+        load_dotenv()
+        project_name = os.getenv('WANDB_PROJECT')
+        api = wandb.Api()
+        
+        # Get all artifacts for this project
+        artifacts = list(api.artifacts(type_name="model"))
+        artifacts = [a for a in artifacts if a.project == project_name]
+        
+        # Filter artifacts that belong to this run and contain "lora_adapters"
+        relevant_artifacts = []
+        for artifact in artifacts:
+            if (artifact.name.startswith(wandb_run_name) and 
+                "lora_adapters" in artifact.name):
+                # Extract step number for sorting
+                step_match = re.search(r'step_(\d+)', artifact.name)
+                if step_match:
+                    step = int(step_match.group(1))
+                    relevant_artifacts.append((artifact, step))
+        
+        # Sort by step number
+        relevant_artifacts.sort(key=lambda x: x[1])
+        
+        print(f"Found {len(relevant_artifacts)} LoRA artifacts")
+        
+        for artifact, step in relevant_artifacts:
+            # Extract artifact suffix (everything after run name)
+            artifact_suffix = artifact.name.split(f"{wandb_run_name}.")[-1].split(":")[0]  # Remove version
+            
+            print(f"\n{'='*60}")
+            print(f"Processing artifact: {artifact.name}")
+            print(f"Step: {step}, Suffix: {artifact_suffix}")
+            print(f"{'='*60}")
+            
+            try:
+                # Reset to base model (unload any previous LoRA adapters)
+                if hasattr(chat_wrapper.model, 'unload'):
+                    print("Unloading previous LoRA adapters...")
+                    chat_wrapper.model = chat_wrapper.model.unload()
+                
+                # Apply this specific LoRA
+                chat_wrapper = download_and_apply_lora(
+                    chat_wrapper, wandb_run_name, artifact_suffix
+                )
+                
+                # Run elicitation with this adapter
+                elicit_choices_for_split(
+                    chat_wrapper=chat_wrapper,
+                    split_data=test_data,
+                    split_name='test',
+                    temps=temps,
+                    num_trials=num_trials,
+                    styles=styles,
+                    run_name=args_name,
+                    use_lora=True,
+                    lora_run_name=wandb_run_name,
+                    artifact_name=artifact_suffix,
+                    results_dir="/results/results",
+                )
+                
+                print(f"✅ Completed processing artifact: {artifact_suffix}")
+                
+            except Exception as e:
+                print(f"❌ Error processing artifact {artifact_suffix}:")
+                print(traceback.format_exc())
+                print(f"Continuing to next artifact...\n")
+                continue
+    
+    else:
+            
+        if use_lora:
+            # Single artifact mode
+            chat_wrapper = download_and_apply_lora(chat_wrapper, wandb_run_name, artifact_name)
+            
+        elicit_choices_for_split(
+            chat_wrapper=chat_wrapper,
+            split_data=test_data,
+            split_name='test',
+            temps=temps,
+            num_trials=num_trials,
+            styles=styles,
+            run_name=args_name,
+            use_lora=use_lora,
+            lora_run_name=wandb_run_name,
+            artifact_name=artifact_name,
+            results_dir="/results/results",
+        )
 
     print("Choice elicitation complete!")
-
-    # Commit volume to persist outputs
     results_volume.commit()
 
 
@@ -146,3 +223,4 @@ def main(*arglist):
 
     print("Remote choice elicitation completed!")
     return result
+
