@@ -15,7 +15,6 @@ from prompts import DATASET_SYSTEM_PROMPTS, SUMMARIZE_PROMPT_TEMPLATES, STYLE_PR
 from utils.util import YamlConfig
 
 
-
 def generate_summaries_for_split(
     chat_wrapper: ChatTemplateWrapper,
     split_data: pd.DataFrame,
@@ -29,7 +28,8 @@ def generate_summaries_for_split(
     use_lora: bool = False,
     lora_run_name: str = None,
     artifact_suffix: str = None,
-    results_dir: Optional[str] = None
+    results_dir: Optional[str] = None,
+    continue_mode: bool = False
 ) -> None:
     """
     Generate summaries for a single dataset split.
@@ -46,6 +46,7 @@ def generate_summaries_for_split(
         use_lora: Whether using LoRA adapters
         lora_run_name: WandB run name for LoRA
         artifact_suffix: Artifact suffix for LoRA
+        continue_mode: Whether to continue from existing results
     """
     # Determine base directory based on whether using LoRA
     results_dir = results_dir or 'results_and_data/results'
@@ -59,8 +60,44 @@ def generate_summaries_for_split(
     # Create output directories
     os.makedirs(base_dir, exist_ok=True)
 
-    created_output_files = []
+    # Build list of all expected CSV files
+    expected_csv_files = []
+    for temp, num_trial, style in zip(temps, num_trials, styles):
+        for trial_idx in range(num_trial):
+            csv_path = f"{base_dir}/T{temp}_trial{trial_idx}_style{style}.csv"
+            expected_csv_files.append(csv_path)
     
+    completion_status = {}  # {csv_path: set(completed_document_idx)}
+    
+    if continue_mode:
+        print("Continue mode: Checking existing CSV files...")
+        
+        # Verify all expected CSVs exist and validate their structure
+        for csv_path in expected_csv_files:
+            if not os.path.exists(csv_path):
+                raise FileNotFoundError(f"Continue mode requires existing CSV, but not found: {csv_path}")
+            
+            # Read and validate CSV structure
+            df = pd.read_csv(csv_path)
+            if list(df.columns) != ['document_idx', 'summary']:
+                raise ValueError(f"Invalid columns in {csv_path}. Expected ['document_idx', 'summary'], got {list(df.columns)}")
+            
+            completion_status[csv_path] = set(df['document_idx'])
+        
+        # Check if all documents are already completed
+        all_expected_docs = set(range(max_generate))
+        if all(all_expected_docs.issubset(completed_docs) for completed_docs in completion_status.values()):
+            raise RuntimeError(f"All documents up to max_generate ({max_generate}) are already completed - nothing to continue")
+        
+        print(f"Continue mode: Found existing results, will skip already completed documents")
+        
+    else:
+        print("Creating new CSV files...")
+        # Create blank CSV files (overwrite existing)
+        for csv_path in expected_csv_files:
+            pd.DataFrame(columns=['document_idx', 'summary']).to_csv(csv_path, index=False)
+            completion_status[csv_path] = set()  # Empty set for new files
+
     # Get system prompt and user prompt template
     system_prompt = DATASET_SYSTEM_PROMPTS[dataset_name]
     user_prompt_template = SUMMARIZE_PROMPT_TEMPLATES[dataset_name]
@@ -72,7 +109,11 @@ def generate_summaries_for_split(
 
         document_idx = row['document_idx']
         article = row['article']
-        
+
+        # Check if this document is already completed in ALL CSVs
+        if continue_mode and all(document_idx in completion_status[csv_path] for csv_path in expected_csv_files):
+            continue  # Skip this document entirely
+
         # Format user message
         user_message = user_prompt_template.format(article=article)
         
@@ -91,11 +132,11 @@ def generate_summaries_for_split(
             
             for trial_idx in range(num_trial):
             
-                # Initialize CSV files if they don't exist
                 output_file = f"{base_dir}/T{temp}_trial{trial_idx}_style{style}.csv"
-                if output_file not in created_output_files:
-                    pd.DataFrame(columns=['document_idx', 'summary']).to_csv(output_file, index=False)
-                    created_output_files.append(output_file)
+                
+                # Skip if this specific CSV already has this document_idx
+                if continue_mode and document_idx in completion_status[output_file]:
+                    continue
 
                 # FIXME This should be hidden away please.
                 extra_chat = "-" if style == 'natural' else f'-\n\n{STYLE_PROMPT_ADDENDUM[style]}'
@@ -122,18 +163,27 @@ def generate_summaries_for_split(
                     'summary': [summary]
                 })
                 result_row.to_csv(output_file, mode='a', header=False, index=False)
+                
+                # Update completion status
+                completion_status[output_file].add(document_idx)
 
 
 if __name__ == "__main__":
 
-    if len(sys.argv) not in [2, 4]:
+    # Parse command line arguments
+    continue_mode = len(sys.argv) > 1 and sys.argv[-1] == "continue"
+    
+    # Determine effective argument count (excluding 'continue' if present)
+    effective_argc = len(sys.argv) - (1 if continue_mode else 0)
+    
+    if effective_argc not in [2, 4]:
         print("Usage:")
-        print("  Base model: python -m generate_hf.py /path/to/yaml/args.yaml")
-        print("  With LoRA:  python -m generate_hf.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_suffix>")
+        print("  Base model: python -m generate_hf.py /path/to/yaml/args.yaml [continue]")
+        print("  With LoRA:  python -m generate_hf.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_suffix> [continue]")
         sys.exit(1)
     
     config_path = sys.argv[1]
-    use_lora = len(sys.argv) == 4
+    use_lora = effective_argc == 4
     
     if use_lora:
         wandb_run_name = sys.argv[2]
@@ -145,6 +195,11 @@ if __name__ == "__main__":
         wandb_run_name = None
         artifact_suffix = None
         print("Running with base model")
+    
+    if continue_mode:
+        print("Continue mode: Will resume from existing results")
+    else:
+        print("Fresh run: Will create new result files")
     
     args = YamlConfig(config_path)
     
@@ -185,7 +240,8 @@ if __name__ == "__main__":
             run_name=args.args_name,
             use_lora=use_lora,
             lora_run_name=wandb_run_name,
-            artifact_suffix=artifact_suffix
+            artifact_suffix=artifact_suffix,
+            continue_mode=continue_mode
         )
     
     print("Generation complete!")

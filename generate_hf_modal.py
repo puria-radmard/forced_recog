@@ -60,6 +60,7 @@ def run_generation(
     args_name: float,
     wandb_run_name: Optional[str] = None,
     artifact_suffix: Optional[str] = None,
+    continue_mode: bool = False,
 ):
     """
     Run summary generation (base model or with LoRA).
@@ -73,6 +74,11 @@ def run_generation(
         print(f"  Artifact Suffix: {artifact_suffix}")
     else:
         print("Running with base model")
+
+    if continue_mode:
+        print("Continue mode: Will resume from existing results")
+    else:
+        print("Fresh run: Will create new result files")
 
     # Load model
     print(f"Loading model: {model_name}")
@@ -115,6 +121,7 @@ def run_generation(
             lora_run_name=wandb_run_name,
             artifact_suffix=artifact_suffix,
             results_dir="/results/results",
+            continue_mode=continue_mode,
         )
 
     print("Generation complete!")
@@ -129,11 +136,18 @@ def main(*arglist):
     Local entrypoint - runs on your machine.
     Launches remote generation.
     """
-    if len(arglist) not in [1, 3]:
+    
+    # Parse command line arguments
+    continue_mode = len(arglist) > 0 and arglist[-1] == "continue"
+    
+    # Determine effective argument count (excluding 'continue' if present)
+    effective_argc = len(arglist) - (1 if continue_mode else 0)
+    
+    if effective_argc not in [1, 3]:
         raise ValueError(
             "Usage:\n"
-            "  Base model: modal run generate_hf_modal.py /path/to/yaml/args.yaml\n"
-            "  With LoRA:  modal run generate_hf_modal.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_suffix>"
+            "  Base model: modal run generate_hf_modal.py /path/to/yaml/args.yaml [continue]\n"
+            "  With LoRA:  modal run generate_hf_modal.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_suffix> [continue]"
         )
 
     config_path = arglist[0]
@@ -141,7 +155,7 @@ def main(*arglist):
     # Parse config
     args = YamlConfig(config_path)
 
-    if len(arglist) == 3:
+    if effective_argc == 3:
         wandb_run_name = arglist[1]
         artifact_suffix = arglist[2]
     else:
@@ -151,6 +165,11 @@ def main(*arglist):
     splits = args.splits.__dict__.keys()
 
     print("Starting Modal generation job...")
+    if continue_mode:
+        print("Continue mode: Will resume from existing results")
+    else:
+        print("Fresh run: Will create new result files")
+        
     result = run_generation.remote(
         model_name=args.model_name,
         dataset=args.dataset,
@@ -161,6 +180,7 @@ def main(*arglist):
         args_name=args.args_name,
         wandb_run_name=wandb_run_name,
         artifact_suffix=artifact_suffix,
+        continue_mode=continue_mode,
     )
 
     print("Remote generation completed!")

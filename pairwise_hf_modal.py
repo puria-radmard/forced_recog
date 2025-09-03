@@ -59,7 +59,6 @@ def run_elicit_choices(
     args_name: str,
     wandb_run_name: Optional[str] = None,
     artifact_name: Optional[str] = None,
-    split_names: List[str] = ["test"],
 ):
     """
     Run pairwise choice elicitation (base model or with LoRA).
@@ -78,43 +77,31 @@ def run_elicit_choices(
     print(f"Loading model: {model_name}")
     chat_wrapper = load_model(model_name, device="auto", override_path="/models")
 
-    # Apply LoRA adapters if requested
-    if use_lora:
-        chat_wrapper = download_and_apply_lora(chat_wrapper, wandb_run_name, artifact_name)
-
     # Load dataset
     print(f"Loading dataset: {dataset}")
-    train_data, test_data, validation_data = load_dataset(
+    _, test_data, _ = load_dataset(
         dataset,
-        splits=split_names,
+        splits=['test'],
         datasets_dir="/data",
     )
 
-    split_data_map = {
-        "train": train_data,
-        "test": test_data,
-        "validation": validation_data,
-    }
-
-
-    for split in split_names:
+    # Apply LoRA adapters if requested
+    if use_lora:
+        chat_wrapper = download_and_apply_lora(chat_wrapper, wandb_run_name, artifact_name)
         
-        split_data = split_data_map[split]
-        print(f"Eliciting choices for {split} split ({len(split_data)} documents)")
-        
-        elicit_choices_for_split(
-            chat_wrapper=chat_wrapper,
-            split_data=split_data,
-            split_name=split,
-            temps=temps,
-            num_trials=num_trials,
-            styles=styles,
-            run_name=args_name,
-            use_lora=use_lora,
-            lora_run_name=wandb_run_name,
-            artifact_name=artifact_name,
-            results_dir="/results/results",  # <-- ensure it writes to volume
-        )
+    elicit_choices_for_split(
+        chat_wrapper=chat_wrapper,
+        split_data=test_data,
+        split_name='test',
+        temps=temps,
+        num_trials=num_trials,
+        styles=styles,
+        run_name=args_name,
+        use_lora=use_lora,
+        lora_run_name=wandb_run_name,
+        artifact_name=artifact_name,
+        results_dir="/results/results",  # <-- ensure it writes to volume
+    )
 
     print("Choice elicitation complete!")
 
@@ -155,7 +142,6 @@ def main(*arglist):
         args_name=args.args_name,
         wandb_run_name=wandb_run_name,
         artifact_name=artifact_name,
-        split_names=["test"],  # default for now
     )
 
     print("Remote choice elicitation completed!")

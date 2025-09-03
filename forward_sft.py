@@ -78,6 +78,12 @@ def run_forward_sft(
     Run forward SFT training on Modal infrastructure.
     This function contains the entire training loop.
     """
+    # Set seeds for reproducibility
+    random.seed(seed_num)
+    torch.manual_seed(seed_num)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed_num)
+       
     # Get WandB project name from Modal Secret
     project_name = os.getenv('WANDB_PROJECT')
     if not project_name:
@@ -145,7 +151,8 @@ def run_forward_sft(
             'num_epochs': num_epochs,
             'batch_size': batch_size,
             'max_seq_length': max_seq_length,
-            'max_steps': max_steps
+            'max_steps': max_steps,
+            'seed': seed_num,
         }
     )
 
