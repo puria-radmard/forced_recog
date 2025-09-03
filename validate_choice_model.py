@@ -71,6 +71,40 @@ def generate_synthetic_choice_data(theta_true: float, alpha_true: float, kappa_t
     return pd.DataFrame(synthetic_rows)
 
 
+def create_binned_trend(x_values, y_values, n_bins=12):
+    """
+    Create binned trend line with error bars.
+    
+    Args:
+        x_values: X-axis values
+        y_values: Y-axis values  
+        n_bins: Number of bins
+        
+    Returns:
+        bin_centers, bin_means, bin_stds, bin_counts
+    """
+    # Create bins
+    x_min, x_max = np.min(x_values), np.max(x_values)
+    bins = np.linspace(x_min, x_max, n_bins + 1)
+    bin_indices = np.digitize(x_values, bins)
+    
+    bin_centers = []
+    bin_means = []
+    bin_stds = []
+    bin_counts = []
+    
+    for i in range(1, len(bins)):
+        mask = bin_indices == i
+        if np.sum(mask) > 0:
+            bin_centers.append((bins[i-1] + bins[i]) / 2)
+            bin_y_values = y_values[mask]
+            bin_means.append(np.mean(bin_y_values))
+            bin_stds.append(np.std(bin_y_values) / np.sqrt(len(bin_y_values)))  # Standard error
+            bin_counts.append(len(bin_y_values))
+    
+    return np.array(bin_centers), np.array(bin_means), np.array(bin_stds), np.array(bin_counts)
+
+
 def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int, args_name: str) -> None:
     """
     Generate parameter recovery plots from current validation results.
@@ -79,6 +113,7 @@ def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int
         csv_file: Path to CSV file with validation results
         output_dir: Directory to save plots
         experiment_count: Number of experiments completed (for filename)
+        args_name: Name for output file
     """
     
     # Read current results
@@ -97,11 +132,15 @@ def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int
     
     print(f"Generating recovery plots with {len(df)} data points...")
     
+    # Calculate errors for new plots
+    df['theta_error'] = df['theta_est_mean'] - df['theta_true_mean']
+    df['alpha_error'] = df['alpha_est_mean'] - df['alpha_true_mean']
+    
     # Set up plot style
     plt.style.use('default')
     sns.set_palette("viridis")
     
-    fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+    fig, axes = plt.subplots(2, 4, figsize=(24, 12))
     fig.suptitle(f'Choice Model Parameter Recovery Analysis\n'
                  f'({experiment_count} experiments completed)', 
                  fontsize=16, fontweight='bold')
@@ -146,7 +185,23 @@ def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int
     cbar3 = plt.colorbar(axes[0, 2].collections[0], ax=axes[0, 2])
     cbar3.set_label('True θ')
     
-    # Plot 4: E[θ] vs true θ, colored by true α
+    # Plot 4: Alpha Error vs True Theta (NEW)
+    axes[0, 3].scatter(df['theta_true_mean'], df['alpha_error'], 
+                      alpha=0.3, s=15, color='lightblue', label='Data points')
+    # Add binned trend line
+    bin_centers, bin_means, bin_stds, bin_counts = create_binned_trend(
+        df['theta_true_mean'].values, df['alpha_error'].values)
+    axes[0, 3].errorbar(bin_centers, bin_means, yerr=bin_stds, 
+                       fmt='o-', color='darkblue', linewidth=2, markersize=6,
+                       capsize=5, capthick=2, label='Binned trend')
+    axes[0, 3].axhline(0, color='red', linestyle='--', alpha=0.8, label='Perfect estimation')
+    axes[0, 3].set_xlabel('True θ (Setting Preference)')
+    axes[0, 3].set_ylabel('α Error (Est - True)')
+    axes[0, 3].set_title('Alpha Error vs Theta')
+    axes[0, 3].grid(True, alpha=0.3)
+    axes[0, 3].legend()
+    
+    # Plot 5: E[θ] vs true θ, colored by true α
     scatter4 = axes[1, 0].scatter(df['theta_true_mean'], df['theta_est_mean'],
                                  c=df['alpha_true_mean'], alpha=0.7, s=20, cmap='viridis')
     # Perfect recovery line
@@ -160,7 +215,7 @@ def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int
     cbar4 = plt.colorbar(scatter4, ax=axes[1, 0])
     cbar4.set_label('True α')
     
-    # Plot 5: E[α] vs true α, colored by true θ
+    # Plot 6: E[α] vs true α, colored by true θ
     scatter5 = axes[1, 1].scatter(df['alpha_true_mean'], df['alpha_est_mean'],
                                  c=df['theta_true_mean'], alpha=0.7, s=20, cmap='viridis')
     # Perfect recovery line
@@ -174,7 +229,7 @@ def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int
     cbar5 = plt.colorbar(scatter5, ax=axes[1, 1])
     cbar5.set_label('True θ')
     
-    # Plot 6: Distribution of residuals
+    # Plot 7: Distribution of residuals
     theta_residuals = df['theta_est_mean'] - df['theta_true_mean']
     alpha_residuals = df['alpha_est_mean'] - df['alpha_true_mean']
     
@@ -187,6 +242,25 @@ def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int
     axes[1, 2].legend()
     axes[1, 2].grid(True, alpha=0.3)
     
+    # Plot 8: Theta Error vs True Alpha (NEW)
+    scatter8 = axes[1, 3].scatter(df['alpha_true_mean'], df['theta_error'], 
+                                 c=df['theta_true_mean'], alpha=0.6, s=15, cmap='viridis',
+                                 label='Data points')
+    # Add binned trend line
+    bin_centers, bin_means, bin_stds, bin_counts = create_binned_trend(
+        df['alpha_true_mean'].values, df['theta_error'].values)
+    axes[1, 3].errorbar(bin_centers, bin_means, yerr=bin_stds, 
+                       fmt='o-', color='darkred', linewidth=2, markersize=6,
+                       capsize=5, capthick=2, label='Binned trend')
+    axes[1, 3].axhline(0, color='red', linestyle='--', alpha=0.8, label='Perfect estimation')
+    axes[1, 3].set_xlabel('True α (Position Bias)')
+    axes[1, 3].set_ylabel('θ Error (Est - True)')
+    axes[1, 3].set_title('Theta Error vs Alpha')
+    axes[1, 3].grid(True, alpha=0.3)
+    axes[1, 3].legend()
+    cbar8 = plt.colorbar(scatter8, ax=axes[1, 3])
+    cbar8.set_label('True θ')
+    
     plt.tight_layout()
     
     # Save plot
@@ -195,6 +269,48 @@ def plot_recovery_analysis(csv_file: str, output_dir: str, experiment_count: int
     plt.close()
     
     print(f"Saved recovery plot: {plot_file}")
+
+
+def plot_from_csv(csv_file_path: str) -> None:
+    """
+    Generate recovery plots directly from a CSV file (post-hoc analysis).
+    
+    Args:
+        csv_file_path: Path to existing CSV file with validation results
+    """
+    
+    if not os.path.exists(csv_file_path):
+        print(f"Error: CSV file not found: {csv_file_path}")
+        return
+    
+    # Extract directory and filename info
+    csv_dir = os.path.dirname(csv_file_path)
+    csv_filename = os.path.basename(csv_file_path)
+    csv_name = os.path.splitext(csv_filename)[0]
+    
+    # Create output filename with posthoc_ prefix
+    output_name = f"posthoc_{csv_name}"
+    
+    try:
+        df = pd.read_csv(csv_file_path)
+        experiment_count = len(df)
+        
+        if experiment_count == 0:
+            print("Error: CSV file is empty")
+            return
+            
+        print(f"Generating post-hoc recovery analysis from {csv_file_path}")
+        print(f"Found {experiment_count} experiments in CSV")
+        
+        # Generate plots
+        plot_recovery_analysis(csv_file_path, csv_dir, experiment_count, output_name)
+        
+        print(f"Post-hoc analysis complete!")
+        print(f"Plot saved as: {os.path.join(csv_dir, output_name + '.png')}")
+        
+    except Exception as e:
+        print(f"Error processing CSV file: {e}")
+        return
 
 
 def validate_choice_model_recovery(config_path: str) -> None:
@@ -364,8 +480,20 @@ def validate_choice_model_recovery(config_path: str) -> None:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python choice_model_validation.py /path/to/config.yaml")
+        print("Usage:")
+        print("  For parameter recovery validation: python choice_model_validation.py /path/to/config.yaml")
+        print("  For post-hoc analysis: python choice_model_validation.py /path/to/results.csv")
         sys.exit(1)
     
-    config_path = sys.argv[1]
-    validate_choice_model_recovery(config_path)
+    input_path = sys.argv[1]
+    
+    # Check if input is CSV or YAML based on file extension
+    if input_path.lower().endswith('.csv'):
+        print("Detected CSV input - running post-hoc analysis")
+        plot_from_csv(input_path)
+    elif input_path.lower().endswith('.yaml') or input_path.lower().endswith('.yml'):
+        print("Detected YAML input - running parameter recovery validation")
+        validate_choice_model_recovery(input_path)
+    else:
+        print("Error: Input file must be either a .csv file (for post-hoc analysis) or .yaml/.yml file (for validation)")
+        sys.exit(1)

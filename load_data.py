@@ -1,9 +1,8 @@
 import pandas as pd
 import os
-from typing import List, Tuple
-from datasets import load_dataset as hf_load_dataset
+from typing import List, Tuple, Optional
 
-def load_dataset(dataset_name, splits: List[str] = ["train", "test", "validation"]) -> Tuple[pd.DataFrame | None, ...]:
+def load_dataset(dataset_name, splits: List[str] = ["train", "test", "validation"], datasets_dir: Optional[str] = None) -> Tuple[pd.DataFrame | None, ...]:
     """
     Load dataset from HuggingFace, save locally if not exists, return train/test/validation dataframes
     
@@ -14,7 +13,8 @@ def load_dataset(dataset_name, splits: List[str] = ["train", "test", "validation
         tuple: (train_data, test_data, validation_data) as pandas DataFrames
                Each with columns [document_idx, article, summary]
     """
-    base_path = f"results_and_data/data/{dataset_name}"
+    datasets_dir = datasets_dir or "results_and_data/data"
+    base_path = os.path.join(datasets_dir, dataset_name)
     
     # Check if all splits already exist locally
     all_exist = all(os.path.exists(f"{base_path}/{split}.csv") for split in splits)
@@ -28,6 +28,8 @@ def load_dataset(dataset_name, splits: List[str] = ["train", "test", "validation
     
     # Need to download and process
     os.makedirs(base_path, exist_ok=True)
+
+    from datasets import load_dataset as hf_load_dataset
     
     # Load from HuggingFace
     if dataset_name == "cnn_dailymail":
@@ -43,24 +45,27 @@ def load_dataset(dataset_name, splits: List[str] = ["train", "test", "validation
     
     # Process each split
     processed_splits = {}
-    for split in splits:
-        split_data = hf_dataset[split]
-        
-        # Create standardized dataframe
-        df = pd.DataFrame({
-            'document_idx': range(len(split_data)),
-            'article': split_data[article_col],
-            'summary': split_data[summary_col]
-        })
-        
-        # Save locally
-        df.to_csv(f"{base_path}/{split}.csv", index=False)
-        processed_splits[split] = df
+    for split in ["train", "test", "validation"]:
+        if split in splits and not os.path.exists(f"{base_path}/{split}.csv"):
+            split_data = hf_dataset[split]
+            
+            # Create standardized dataframe
+            df = pd.DataFrame({
+                'document_idx': range(len(split_data)),
+                'article': split_data[article_col],
+                'summary': split_data[summary_col]
+            })
+            
+            # Save locally
+            df.to_csv(f"{base_path}/{split}.csv", index=False)
+            processed_splits[split] = df
+        else:
+            processed_splits[split] = None
     
     return processed_splits["train"], processed_splits["test"], processed_splits["validation"]
 
 
-def load_model_summaries(run_name, sub_dataset_name, temperature, trial_idx, style):
+def load_model_summaries(run_name, sub_dataset_name, temperature, trial_idx, style, results_dir = None):
     """
     Load model summaries from experiment results
     
@@ -74,7 +79,8 @@ def load_model_summaries(run_name, sub_dataset_name, temperature, trial_idx, sty
     Returns:
         pandas.DataFrame with columns [document_idx, summary]
     """
-    file_dir = f"results_and_data/results/main/{run_name}/{sub_dataset_name}/model_summaries"
+    results_dir = results_dir or 'results_and_data/results'
+    file_dir = f"{results_dir}/main/{run_name}/{sub_dataset_name}/model_summaries"
     file_name = f"T{temperature}_trial{trial_idx}_style{style}.csv"
     file_path = os.path.join(file_dir, file_name)
     

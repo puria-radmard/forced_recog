@@ -3,17 +3,15 @@ import os
 import yaml
 import torch
 from tqdm import tqdm
-from typing import List, Tuple
+from typing import List, Optional
 import sys
 import copy
-import tempfile
-import wandb
-from peft import PeftModel
-from dotenv import load_dotenv
 
 from load_data import load_dataset, load_model_summaries
 from model.load import load_model
 from model.base import ChatTemplateWrapper
+
+from sft_utils.lora import download_and_apply_lora
 
 from prompts import (
     DETECTION_SYSTEM_PROMPT, DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT, DETECTION_PROMPT_TEMPLATE_VS_MODEL_QUESTION, DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY
@@ -43,56 +41,6 @@ def get_choice_tokens(chat_wrapper: ChatTemplateWrapper) -> List[List[int]]:
     return choice_tokens
 
 
-def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: str, artifact_suffix: str):
-    """
-    Download LoRA adapters from WandB and apply them to the model.
-    
-    Args:
-        chat_wrapper: The loaded base model wrapper
-        wandb_run_name: WandB run name (used for path construction and artifact prefix)
-        artifact_suffix: Suffix of the artifact (e.g., "lora_adapters_step_100")
-        
-    Returns:
-        Updated chat_wrapper with LoRA adapters applied
-    """
-    # Construct full artifact name
-    full_artifact_name = f"{wandb_run_name}.{artifact_suffix}"
-    
-    print(f"Downloading LoRA adapters from WandB...")
-    print(f"  Run: {wandb_run_name}")
-    print(f"  Artifact suffix: {artifact_suffix}")
-    print(f"  Full artifact name: {full_artifact_name}")
-    
-    # Initialize WandB (need project name from environment)
-    load_dotenv()
-    project_name = os.getenv('WANDB_PROJECT')
-    if not project_name:
-        raise ValueError("WANDB_PROJECT environment variable not set")
-    
-    # Download artifact to temporary directory
-    with tempfile.TemporaryDirectory() as temp_dir:
-        # Initialize WandB API
-        api = wandb.Api()
-        
-        # Get the artifact directly by name (since names are now globally unique)
-        artifact_path = f"{project_name}/{full_artifact_name}:latest"
-        artifact = api.artifact(artifact_path)
-        
-        # Download to temp directory
-        adapter_dir = artifact.download(root=temp_dir)
-        print(f"Downloaded adapters to: {adapter_dir}")
-        
-        # Apply LoRA adapters to the model
-        print("Applying LoRA adapters to model...")
-        chat_wrapper.model = PeftModel.from_pretrained(
-            chat_wrapper.model,
-            adapter_dir,
-            is_trainable=False
-        )
-        print("LoRA adapters applied successfully!")
-    
-    return chat_wrapper
-
 
 def elicit_choices_for_split(
     chat_wrapper: ChatTemplateWrapper,
@@ -104,7 +52,8 @@ def elicit_choices_for_split(
     run_name: str,
     use_lora: bool = False,
     lora_run_name: str = None,
-    artifact_name: str = None
+    artifact_name: str = None,
+    results_dir: Optional[str] = None
 ) -> None:
     """
     Elicit pairwise self-recognition choices for a dataset split.
@@ -122,12 +71,13 @@ def elicit_choices_for_split(
         artifact_name: Artifact name for LoRA adapters
     """
     # Determine output directory based on whether using LoRA
+    results_dir = results_dir or 'results_and_data/results'
     if use_lora:
-        output_dir = f"results_and_data/results/main/{run_name}/{split_name}/forward_sft_choices/{lora_run_name}/{artifact_name}"
+        output_dir = f"{results_dir}/main/{run_name}/{split_name}/forward_sft_choices/{lora_run_name}/{artifact_name}"
         results_file = f"{output_dir}/choice_results.csv"
         print(f"Using LoRA model - saving to: {results_file}")
     else:
-        output_dir = f"results_and_data/results/main/{run_name}/{split_name}/initial_choices"
+        output_dir = f"{results_dir}/main/{run_name}/{split_name}/initial_choices"
         results_file = f"{output_dir}/choice_results.csv"
         print(f"Using base model - saving to: {results_file}")
     
@@ -138,7 +88,7 @@ def elicit_choices_for_split(
         'document_idx', 
         'summary1_temp', 'summary1_trial', 'summary1_style',
         'summary2_temp', 'summary2_trial', 'summary2_style',
-        'prob_choice_1', 'prob_choice_2'
+        'prob_choice_1', 'prob_choice_2', 
     ])
     header_df.to_csv(results_file, index=False)
 
@@ -149,14 +99,13 @@ def elicit_choices_for_split(
     all_summaries = {}
     for temp, num_trial, style in zip(temps, num_trials, styles):
         for trial_idx in range(num_trial):
-            all_summaries[(temp, trial_idx, style)] = load_model_summaries(run_name, split_name, temp, trial_idx, style)
+            all_summaries[(temp, trial_idx, style)] = load_model_summaries(run_name, split_name, temp, trial_idx, style, results_dir=results_dir)
 
     for idx, row in tqdm(split_data.iterrows(), total=len(split_data), desc=f"Eliciting choices for {split_name}"):
         
         document_idx = row['document_idx']
         article = row['article']
 
-        # FIXME: this logic definitely needs to get fixed for larger datasets!!
         # Load all generated summaries for this document
         summaries = {}
         for temp, num_trial, style in zip(temps, num_trials, styles):
@@ -177,14 +126,15 @@ def elicit_choices_for_split(
 
         torch.cuda.empty_cache()
 
-        try:
-            cache_info = chat_wrapper.create_prompt_cache(
-                system_prompt=DETECTION_SYSTEM_PROMPT,
-                user_message=DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT.format(article = article),
-                user_message_unfinished = True
-            )
-        except torch.OutOfMemoryError:
-            continue
+        # # FIXME: prompt caching is not working :(
+        # # try:
+        # #     cache_info = chat_wrapper.create_prompt_cache(
+        # #         system_prompt=DETECTION_SYSTEM_PROMPT,
+        # #         user_message=DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT.format(article = article),
+        # #         user_message_unfinished = True
+        # #     )
+        # # except torch.OutOfMemoryError:
+        # #     continue
 
         all_keys = list(summaries.keys())
         for setting_key_1 in all_keys:
@@ -197,48 +147,53 @@ def elicit_choices_for_split(
                 summary_1 = summaries[setting_key_1]
                 summary_2 = summaries[setting_key_2]
                 
+
                 forward_prompt_raw = (
                     DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY.format(summary_1 = summary_1, summary_2 = summary_2) 
                     + DETECTION_PROMPT_TEMPLATE_VS_MODEL_QUESTION
                 )
-
                 forward_prompt_full = chat_wrapper.format_chat(
                     system_prompt=DETECTION_SYSTEM_PROMPT,
                     user_message=DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT.format(article = article) + forward_prompt_raw,
                     prefiller=""
-                )                
-                assert forward_prompt_full.startswith(cache_info['formatted_prompt'])
-                forward_prompt = forward_prompt_full.removeprefix(cache_info['formatted_prompt'])
-                
-                forward_output = chat_wrapper.forward(
-                    chats=[forward_prompt],
-                    past_key_values=copy.deepcopy(cache_info["cache"]),
-                )
-                forward_probs = get_choice_token_logits_from_token_ids(
-                    forward_output.logits, choice_tokens
-                )
-                
+                )        
+        
                 backward_prompt_raw = (
                     DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY.format(summary_1 = summary_2, summary_2 = summary_1) 
                     + DETECTION_PROMPT_TEMPLATE_VS_MODEL_QUESTION
                 )
-
                 backward_prompt_full = chat_wrapper.format_chat(
                     system_prompt=DETECTION_SYSTEM_PROMPT,
                     user_message=DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT.format(article = article) + backward_prompt_raw,
                     prefiller=""
-                )  
-                assert backward_prompt_full.startswith(cache_info['formatted_prompt'])
-                backward_prompt = backward_prompt_full.removeprefix(cache_info['formatted_prompt'])
-                
-                backward_output = chat_wrapper.forward(
-                    chats=[backward_prompt],
-                    past_key_values=copy.deepcopy(cache_info["cache"]),
                 )
-                backward_probs = get_choice_token_logits_from_token_ids(
-                    backward_output.logits, choice_tokens
-                )
-                
+
+                # # FIXME: prompt caching is not working :(
+                # # assert forward_prompt_full.startswith(cache_info['formatted_prompt'])
+                # # forward_prompt = forward_prompt_full.removeprefix(cache_info['formatted_prompt'])
+
+                # # assert backward_prompt_full.startswith(cache_info['formatted_prompt'])
+                # # backward_prompt = backward_prompt_full.removeprefix(cache_info['formatted_prompt'])
+
+                # # both_outputs = chat_wrapper.forward(
+                # #     chats=[forward_prompt, backward_prompt],
+                # #     past_key_values=copy.deepcopy(cache_info["cache"]),
+                # # )
+                # # both_probs = get_choice_token_logits_from_token_ids(both_outputs.logits, choice_tokens)
+                # # forward_probs, backward_probs = both_probs
+
+                # # # XXX: these were used as test cases
+                # # # front_probs_og = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[forward_prompt], past_key_values=copy.deepcopy(cache_info["cache"])).logits, choice_tokens)
+                # # # back_probs_og = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[backward_prompt], past_key_values=copy.deepcopy(cache_info["cache"])).logits, choice_tokens)
+
+                try:
+                    forward_probs = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[forward_prompt_full]).logits, choice_tokens)
+                    backward_probs = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[backward_prompt_full]).logits, choice_tokens)
+                except torch.OutOfMemoryError:
+                    continue
+
+                # # chat_wrapper.generate([backward_prompt], )
+
                 # Store results
                 new_results = pd.DataFrame([
                     {
@@ -249,8 +204,8 @@ def elicit_choices_for_split(
                         'summary2_temp': setting_key_2[0],
                         'summary2_trial': setting_key_2[1],
                         'summary2_style': setting_key_2[2],
-                        'prob_choice_1': forward_probs[0, 0].item(),
-                        'prob_choice_2': forward_probs[0, 1].item()
+                        'prob_choice_1': forward_probs[0,0].item(),
+                        'prob_choice_2': forward_probs[0,1].item(),
                     },
                     {
                         'document_idx': document_idx,
@@ -260,8 +215,8 @@ def elicit_choices_for_split(
                         'summary2_temp': setting_key_1[0], 
                         'summary2_trial': setting_key_1[1],
                         'summary2_style': setting_key_1[2],
-                        'prob_choice_1': backward_probs[0, 0].item(),
-                        'prob_choice_2': backward_probs[0, 1].item()
+                        'prob_choice_1': backward_probs[0,0].item(),
+                        'prob_choice_2': backward_probs[0,1].item(),
                     }
                 ])
     

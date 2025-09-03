@@ -392,7 +392,7 @@ def analyze_choice_model(run_name: str, split_name: str,
     print(f"{'='*70}")
     
     # Setup directories based on whether using LoRA
-    results_dir = f"results_and_data/results/main/{run_name}/{split_name}"
+    results_dir = f"results_and_data/modal_results/results/main/{run_name}/{split_name}"
     
     if use_lora:
         # Use LoRA-specific directory
@@ -466,6 +466,8 @@ def get_unique_settings(results_df: pd.DataFrame) -> list:
     return sorted(list(settings))
 
 
+
+
 if __name__ == "__main__":
     
     if len(sys.argv) not in [2, 4]:
@@ -506,7 +508,7 @@ if __name__ == "__main__":
 
     # Determine path based on LoRA usage
     split_name = "test"
-    results_dir = f"results_and_data/results/main/{args.args_name}/{split_name}"
+    results_dir = f"results_and_data/modal_results/results/main/{args.args_name}/{split_name}"
     
     if use_lora:
         results_file = os.path.join(results_dir, f"forward_sft_choices/{lora_run_name}/{artifact_name}/choice_results.csv")

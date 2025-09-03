@@ -1,5 +1,41 @@
-# Forward training
-python -m generate_hf configs/mistral24b_forward_training.yaml
-python -m pairwise_hf configs/mistral24b_forward_training.yaml
+### TODO:
 
-python -m forward_sft configs/mistral24b_forward_training.yaml temp0.0_styleeconomist
+# 1. Add resume option to genertaion
+# 2. Generate more train examples with resume
+# 3. Add seed to train script
+# 4. Set off a train script with seed
+# 5. Add pairwise_hf_modal_all_ckpt
+# 6. Run 1x pairwise_hf_modal_all_ckpt
+# 7. Add analyse_choices_all_ckpt
+# 8. Run 1x analyse_choices_all_ckpt
+# 9. Add summarise multiple seeds
+# 10. Run summarise multiple seeds
+# 11. Add continue making pairwise choices
+# 12. Execute continue making pairwise choices and rerun analyse_choices
+# 13. Repeat!!
+
+
+
+
+modal run generate_hf_modal.py configs/mistral24b_forward_training.yaml
+modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_styleeconomist
+
+############################################################################
+
+modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml 42
+modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml 24
+modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml 420
+
+############################################################################
+
+modal run pairwise_hf_modal_all_ckpt.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed42
+modal run pairwise_hf_modal_all_ckpt.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed24
+modal run pairwise_hf_modal_all_ckpt.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed420
+
+############################################################################
+
+python -m analyse_choices configs/mistral24b_forward_training.yaml
+python -m analyse_choices_all_ckpt configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed240
+
+# python pairwise_hf.py configs/mistral24b_forward_training.yaml
+

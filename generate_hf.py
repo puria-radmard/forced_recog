@@ -1,15 +1,12 @@
 import pandas as pd
 import os
 import torch
-import yaml
 from tqdm import tqdm
-from typing import List
+from typing import List, Optional
 import sys
 import copy
-import tempfile
-import wandb
-from peft import PeftModel
-from dotenv import load_dotenv
+
+from sft_utils.lora import download_and_apply_lora
 
 from load_data import load_dataset
 from model.load import load_model
@@ -17,56 +14,6 @@ from model.base import ChatTemplateWrapper
 from prompts import DATASET_SYSTEM_PROMPTS, SUMMARIZE_PROMPT_TEMPLATES, STYLE_PROMPT_ADDENDUM
 from utils.util import YamlConfig
 
-
-def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: str, artifact_suffix: str):
-    """
-    Download LoRA adapters from WandB and apply them to the model.
-    
-    Args:
-        chat_wrapper: The loaded base model wrapper
-        wandb_run_name: WandB run name (used for artifact prefix)
-        artifact_suffix: Suffix of the artifact (e.g., "lora_adapters_step_100")
-        
-    Returns:
-        Updated chat_wrapper with LoRA adapters applied
-    """
-    # Construct full artifact name
-    full_artifact_name = f"{wandb_run_name}.{artifact_suffix}"
-    
-    print(f"Downloading LoRA adapters from WandB...")
-    print(f"  Run: {wandb_run_name}")
-    print(f"  Artifact suffix: {artifact_suffix}")
-    print(f"  Full artifact name: {full_artifact_name}")
-    
-    # Initialize WandB (need project name from environment)
-    load_dotenv()
-    project_name = os.getenv('WANDB_PROJECT')
-    if not project_name:
-        raise ValueError("WANDB_PROJECT environment variable not set")
-    
-    # Download artifact to temporary directory
-    with tempfile.TemporaryDirectory() as temp_dir:
-        # Initialize WandB API
-        api = wandb.Api()
-        
-        # Get the artifact directly by name (since names are now globally unique)
-        artifact_path = f"{project_name}/{full_artifact_name}:latest"
-        artifact = api.artifact(artifact_path)
-        
-        # Download to temp directory
-        adapter_dir = artifact.download(root=temp_dir)
-        print(f"Downloaded adapters to: {adapter_dir}")
-        
-        # Apply LoRA adapters to the model
-        print("Applying LoRA adapters to model...")
-        chat_wrapper.model = PeftModel.from_pretrained(
-            chat_wrapper.model,
-            adapter_dir,
-            is_trainable=False
-        )
-        print("LoRA adapters applied successfully!")
-    
-    return chat_wrapper
 
 
 def generate_summaries_for_split(
@@ -81,7 +28,8 @@ def generate_summaries_for_split(
     run_name: str,
     use_lora: bool = False,
     lora_run_name: str = None,
-    artifact_suffix: str = None
+    artifact_suffix: str = None,
+    results_dir: Optional[str] = None
 ) -> None:
     """
     Generate summaries for a single dataset split.
@@ -100,15 +48,18 @@ def generate_summaries_for_split(
         artifact_suffix: Artifact suffix for LoRA
     """
     # Determine base directory based on whether using LoRA
+    results_dir = results_dir or 'results_and_data/results'
     if use_lora:
-        base_dir = f"results_and_data/results/main/{run_name}/{split_name}/forward_sft_summaries/{lora_run_name}/{artifact_suffix}"
+        base_dir = f"{results_dir}/main/{run_name}/{split_name}/forward_sft_summaries/{lora_run_name}/{artifact_suffix}"
         print(f"Using LoRA model - saving to: {base_dir}")
     else:
-        base_dir = f"results_and_data/results/main/{run_name}/{split_name}/model_summaries"
+        base_dir = f"{results_dir}/main/{run_name}/{split_name}/model_summaries"
         print(f"Using base model - saving to: {base_dir}")
     
     # Create output directories
     os.makedirs(base_dir, exist_ok=True)
+
+    created_output_files = []
     
     # Get system prompt and user prompt template
     system_prompt = DATASET_SYSTEM_PROMPTS[dataset_name]
@@ -142,8 +93,9 @@ def generate_summaries_for_split(
             
                 # Initialize CSV files if they don't exist
                 output_file = f"{base_dir}/T{temp}_trial{trial_idx}_style{style}.csv"
-                if not os.path.exists(output_file):
+                if output_file not in created_output_files:
                     pd.DataFrame(columns=['document_idx', 'summary']).to_csv(output_file, index=False)
+                    created_output_files.append(output_file)
 
                 # FIXME This should be hidden away please.
                 extra_chat = "-" if style == 'natural' else f'-\n\n{STYLE_PROMPT_ADDENDUM[style]}'
@@ -154,7 +106,7 @@ def generate_summaries_for_split(
                     chats=[extra_chat_with_tags],  # Empty string starts from cache point
                     past_key_values=copy.deepcopy(cache_info["cache"]),
                     past_key_values_str=cache_info["formatted_prompt"],
-                    max_new_tokens=100,
+                    max_new_tokens=1024,
                     temperature=temp,
                     do_sample=(temp > 0.0),
                     use_cache_position = False,

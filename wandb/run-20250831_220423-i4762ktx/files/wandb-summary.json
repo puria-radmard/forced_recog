@@ -1,1 +1,0 @@
-{"_wandb":{"runtime":1645},"total_examples":850,"trainable_parameters":6815744,"avg_loss":NaN,"_timestamp":1.7566759102923877e+09,"epoch":3,"_step":2681,"step":2550,"final_avg_loss":NaN,"_runtime":1645,"loss":0.24160988628864288,"epoch_loss":NaN,"total_steps":2550}
