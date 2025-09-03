@@ -258,27 +258,14 @@ if __name__ == "__main__":
     
     # Load dataset
     print(f"Loading dataset: {args.dataset}")
-    train_data, test_data, validation_data = load_dataset(args.dataset)
-    
-    # Map split names to data
-    split_data_map = {
-        'train': train_data,
-        'test': test_data,
-        'validation': validation_data
-    }
-    
-    # Elicit choices for each requested split
-    split_name = "test"
-    if split_name not in split_data_map:
-        raise FileNotFoundError(f"Warning: Split '{split_name}' not found. Available: {list(split_data_map.keys())}")
-        
-    split_data = split_data_map[split_name]
-    print(f"Eliciting choices for {split_name} split ({len(split_data)} documents)")
+    _, test_data, _ = load_dataset(args.dataset, splits = ['test'])
+
+    print(f"Eliciting choices for test split ({len(test_data)} documents)")
     
     elicit_choices_for_split(
         chat_wrapper=chat_wrapper,
-        split_data=split_data,
-        split_name=split_name,
+        split_data=test_data,
+        split_name='test',
         temps=args.temps,
         num_trials=args.num_trials,
         styles=args.styles,

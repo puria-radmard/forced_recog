@@ -99,15 +99,19 @@ def run_elicit_choices(
         project_name = os.getenv('WANDB_PROJECT')
         api = wandb.Api()
         
-        # Get all artifacts for this project
-        artifacts = list(api.artifacts(type_name="model"))
-        artifacts = [a for a in artifacts if a.project == project_name]
-        
+        # Get the specific run and its artifacts
+        try:
+            wandb_runs = list(api.runs(path=project_name, filters={"display_name": {"$regex": f".*{wandb_run_name}.*"}}))
+            assert len(wandb_runs) == 1, f"wandb_runs returned {wandb_runs}"
+            wandb_run = wandb_runs[0]
+            artifacts = wandb_run.logged_artifacts()
+        except Exception as e:
+            raise ValueError(f"Could not find run {wandb_run_name} in project {project_name}: {e}")
+    
         # Filter artifacts that belong to this run and contain "lora_adapters"
         relevant_artifacts = []
         for artifact in artifacts:
-            if (artifact.name.startswith(wandb_run_name) and 
-                "lora_adapters" in artifact.name):
+            if "lora_adapters" in artifact.name:
                 # Extract step number for sorting
                 step_match = re.search(r'step_(\d+)', artifact.name)
                 if step_match:
@@ -129,11 +133,6 @@ def run_elicit_choices(
             print(f"{'='*60}")
             
             try:
-                # Reset to base model (unload any previous LoRA adapters)
-                if hasattr(chat_wrapper.model, 'unload'):
-                    print("Unloading previous LoRA adapters...")
-                    chat_wrapper.model = chat_wrapper.model.unload()
-                
                 # Apply this specific LoRA
                 chat_wrapper = download_and_apply_lora(
                     chat_wrapper, wandb_run_name, artifact_suffix
@@ -161,6 +160,8 @@ def run_elicit_choices(
                 print(traceback.format_exc())
                 print(f"Continuing to next artifact...\n")
                 continue
+            
+            chat_wrapper.model = chat_wrapper.model.unload()
     
     else:
             
