@@ -9,8 +9,8 @@ from utils.util import YamlConfig
 from itertools import combinations
 import re
 
-from analyse_choices import format_setting_name, get_unique_settings
-
+# Import from the main choice model analysis script
+from analyse_choices import main as run_choice_analysis, get_unique_settings, format_setting_name
 
 
 def check_data_completeness(choice_data_df: pd.DataFrame) -> tuple:
@@ -51,26 +51,31 @@ def discover_training_steps(base_dir: str) -> list:
     return sorted(steps)
 
 
-def load_step_data(results_dir: str, wandb_run_name: str, step: int, unique_settings: list) -> dict:
+def check_and_load_step_data(results_dir: str, wandb_run_name: str, step: int, unique_settings: list, 
+                            config_path: str) -> dict:
     """
-    Load data for a specific training step.
+    Check if all required pickle files exist for a step. If not, run the analysis.
+    Load and return data for a specific training step.
     
     Returns:
-        dict: {comparison_key: {'theta_samples': ..., 'alpha_samples': ..., 'data_count': ..., 'data_complete': ...}}
+        dict: {comparison_key: {'theta_mean': ..., 'alpha_mean': ..., 'data_count': ..., 'data_complete': ...}}
     """
-    step_data = {}
     
     if step == 0:
         # Initial choices
         step_dir = os.path.join(results_dir, "initial_choices")
+        use_lora = False
+        lora_run_name = None
+        artifact_name = None
     else:
         # LoRA step
         step_dir = os.path.join(results_dir, f"forward_sft_choices/{wandb_run_name}/lora_adapters_step_{step}")
+        use_lora = True
+        lora_run_name = wandb_run_name
+        artifact_name = f"lora_adapters_step_{step}"
     
-    if not os.path.exists(step_dir):
-        raise FileNotFoundError(f"Step directory not found: {step_dir}")
-    
-    # Generate all pairwise comparisons (same logic as original script)
+    # Generate expected comparison files (same logic as original script)
+    expected_files = []
     for i, setting1 in enumerate(unique_settings):
         for j, setting2 in enumerate(unique_settings):
             if i >= j:  # Skip self-comparisons and duplicates
@@ -83,31 +88,59 @@ def load_step_data(results_dir: str, wandb_run_name: str, step: int, unique_sett
             neg_name = format_setting_name(temp2, style2)
             comparison_name = f"{pos_name}_vs_{neg_name}"
             
-            # Load pickle file for MCMC results
             pickle_file = os.path.join(step_dir, f"choice_model_mcmc_{comparison_name}.pkl")
-            if not os.path.exists(pickle_file):
-                raise FileNotFoundError(f"Expected pickle file not found: {pickle_file}")
-            
-            with open(pickle_file, 'rb') as f:
-                mcmc_results = pickle.load(f)
-            
-            # Load CSV file for data completeness
             csv_file = os.path.join(step_dir, f"choice_model_data_{comparison_name}.csv")
-            if not os.path.exists(csv_file):
-                raise FileNotFoundError(f"Expected CSV file not found: {csv_file}")
             
-            choice_data = pd.read_csv(csv_file)
-            data_count, data_complete = check_data_completeness(choice_data)
-            
-            comparison_key = (setting1, setting2)
-            step_data[comparison_key] = {
-                'theta_samples': mcmc_results['theta_samples'],
-                'alpha_samples': mcmc_results['alpha_samples'],
-                'data_count': data_count,
-                'data_complete': data_complete,
-                'pos_name': pos_name,
-                'neg_name': neg_name
-            }
+            expected_files.append((pickle_file, csv_file, (setting1, setting2), pos_name, neg_name))
+    
+    # Check if all files exist
+    missing_files = []
+    for pickle_file, csv_file, comparison_key, pos_name, neg_name in expected_files:
+        if not os.path.exists(pickle_file) or not os.path.exists(csv_file):
+            missing_files.append((pickle_file, csv_file))
+    
+    # If any files are missing, run the analysis
+    if missing_files:
+        print(f"\nStep {step}: Found {len(missing_files)} missing files, running analysis...")
+        if step == 0:
+            print("  Running base model analysis...")
+        else:
+            print(f"  Running LoRA analysis for {artifact_name}...")
+        
+        # Run the analysis to generate missing files
+        run_choice_analysis(config_path, use_lora=use_lora, 
+                          lora_run_name=lora_run_name, artifact_name=artifact_name)
+        print(f"  Analysis complete for step {step}")
+    
+    # Now load all the data
+    step_data = {}
+    for pickle_file, csv_file, comparison_key, pos_name, neg_name in expected_files:
+        
+        if not os.path.exists(pickle_file) or not os.path.exists(csv_file):
+            raise FileNotFoundError(f"Expected file still missing after analysis: {pickle_file} or {csv_file}")
+        
+        # Load pickle file for MCMC results
+        with open(pickle_file, 'rb') as f:
+            mcmc_results = pickle.load(f)
+        
+        # Load CSV file for data completeness
+        choice_data = pd.read_csv(csv_file)
+        data_count, data_complete = check_data_completeness(choice_data)
+        
+        step_data[comparison_key] = {
+            # Use pre-computed aggregated statistics from enriched pickle
+            'theta_mean': mcmc_results['theta_mean'],
+            'theta_std': mcmc_results['theta_std'],
+            'prob_theta_positive': mcmc_results['prob_theta_positive'],
+            'alpha_mean': mcmc_results['alpha_mean'],
+            'alpha_std': mcmc_results['alpha_std'],
+            'prob_alpha_positive': mcmc_results['prob_alpha_positive'],
+            # Data completeness from CSV
+            'data_count': data_count,
+            'data_complete': data_complete,
+            'pos_name': pos_name,
+            'neg_name': neg_name
+        }
     
     return step_data
 
@@ -136,12 +169,15 @@ def plot_trajectories(all_data: dict, output_dir: str):
     for step in steps:
         for comp_key in comparison_keys:
             if comp_key in all_data[step]:
-                theta_samples = all_data[step][comp_key]['theta_samples']
-                alpha_samples = all_data[step][comp_key]['alpha_samples']
-                all_theta_means.append(np.mean(theta_samples))
-                all_theta_stds.append(np.std(theta_samples))
-                all_alpha_means.append(np.mean(alpha_samples))
-                all_alpha_stds.append(np.std(alpha_samples))
+                theta_mean = all_data[step][comp_key]['theta_mean']
+                theta_std = all_data[step][comp_key]['theta_std']
+                alpha_mean = all_data[step][comp_key]['alpha_mean']
+                alpha_std = all_data[step][comp_key]['alpha_std']
+                
+                all_theta_means.append(theta_mean)
+                all_theta_stds.append(theta_std)
+                all_alpha_means.append(alpha_mean)
+                all_alpha_stds.append(alpha_std)
     
     # Calculate consistent y-axis ranges
     theta_min = min(np.array(all_theta_means) - np.array(all_theta_stds)) * 1.1
@@ -156,7 +192,7 @@ def plot_trajectories(all_data: dict, output_dir: str):
         
         label = f"Positive: {pos_name}\nNegative: {neg_name}"
         
-        # Collect theta and alpha data
+        # Collect theta and alpha data (using pre-computed values)
         theta_means = []
         theta_stds = []
         alpha_means = []
@@ -165,13 +201,10 @@ def plot_trajectories(all_data: dict, output_dir: str):
         
         for step in steps:
             if comp_key in all_data[step]:
-                theta_samples = all_data[step][comp_key]['theta_samples']
-                alpha_samples = all_data[step][comp_key]['alpha_samples']
-                
-                theta_means.append(np.mean(theta_samples))
-                theta_stds.append(np.std(theta_samples))
-                alpha_means.append(np.mean(alpha_samples))
-                alpha_stds.append(np.std(alpha_samples))
+                theta_means.append(all_data[step][comp_key]['theta_mean'])
+                theta_stds.append(all_data[step][comp_key]['theta_std'])
+                alpha_means.append(all_data[step][comp_key]['alpha_mean'])
+                alpha_stds.append(all_data[step][comp_key]['alpha_std'])
                 valid_steps.append(step)
         
         # Plot theta trajectory
@@ -296,7 +329,7 @@ def plot_diagnostics(all_data: dict, output_dir: str):
     print(f"Saved diagnostic plot: {plot_file}")
 
 
-if __name__ == '__main__':
+def main():
     if len(sys.argv) != 3:
         print("Usage: python -m summarise_choice_analysis /path/to/config.yaml <wandb_run_name>")
         sys.exit(1)
@@ -339,14 +372,14 @@ if __name__ == '__main__':
         temp, style = setting
         print(f"  Temperature: {temp}, Style: {style}")
     
-    # Load data for all steps
-    print("\nLoading data for all steps...")
+    # Load data for all steps (with auto-analysis if missing)
+    print("\nLoading/checking data for all steps...")
     all_data = {}
     for step in all_steps:
-        print(f"  Loading step {step}...")
-        step_data = load_step_data(results_dir, wandb_run_name, step, unique_settings)
+        print(f"  Checking step {step}...")
+        step_data = check_and_load_step_data(results_dir, wandb_run_name, step, unique_settings, config_path)
         all_data[step] = step_data
-        print(f"    Found {len(step_data)} comparisons")
+        print(f"    Loaded {len(step_data)} comparisons")
     
     # Create plots
     print("\nCreating plots...")
@@ -359,3 +392,7 @@ if __name__ == '__main__':
     print(f"  - pairwise_forward_sft_summary.png")
     print(f"  - diagnostic_pairwise_forward_sft_summary.png")
     print(f"{'='*50}")
+
+
+if __name__ == "__main__":
+    main()

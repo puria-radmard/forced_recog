@@ -132,12 +132,12 @@ def run_elicit_choices(
             print(f"Step: {step}, Suffix: {artifact_suffix}")
             print(f"{'='*60}")
             
+            # Apply this specific LoRA
+            chat_wrapper = download_and_apply_lora(
+                chat_wrapper, wandb_run_name, artifact_suffix
+            )
+
             try:
-                # Apply this specific LoRA
-                chat_wrapper = download_and_apply_lora(
-                    chat_wrapper, wandb_run_name, artifact_suffix
-                )
-                
                 # Run elicitation with this adapter
                 elicit_choices_for_split(
                     chat_wrapper=chat_wrapper,

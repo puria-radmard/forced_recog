@@ -51,8 +51,7 @@ def process_to_choice_format(results_df: pd.DataFrame,
         # Normalize probabilities to sum to 1
         total_prob = row['prob_choice_1'] + row['prob_choice_2']
         if total_prob == 0:
-            print(f"Warning: Zero total probability for row {idx}, skipping")
-            continue
+            raise Exception(f"Warning: Zero total probability for row {idx}, skipping")
             
         prob_choice_1_norm = row['prob_choice_1'] / total_prob
         prob_choice_2_norm = row['prob_choice_2'] / total_prob
@@ -108,7 +107,7 @@ def run_choice_model_mcmc(choice_data: pd.DataFrame,
         n_warmup: Number of warmup samples
         
     Returns:
-        Dictionary with posterior samples and diagnostics
+        Dictionary with posterior samples, diagnostics, and aggregated statistics for plotting
     """
     
     print(f"\nChoice Model MCMC Setup:")
@@ -149,6 +148,15 @@ def run_choice_model_mcmc(choice_data: pd.DataFrame,
     kappa_samples = trace.posterior['kappa'].values.flatten()
     summary = az.summary(trace)
     
+    # Calculate aggregated statistics for plotting (NEW)
+    theta_mean = np.mean(theta_samples)
+    theta_std = np.std(theta_samples)
+    prob_theta_positive = (theta_samples > 0).mean()
+    
+    alpha_mean = np.mean(alpha_samples)
+    alpha_std = np.std(alpha_samples)
+    prob_alpha_positive = (alpha_samples > 0).mean()
+    
     # Diagnostics
     r_hat_theta = float(summary.loc['theta', 'r_hat'])
     r_hat_alpha = float(summary.loc['alpha', 'r_hat'])
@@ -160,8 +168,8 @@ def run_choice_model_mcmc(choice_data: pd.DataFrame,
     prob_first_bias = (alpha_samples > 0).mean()
     
     print(f"\nMCMC Results:")
-    print(f"  θ (setting preference): {theta_samples.mean():.4f} ± {theta_samples.std():.4f}")
-    print(f"  α (position bias): {alpha_samples.mean():.4f} ± {alpha_samples.std():.4f}")
+    print(f"  θ (setting preference): {theta_mean:.4f} ± {theta_std:.4f}")
+    print(f"  α (position bias): {alpha_mean:.4f} ± {alpha_std:.4f}")
     print(f"  κ (concentration): {kappa_samples.mean():.4f} ± {kappa_samples.std():.4f}")
     print(f"  R-hat: θ={r_hat_theta:.3f}, α={r_hat_alpha:.3f}, κ={r_hat_kappa:.3f}")
     print(f"  Converged: {converged}")
@@ -176,6 +184,13 @@ def run_choice_model_mcmc(choice_data: pd.DataFrame,
         'kappa_samples': kappa_samples,
         'trace': trace,
         'summary': summary,
+        # Aggregated statistics for plotting (NEW)
+        'theta_mean': theta_mean,
+        'theta_std': theta_std,
+        'prob_theta_positive': prob_theta_positive,
+        'alpha_mean': alpha_mean,
+        'alpha_std': alpha_std,
+        'prob_alpha_positive': prob_alpha_positive,
         'diagnostics': {
             'r_hat_theta': r_hat_theta,
             'r_hat_alpha': r_hat_alpha,
@@ -466,29 +481,25 @@ def get_unique_settings(results_df: pd.DataFrame) -> list:
     return sorted(list(settings))
 
 
-
-
-if __name__ == "__main__":
+def main(config_path: str, use_lora: bool = False, lora_run_name: str = None, artifact_name: str = None):
+    """
+    Main function for choice model analysis - can be called from other scripts.
     
-    if len(sys.argv) not in [2, 4]:
-        print("Usage:")
-        print("  Base model: python choice_model_analysis.py /path/to/config.yaml")
-        print("  With LoRA:  python choice_model_analysis.py /path/to/config.yaml <wandb_run_name> <artifact_name>")
-        sys.exit(1)
+    Args:
+        config_path: Path to configuration YAML file
+        use_lora: Whether to use LoRA results
+        lora_run_name: WandB run name for LoRA (if use_lora=True)
+        artifact_name: Artifact name for LoRA (if use_lora=True)
+    """
     
-    # Load configuration
-    config_path = sys.argv[1]
-    use_lora = len(sys.argv) == 4
+    if use_lora and (lora_run_name is None or artifact_name is None):
+        raise ValueError("lora_run_name and artifact_name must be provided when use_lora=True")
     
     if use_lora:
-        lora_run_name = sys.argv[2]
-        artifact_name = sys.argv[3]
         print(f"Running choice model analysis on LoRA results:")
         print(f"  WandB Run: {lora_run_name}")
         print(f"  Artifact: {artifact_name}")
     else:
-        lora_run_name = None
-        artifact_name = None
         print("Running choice model analysis on base model results")
     
     args = YamlConfig(config_path)
@@ -553,3 +564,25 @@ if __name__ == "__main__":
     print(f"\n{'='*70}")
     print("Choice Model Analysis Complete!")
     print(f"{'='*70}")
+    
+    return split_results
+
+
+if __name__ == "__main__":
+    
+    if len(sys.argv) not in [2, 4]:
+        print("Usage:")
+        print("  Base model: python -m analyse_choices /path/to/config.yaml")
+        print("  With LoRA:  python -m analyse_choices /path/to/config.yaml <wandb_run_name> <artifact_name>")
+        sys.exit(1)
+    
+    # Load configuration
+    config_path = sys.argv[1]
+    use_lora = len(sys.argv) == 4
+    
+    if use_lora:
+        lora_run_name = sys.argv[2]
+        artifact_name = sys.argv[3]
+        main(config_path, use_lora=True, lora_run_name=lora_run_name, artifact_name=artifact_name)
+    else:
+        main(config_path, use_lora=False)
