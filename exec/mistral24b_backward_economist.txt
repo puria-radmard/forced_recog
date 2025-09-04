@@ -1,0 +1,3 @@
+# modal run backward_sft.py configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
+
+python -m backward_sft configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42

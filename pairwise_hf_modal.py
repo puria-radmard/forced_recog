@@ -65,6 +65,7 @@ def run_elicit_choices(
     args_name: str,
     wandb_run_name: Optional[str] = None,
     artifact_name: Optional[str] = None,
+    continue_mode: bool = False,
 ):
     """
     Run pairwise choice elicitation (base model or with LoRA).
@@ -77,6 +78,11 @@ def run_elicit_choices(
         print(f"  Artifact: {artifact_name}")
     else:
         print("Running with base model")
+
+    if continue_mode:
+        print("Continue mode: Will resume from existing results")
+    else:
+        print("Fresh run: Will create new result files")
 
     # Load model
     print(f"Loading model: {model_name}")
@@ -130,14 +136,16 @@ def run_elicit_choices(
             print(f"\n{'='*60}")
             print(f"Processing artifact: {artifact.name}")
             print(f"Step: {step}, Suffix: {artifact_suffix}")
+            if continue_mode:
+                print("Continue mode: Will resume from existing results for this artifact")
             print(f"{'='*60}")
             
-            # Apply this specific LoRA
-            chat_wrapper = download_and_apply_lora(
-                chat_wrapper, wandb_run_name, artifact_suffix
-            )
-
             try:
+                # Apply this specific LoRA
+                chat_wrapper = download_and_apply_lora(
+                    chat_wrapper, wandb_run_name, artifact_suffix
+                )
+                
                 # Run elicitation with this adapter
                 elicit_choices_for_split(
                     chat_wrapper=chat_wrapper,
@@ -151,6 +159,7 @@ def run_elicit_choices(
                     lora_run_name=wandb_run_name,
                     artifact_name=artifact_suffix,
                     results_dir="/results/results",
+                    continue_mode=continue_mode,
                 )
                 
                 print(f"✅ Completed processing artifact: {artifact_suffix}")
@@ -164,7 +173,7 @@ def run_elicit_choices(
             chat_wrapper.model = chat_wrapper.model.unload()
     
     else:
-            
+        # Single artifact mode or base model
         if use_lora:
             # Single artifact mode
             chat_wrapper = download_and_apply_lora(chat_wrapper, wandb_run_name, artifact_name)
@@ -181,6 +190,7 @@ def run_elicit_choices(
             lora_run_name=wandb_run_name,
             artifact_name=artifact_name,
             results_dir="/results/results",
+            continue_mode=continue_mode,
         )
 
     print("Choice elicitation complete!")
@@ -193,17 +203,23 @@ def main(*arglist):
     Local entrypoint - runs on your machine.
     Launches remote choice elicitation.
     """
-    if len(arglist) not in [1, 3]:
+    # Parse command line arguments
+    continue_mode = len(arglist) > 0 and arglist[-1] == "continue"
+    
+    # Determine effective argument count (excluding 'continue' if present)
+    effective_argc = len(arglist) - (1 if continue_mode else 0)
+    
+    if effective_argc not in [1, 3]:
         raise ValueError(
             "Usage:\n"
-            "  Base model: modal run elicit_choices_modal.py /path/to/yaml/args.yaml\n"
-            "  With LoRA:  modal run elicit_choices_modal.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_name>"
+            "  Base model: modal run elicit_choices_modal.py /path/to/yaml/args.yaml [continue]\n"
+            "  With LoRA:  modal run elicit_choices_modal.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_name> [continue]"
         )
 
     config_path = arglist[0]
     args = YamlConfig(config_path)
 
-    if len(arglist) == 3:
+    if effective_argc == 3:
         wandb_run_name = arglist[1]
         artifact_name = arglist[2]
     else:
@@ -211,6 +227,11 @@ def main(*arglist):
         artifact_name = None
 
     print("Starting Modal choice elicitation job...")
+    if continue_mode:
+        print("Continue mode: Will resume from existing results")
+    else:
+        print("Fresh run: Will create new result files")
+        
     result = run_elicit_choices.remote(
         model_name=args.model_name,
         dataset=args.dataset,
@@ -220,8 +241,8 @@ def main(*arglist):
         args_name=args.args_name,
         wandb_run_name=wandb_run_name,
         artifact_name=artifact_name,
+        continue_mode=continue_mode,
     )
 
     print("Remote choice elicitation completed!")
     return result
-

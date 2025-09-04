@@ -3,20 +3,20 @@
 ############################################################################
 
 ## modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
-modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 24 
+## modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 24 
 modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 420
 
 ############################################################################
 
 ## modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml
 ## modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed42 all
-modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed24 all
+## modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed24 all
 modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed420 all
 
 ############################################################################
 
 # python -m analyse_choices_summary configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed42
-python -m analyse_choices_summary configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed24
+# python -m analyse_choices_summary configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed24
 python -m analyse_choices_summary configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed420
 
 ############################################################################

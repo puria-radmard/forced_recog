@@ -17,7 +17,7 @@ def parse_forward_sft_key(sft_key: str):
     return temp, style_str
     
 
-def train_step(model, tokenizer, batch_pairs, max_seq_length, device):
+def train_step_forward(model, tokenizer, batch_pairs, max_seq_length, device):
     """Perform one training step."""
     model.train()
     

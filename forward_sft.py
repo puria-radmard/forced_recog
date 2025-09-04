@@ -11,7 +11,7 @@ import wandb
 from model.load import load_model
 from sft_utils.forward_data import load_sft_data, create_training_pairs
 from sft_utils.lora import setup_lora_model, save_lora_as_artifact
-from sft_utils.train import train_step, parse_forward_sft_key
+from sft_utils.train import train_step_forward, parse_forward_sft_key
 from utils.util import YamlConfig
 
 # Define Modal app
@@ -144,15 +144,8 @@ def run_forward_sft(
             'model_name': model_name,
             'temperature': temp,
             'style': style,
-            'lora_r': lora_r,
-            'lora_alpha': lora_alpha,
-            'lora_dropout': lora_dropout,
-            'learning_rate': learning_rate,
-            'num_epochs': num_epochs,
-            'batch_size': batch_size,
-            'max_seq_length': max_seq_length,
-            'max_steps': max_steps,
             'seed': seed_num,
+            **sft_config,
         }
     )
 
@@ -182,7 +175,7 @@ def run_forward_sft(
             
             # Training step
             optimizer.zero_grad()
-            loss = train_step(
+            loss = train_step_forward(
                 lora_model, 
                 chat_wrapper.tokenizer, 
                 batch_pairs,

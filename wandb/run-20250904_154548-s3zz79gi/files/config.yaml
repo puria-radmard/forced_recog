@@ -1,0 +1,103 @@
+_wandb:
+    value:
+        cli_version: 0.21.3
+        e:
+            wx24rhd5ex14aqwwn3j8ecdkylcp9guf:
+                args:
+                    - configs/mistral24b_forward_training.yaml
+                    - temp0.0_styleeconomist
+                    - "42"
+                cpu_count: 16
+                cpu_count_logical: 32
+                cudaVersion: "12.5"
+                disk:
+                    /:
+                        total: "263624122368"
+                        used: "50288914432"
+                email: pr450@cam.ac.uk
+                executable: /scratch/anaconda3/envs/myenv/bin/python
+                git:
+                    commit: fa6a2b8f30416d29a731b33fc21d2bc5add19cf6
+                gpu: NVIDIA RTX A5000
+                gpu_count: 2
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 8192
+                      memoryTotal: "25757220864"
+                      name: NVIDIA RTX A5000
+                      uuid: GPU-1791a6c7-6fc1-bc6e-2044-468c38566b15
+                    - architecture: Ampere
+                      cudaCores: 8192
+                      memoryTotal: "25757220864"
+                      name: NVIDIA RTX A5000
+                      uuid: GPU-ae573233-dfff-33b9-58c5-1f9ab99fcb35
+                host: mirzakhani
+                memory:
+                    total: "201182593024"
+                os: Linux-5.15.0-139-generic-x86_64-with-glibc2.31
+                program: -m backward_sft
+                python: CPython 3.11.13
+                root: /scratch/gr_repos/forced_recog
+                startedAt: "2025-09-04T14:45:48.944726Z"
+                writerId: wx24rhd5ex14aqwwn3j8ecdkylcp9guf
+        m: []
+        python_version: 3.11.13
+        t:
+            "1":
+                - 1
+                - 5
+                - 11
+                - 49
+                - 53
+                - 71
+                - 98
+            "2":
+                - 1
+                - 5
+                - 11
+                - 49
+                - 53
+                - 71
+                - 98
+            "3":
+                - 13
+                - 16
+            "4": 3.11.13
+            "5": 0.21.3
+            "6": 4.53.1
+            "12": 0.21.3
+            "13": linux-x86_64
+batch_size:
+    value: 1
+dataset:
+    value: cnn_dailymail
+learning_rate:
+    value: 0.0001
+lora_alpha:
+    value: 32
+lora_dropout:
+    value: 0.1
+lora_r:
+    value: 16
+max_seq_length:
+    value: 2048
+max_steps:
+    value: 150
+model_name:
+    value: mistralai/Mistral-Small-24B-Instruct-2501
+num_epochs:
+    value: 2
+run_name:
+    value: mistral24b_forward_training
+save_frequency:
+    value: 15
+seed:
+    value: "42"
+target_modules:
+    value:
+        - q_proj
+        - v_proj
+target_style:
+    value: economist
+target_temp:
+    value: 0

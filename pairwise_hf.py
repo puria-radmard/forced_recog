@@ -3,7 +3,7 @@ import os
 import yaml
 import torch
 from tqdm import tqdm
-from typing import List, Optional
+from typing import List, Optional, Set, Tuple, Dict
 import sys
 import copy
 
@@ -14,11 +14,21 @@ from model.base import ChatTemplateWrapper
 from sft_utils.lora import download_and_apply_lora
 
 from prompts import (
-    DETECTION_SYSTEM_PROMPT, DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT, DETECTION_PROMPT_TEMPLATE_VS_MODEL_QUESTION, DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY
+    DETECTION_SYSTEM_PROMPT, DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT, 
+    DETECTION_PROMPT_TEMPLATE_VS_MODEL_QUESTION, DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY
 )
 
 from utils.elicit import get_choice_token_logits_from_token_ids
 from utils.util import YamlConfig
+
+
+
+document_columns = [
+    'document_idx', 
+    'summary1_temp', 'summary1_trial', 'summary1_style',
+    'summary2_temp', 'summary2_trial', 'summary2_style',
+    'prob_choice_1', 'prob_choice_2', 
+]
 
 
 def get_choice_tokens(chat_wrapper: ChatTemplateWrapper) -> List[List[int]]:
@@ -41,6 +51,43 @@ def get_choice_tokens(chat_wrapper: ChatTemplateWrapper) -> List[List[int]]:
     return choice_tokens
 
 
+def load_completion_status(results_file: str) -> Dict[int, Set[Tuple]]:
+    """
+    Load completion status from existing CSV file.
+    
+    Args:
+        results_file: Path to the CSV file
+        
+    Returns:
+        Dictionary mapping document_idx to set of completed (setting_key_1, setting_key_2) pairs
+    """
+    if not os.path.exists(results_file):
+        return {}
+    
+    try:
+        df = pd.read_csv(results_file)
+    except Exception as e:
+        raise ValueError(f"Failed to read existing CSV {results_file}: {e}")
+    
+    # Validate CSV structure
+    if list(df.columns) != document_columns:
+        raise ValueError(
+            f"Invalid columns in {results_file}. "
+            f"Expected {document_columns}, got {list(df.columns)}"
+        )
+    
+    completed = {}
+    for _, row in df.iterrows():
+        doc_idx = row['document_idx']
+        key1 = (row['summary1_temp'], row['summary1_trial'], row['summary1_style'])
+        key2 = (row['summary2_temp'], row['summary2_trial'], row['summary2_style'])
+        
+        if doc_idx not in completed:
+            completed[doc_idx] = set()
+        completed[doc_idx].add((key1, key2))
+    
+    return completed
+
 
 def elicit_choices_for_split(
     chat_wrapper: ChatTemplateWrapper,
@@ -53,7 +100,8 @@ def elicit_choices_for_split(
     use_lora: bool = False,
     lora_run_name: str = None,
     artifact_name: str = None,
-    results_dir: Optional[str] = None
+    results_dir: Optional[str] = None,
+    continue_mode: bool = False
 ) -> None:
     """
     Elicit pairwise self-recognition choices for a dataset split.
@@ -69,6 +117,7 @@ def elicit_choices_for_split(
         use_lora: Whether to use LoRA adapters
         lora_run_name: WandB run name for LoRA adapters
         artifact_name: Artifact name for LoRA adapters
+        continue_mode: Whether to continue from existing results
     """
     # Determine output directory based on whether using LoRA
     results_dir = results_dir or 'results_and_data/results'
@@ -81,16 +130,24 @@ def elicit_choices_for_split(
         results_file = f"{output_dir}/choice_results.csv"
         print(f"Using base model - saving to: {results_file}")
     
-    # Create output directory and initialize results file
+    # Create output directory
     os.makedirs(output_dir, exist_ok=True)
 
-    header_df = pd.DataFrame(columns=[
-        'document_idx', 
-        'summary1_temp', 'summary1_trial', 'summary1_style',
-        'summary2_temp', 'summary2_trial', 'summary2_style',
-        'prob_choice_1', 'prob_choice_2', 
-    ])
-    header_df.to_csv(results_file, index=False)
+    # Load completion status if in continue mode
+    completion_status = {}
+    if continue_mode:
+        completion_status = load_completion_status(results_file)
+        if completion_status:
+            print(f"Continue mode: Found existing results for {len(completion_status)} documents")
+        else:
+            print("Continue mode: No existing results found, starting fresh")
+            header_df = pd.DataFrame(columns=document_columns)
+            header_df.to_csv(results_file, index=False)
+    else:
+        # Create fresh CSV file
+        header_df = pd.DataFrame(columns=document_columns)
+        header_df.to_csv(results_file, index=False)
+        print("Fresh run: Created new results file")
 
     # Get choice tokens
     choice_tokens = get_choice_tokens(chat_wrapper)
@@ -110,33 +167,32 @@ def elicit_choices_for_split(
         summaries = {}
         for temp, num_trial, style in zip(temps, num_trials, styles):
             for trial_idx in range(num_trial):
-                try:
-                    # summary_df = load_model_summaries(run_name, split_name, temp, trial_idx, style)
-                    summary_df = all_summaries[(temp, trial_idx, style)]
-                    # Find this document's summary
-                    doc_summary = summary_df[summary_df['document_idx'] == document_idx]
-                    if len(doc_summary) > 0:
-                        summaries[(temp, trial_idx, style)] = doc_summary['summary'].iloc[0]
-                except FileNotFoundError:
-                    print(f"Warning: Missing summary file for T={temp}, style = {style}, trial={trial_idx}")
-                    continue
-        
+                summary_df = all_summaries[(temp, trial_idx, style)]
+                # Find this document's summary
+                doc_summary = summary_df[summary_df['document_idx'] == document_idx]
+                if len(doc_summary) > 0:
+                    summaries[(temp, trial_idx, style)] = doc_summary['summary'].iloc[0]
+    
         if len(summaries) == 0:
+            continue
+
+        # Get all possible comparison pairs for this document
+        all_keys = list(summaries.keys())
+        expected_pairs = set()
+        for setting_key_1 in all_keys:
+            for setting_key_2 in all_keys:
+                if setting_key_1 != setting_key_2:
+                    expected_pairs.add((setting_key_1, setting_key_2))
+
+        # Check completion status for this document
+        completed_pairs = completion_status.get(document_idx, set())
+        
+        # Skip entire document if all expected pairs are completed
+        if continue_mode and expected_pairs.issubset(completed_pairs):
             continue
 
         torch.cuda.empty_cache()
 
-        # # FIXME: prompt caching is not working :(
-        # # try:
-        # #     cache_info = chat_wrapper.create_prompt_cache(
-        # #         system_prompt=DETECTION_SYSTEM_PROMPT,
-        # #         user_message=DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PROMPT.format(article = article),
-        # #         user_message_unfinished = True
-        # #     )
-        # # except torch.OutOfMemoryError:
-        # #     continue
-
-        all_keys = list(summaries.keys())
         for setting_key_1 in all_keys:
             for setting_key_2 in all_keys:
 
@@ -144,10 +200,13 @@ def elicit_choices_for_split(
                 if setting_key_1 == setting_key_2:
                     break
 
+                # Skip this specific comparison if already completed
+                if continue_mode and (setting_key_1, setting_key_2) in completed_pairs and (setting_key_2, setting_key_1) in completed_pairs:
+                    continue
+
                 summary_1 = summaries[setting_key_1]
                 summary_2 = summaries[setting_key_2]
                 
-
                 forward_prompt_raw = (
                     DETECTION_PROMPT_TEMPLATE_VS_MODEL_BODY.format(summary_1 = summary_1, summary_2 = summary_2) 
                     + DETECTION_PROMPT_TEMPLATE_VS_MODEL_QUESTION
@@ -168,31 +227,11 @@ def elicit_choices_for_split(
                     prefiller=""
                 )
 
-                # # FIXME: prompt caching is not working :(
-                # # assert forward_prompt_full.startswith(cache_info['formatted_prompt'])
-                # # forward_prompt = forward_prompt_full.removeprefix(cache_info['formatted_prompt'])
-
-                # # assert backward_prompt_full.startswith(cache_info['formatted_prompt'])
-                # # backward_prompt = backward_prompt_full.removeprefix(cache_info['formatted_prompt'])
-
-                # # both_outputs = chat_wrapper.forward(
-                # #     chats=[forward_prompt, backward_prompt],
-                # #     past_key_values=copy.deepcopy(cache_info["cache"]),
-                # # )
-                # # both_probs = get_choice_token_logits_from_token_ids(both_outputs.logits, choice_tokens)
-                # # forward_probs, backward_probs = both_probs
-
-                # # # XXX: these were used as test cases
-                # # # front_probs_og = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[forward_prompt], past_key_values=copy.deepcopy(cache_info["cache"])).logits, choice_tokens)
-                # # # back_probs_og = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[backward_prompt], past_key_values=copy.deepcopy(cache_info["cache"])).logits, choice_tokens)
-
                 try:
                     forward_probs = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[forward_prompt_full]).logits, choice_tokens)
                     backward_probs = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[backward_prompt_full]).logits, choice_tokens)
                 except torch.OutOfMemoryError:
                     continue
-
-                # # chat_wrapper.generate([backward_prompt], )
 
                 # Store results
                 new_results = pd.DataFrame([
@@ -223,17 +262,29 @@ def elicit_choices_for_split(
                 # Save results
                 new_results.to_csv(results_file, mode='a', header=False, index=False)
 
+                # Update completion status (for this run)
+                if document_idx not in completion_status:
+                    completion_status[document_idx] = set()
+                completion_status[document_idx].add((setting_key_1, setting_key_2))
+                completion_status[document_idx].add((setting_key_2, setting_key_1))
+
 
 if __name__ == "__main__":
 
-    if len(sys.argv) not in [2, 4]:
+    # Parse command line arguments
+    continue_mode = len(sys.argv) > 1 and sys.argv[-1] == "continue"
+    
+    # Determine effective argument count (excluding 'continue' if present)
+    effective_argc = len(sys.argv) - (1 if continue_mode else 0)
+
+    if effective_argc not in [2, 4]:
         print("Usage:")
-        print("  Base model: python -m elicit_choices.py /path/to/yaml/args.yaml")
-        print("  With LoRA:  python -m elicit_choices.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_name>")
+        print("  Base model: python -m pairwise_hf.py /path/to/yaml/args.yaml [continue]")
+        print("  With LoRA:  python -m pairwise_hf.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_name> [continue]")
         sys.exit(1)
     
     config_path = sys.argv[1]
-    use_lora = len(sys.argv) == 4
+    use_lora = effective_argc == 4
     
     if use_lora:
         wandb_run_name = sys.argv[2]
@@ -245,6 +296,11 @@ if __name__ == "__main__":
         wandb_run_name = None
         artifact_name = None
         print("Running with base model")
+    
+    if continue_mode:
+        print("Continue mode: Will resume from existing results")
+    else:
+        print("Fresh run: Will create new result files")
     
     args = YamlConfig(config_path)
     
@@ -272,7 +328,8 @@ if __name__ == "__main__":
         run_name=args.args_name,
         use_lora=use_lora,
         lora_run_name=wandb_run_name,
-        artifact_name=artifact_name
+        artifact_name=artifact_name,
+        continue_mode=continue_mode
     )
     
     print("Choice elicitation complete!")
