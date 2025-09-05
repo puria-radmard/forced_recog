@@ -45,7 +45,7 @@ def save_lora_as_artifact(model, step: int, temp: float, style: str, run_name: s
 
 
 
-def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: str, artifact_suffix: str):
+def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: str, artifact_suffix: str, *_, adapter_name: str = "default"):
     """
     Download LoRA adapters from WandB and apply them to the model.
     
@@ -89,6 +89,7 @@ def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: s
         chat_wrapper.model = PeftModel.from_pretrained(
             chat_wrapper.model,
             adapter_dir,
+            adapter_name=adapter_name,
             is_trainable=False
         )
         print("LoRA adapters applied successfully!")

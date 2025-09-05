@@ -51,7 +51,7 @@ def generate_summaries_for_split(
     # Determine base directory based on whether using LoRA
     results_dir = results_dir or 'results_and_data/results'
     if use_lora:
-        base_dir = f"{results_dir}/main/{run_name}/{split_name}/forward_sft_summaries/{lora_run_name}/{artifact_suffix}"
+        base_dir = f"{results_dir}/main/{run_name}/{split_name}/sfted_summaries/{lora_run_name}/{artifact_suffix}"
         print(f"Using LoRA model - saving to: {base_dir}")
     else:
         base_dir = f"{results_dir}/main/{run_name}/{split_name}/model_summaries"
