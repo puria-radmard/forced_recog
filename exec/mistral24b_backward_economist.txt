@@ -1,3 +1,6 @@
 # modal run backward_sft.py configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
 
-python -m backward_sft configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
+# python -m backward_sft configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
+
+
+python -m generate_hf configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_90

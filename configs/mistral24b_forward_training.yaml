@@ -44,4 +44,3 @@ backwardsft_temp0.0_styleeconomist:
   max_steps: 150
   save_frequency: 15
   batch_size: 1
-  max_seq_length: 2048

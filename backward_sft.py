@@ -1,9 +1,9 @@
-import pandas as pd
+import modal
 import os
+import pandas as pd
 import torch
 from tqdm import tqdm
 from typing import List, Optional, Set, Tuple, Dict
-import sys
 import random
 import wandb
 
@@ -20,6 +20,35 @@ from prompts import (
 )
 
 from utils.util import YamlConfig
+
+# Define Modal app
+app = modal.App("backward-sft")
+
+# Define container image with dependencies
+image = (
+    modal.Image.debian_slim(python_version="3.11")
+    .pip_install([
+        "pandas",
+        "torch", 
+        "transformers",
+        "peft",
+        "wandb",
+        "datasets",
+        "tqdm",
+        "accelerate",
+        "python-dotenv",
+    ])
+    .add_local_python_source("model")
+    .add_local_python_source("sft_utils")
+    .add_local_python_source("utils")
+    .add_local_python_source("prompts")
+    .add_local_python_source("load_data")
+)
+
+# Volume for persistent storage of results
+results_volume = modal.Volume.from_name("results-vol", create_if_missing=True)
+model_volume = modal.Volume.from_name("model-weights-vol", create_if_missing=True)
+data_volume = modal.Volume.from_name("data-vol", create_if_missing=True)
 
 
 def load_summaries_for_backward_sft(
@@ -151,15 +180,12 @@ def create_backward_training_pairs(
     return training_pairs
 
 
-
 def train_step_backward(
     model,
     tokenizer, 
     batch_pairs: List[dict],
-    max_seq_length: int,
     device: str
 ) -> torch.Tensor:
-    """Training step for backward SFT - simplified to match train_step_forward pattern."""
     """Training step for backward SFT - tokenize inputs and targets separately then concatenate."""
     assert len(batch_pairs) == 1, "Currently only supports batch_size=1"
     
@@ -203,7 +229,18 @@ def train_step_backward(
     return outputs.loss
 
 
-
+@app.function(
+    image=image,
+    gpu="A100-80GB",
+    volumes={"/results": results_volume, '/models': model_volume, '/data': data_volume},
+    secrets=[
+        modal.Secret.from_dotenv(),                 # Contains WANDB_PROJECT
+        modal.Secret.from_name("wandb-secret"),
+        modal.Secret.from_name("huggingface-secret")
+    ],
+    timeout=10800,  # 3 hours
+    memory=32768,   # 32GB RAM
+)
 def run_backward_sft(
     args_name: str,
     dataset: str,
@@ -220,13 +257,16 @@ def run_backward_sft(
     learning_rate: float,
     num_epochs: int,
     batch_size: int,
-    max_seq_length: int,
     max_steps: int,
     save_frequency: int,
-    seed_num: int = 42,
-    results_dir: Optional[str] = None
+    seed_num: int,
 ):
-    """Run backward SFT training locally."""
+    """
+    Run backward SFT training on Modal infrastructure.
+    This function contains the entire training loop.
+    """
+    # Assert batch_size = 1 for backward SFT
+    assert batch_size == 1, f"Backward SFT currently only supports batch_size=1, got {batch_size}"
     
     # Set seeds for reproducibility
     random.seed(seed_num)
@@ -239,15 +279,22 @@ def run_backward_sft(
     if not project_name:
         raise ValueError("WANDB_PROJECT environment variable not set")
     
-    
-    results_dir = results_dir or 'results_and_data/results'
-    
     # Create WandB run name
     run_name = f"{args_name}_backwardsft_temp{target_temp}_style{target_style}_seed{seed_num}"
     
+    # Create output directory and log run
+    base_dir = f"/results/results/main/{args_name}/train"
+    runs_file = os.path.join(base_dir, "backwardsft_runs.txt")
+    os.makedirs(base_dir, exist_ok=True)
+    
+    # Append run name to runs file
+    with open(runs_file, 'a') as f:
+        f.write(f"{run_name}\n")
+    print(f"Logged run to: {runs_file}")
+    
     # Load model
     print(f"Loading model: {model_name}")
-    chat_wrapper = load_model(model_name, device='auto')
+    chat_wrapper = load_model(model_name, device='auto', override_path='/models')
     device = chat_wrapper.model.device
     
     # Load dataset
@@ -257,7 +304,7 @@ def run_backward_sft(
     # Load all summaries
     print("Loading all summaries...")
     all_summaries = load_summaries_for_backward_sft(
-        args_name, 'train', temps, num_trials, styles, results_dir
+        args_name, 'train', temps, num_trials, styles, results_dir='/results/results'
     )
     
     # Create training pairs
@@ -280,7 +327,6 @@ def run_backward_sft(
         'learning_rate': learning_rate,
         'num_epochs': num_epochs,
         'batch_size': batch_size,
-        'max_seq_length': max_seq_length,
         'max_steps': max_steps,
         'save_frequency': save_frequency
     }
@@ -306,6 +352,7 @@ def run_backward_sft(
         }
     )
     
+    # Log model info to WandB
     wandb.log({
         "total_examples": len(training_pairs),
         "trainable_parameters": trainable_params
@@ -333,7 +380,6 @@ def run_backward_sft(
                 lora_model, 
                 chat_wrapper.tokenizer, 
                 batch_pairs,
-                max_seq_length,
                 device
             )
             loss.backward()
@@ -349,11 +395,10 @@ def run_backward_sft(
                 "epoch": epoch + 1
             })
             
-            # Save LoRA adapters periodically
+            # Save LoRA adapters as artifact every save_frequency steps
             if step % save_frequency == 0:
                 print(f"Step {step}: Loss = {current_loss:.4f}")
-                # You can implement save_lora_as_artifact for local saving
-                # save_lora_as_artifact(lora_model, step, target_style, run_name)
+                save_lora_as_artifact(lora_model, step, target_temp, target_style, run_name)
             
             if (max_steps is not None) and (step >= max_steps):
                 break
@@ -361,24 +406,35 @@ def run_backward_sft(
         if (max_steps is not None) and (step >= max_steps):
             break
     
-    print(f"Training complete! Total steps: {step}")
+    # Final artifact save
+    print(f"Training complete! Saving final adapters...")
+    save_lora_as_artifact(lora_model, step, target_temp, target_style, run_name)
+    
+    print(f"Total steps: {step}")
+    
+    # Commit volume to persist changes
+    results_volume.commit()
+    
     wandb.finish()
     
     return {
         "run_name": run_name,
-        "total_steps": step,
-        "lora_model": lora_model
+        "total_steps": step
     }
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print(f"Usage: python backward_sft.py /path/to/yaml/args.yaml <target_temp_and_style> [seed]. Currently detected {len(sys.argv)} args")
-        sys.exit(1)
+@app.local_entrypoint()
+def main(*arglist):
+    """
+    Local entrypoint - runs on your machine.
+    Parses config and launches remote training.
+    """
+    if len(arglist) != 3:
+        raise ValueError("Usage: modal run backward_sft_modal.py yaml_path.yaml temp{temp}_style{style} {seed}")
     
-    config_path = sys.argv[1]
-    sft_key = sys.argv[2]  # e.g., "temp0.7_styleconcise"
-    seed_num = int(sys.argv[3])
+    config_path = arglist[0]
+    sft_key = arglist[1]  # e.g., "temp0.7_styleconcise"
+    seed_num = int(arglist[2])
 
     target_temp, target_style = parse_forward_sft_key(sft_key)
 
@@ -391,15 +447,17 @@ if __name__ == "__main__":
     
     sft_config = getattr(args, sft_config_key).__dict__
     
-    print("Starting backward SFT training...")
+    print("Starting Modal backward SFT training job...")
     print(f"Config: {config_path}")
+    print(f"Target temp: {target_temp}")
     print(f"Target style: {target_style}")
     print(f"Args name: {args.args_name}")
     print(f"Dataset: {args.dataset}")
     print(f"Model: {args.model_name}")
     print(f"Seed: {seed_num}")
     
-    result = run_backward_sft(
+    # Launch remote training
+    result = run_backward_sft.remote(
         args_name=args.args_name,
         dataset=args.dataset,
         model_name=args.model_name,
@@ -415,7 +473,6 @@ if __name__ == "__main__":
         learning_rate=sft_config['learning_rate'],
         num_epochs=sft_config['num_epochs'],
         batch_size=sft_config['batch_size'],
-        max_seq_length=sft_config['max_seq_length'],
         max_steps=sft_config['max_steps'],
         save_frequency=sft_config['save_frequency'],
         seed_num=seed_num
