@@ -9,6 +9,13 @@ splits:
   train: 100
   test: 300
 
+# temps: [0.0]
+# num_trials: [1]
+# styles: [natural]
+
+# splits:
+#   test: 300
+
 forwardsft_temp0.0_stylesun:
   lora_r: 16
   lora_alpha: 32
@@ -41,7 +48,7 @@ backwardsft_temp0.0_styleeconomist:
   target_modules: ["q_proj", "v_proj"]
   learning_rate: 0.0001
   num_epochs: 2
-  max_steps: 150
+  max_steps: 800
   save_frequency: 15
   batch_size: 1
 
@@ -53,6 +60,6 @@ backwardsft_temp0.0_stylesun:
   target_modules: ["q_proj", "v_proj"]
   learning_rate: 0.0001
   num_epochs: 2
-  max_steps: 150
+  max_steps: 800
   save_frequency: 15
   batch_size: 1

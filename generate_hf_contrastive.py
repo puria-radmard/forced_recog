@@ -207,7 +207,6 @@ def contrastive_generate_summary_cached(
             # Decode and accumulate text
             token_text = tokenizer.decode([next_token.item()], skip_special_tokens=True)
             generated_text += token_text
-            print(generated_text)
     
     return generated_text.strip().replace('\n', '\\n')
 

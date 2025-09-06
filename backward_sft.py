@@ -299,7 +299,7 @@ def run_backward_sft(
     
     # Load dataset
     print(f"Loading dataset: {dataset}")
-    train_data, _, _ = load_dataset(dataset, splits=['train'])
+    train_data, _, _ = load_dataset(dataset, splits=['train'], datasets_dir="/data")
     
     # Load all summaries
     print("Loading all summaries...")

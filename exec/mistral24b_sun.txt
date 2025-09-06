@@ -4,18 +4,18 @@
 
 ## modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_stylesun 42
 ## modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_stylesun 24 
-modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_stylesun 420
+## modal run forward_sft.py configs/mistral24b_forward_training.yaml temp0.0_stylesun 420
 
 ############################################################################
 
 ## modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml
 ## modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_stylesun_seed42 all continue
 ## modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_stylesun_seed24 all
-modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_stylesun_seed420 all
+## modal run pairwise_hf_modal.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_stylesun_seed420 all
 
 ############################################################################
 
-# python -m analyse_choices_summary configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_stylesun_seed42
+## python -m analyse_choices_summary configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_stylesun_seed42
 ## python -m analyse_choices_summary configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_stylesun_seed24
 python -m analyse_choices_summary configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_stylesun_seed420
 
