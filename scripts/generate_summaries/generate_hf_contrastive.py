@@ -6,6 +6,8 @@ from tqdm import tqdm
 from typing import Optional
 import sys
 
+from dotenv import load_dotenv
+
 from load_data import load_dataset
 from model.load import load_model
 from model.base import ChatTemplateWrapper
@@ -216,6 +218,8 @@ if __name__ == "__main__":
     
     # Determine effective argument count (excluding 'continue' if present)
     effective_argc = len(sys.argv) - (1 if continue_mode else 0)
+
+    load_dotenv()
     
     if effective_argc != 4:
         print("Usage:")

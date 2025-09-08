@@ -15,6 +15,7 @@ from prompts import DATASET_SYSTEM_PROMPTS, SUMMARIZE_PROMPT_TEMPLATES, STYLE_PR
 from utils.util import YamlConfig
 
 
+@torch.no_grad()
 def generate_summaries_for_split(
     chat_wrapper: ChatTemplateWrapper,
     split_data: pd.DataFrame,
@@ -146,7 +147,7 @@ def generate_summaries_for_split(
                 generation_result = chat_wrapper.generate(
                     chats=[extra_chat_with_tags],  # Empty string starts from cache point
                     past_key_values=copy.deepcopy(cache_info["cache"]),
-                    past_key_values_str=cache_info["formatted_prompt"],
+                    past_key_values_tokens=cache_info["input_ids"],
                     max_new_tokens=1024,
                     temperature=temp,
                     do_sample=(temp > 0.0),
@@ -178,8 +179,8 @@ if __name__ == "__main__":
     
     if effective_argc not in [2, 4]:
         print("Usage:")
-        print("  Base model: python -m generate_hf.py /path/to/yaml/args.yaml [continue]")
-        print("  With LoRA:  python -m generate_hf.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_suffix> [continue]")
+        print("  Base model: python -m scripts.generate_summaries.generate_hf.py /path/to/yaml/args.yaml [continue]")
+        print("  With LoRA:  python -m scripts.generate_summaries.generate_hf.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_suffix> [continue]")
         sys.exit(1)
     
     config_path = sys.argv[1]

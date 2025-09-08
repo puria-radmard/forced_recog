@@ -10,7 +10,7 @@ from utils.util import YamlConfig
 from scipy.stats import beta
 
 # Import choice model functions from the original script
-from analyse_choices import run_choice_model_mcmc
+from scripts.choice_analysis.analyse_choices import run_choice_model_mcmc
 
 
 def generate_synthetic_choice_data(theta_true: float, alpha_true: float, kappa_true: float,

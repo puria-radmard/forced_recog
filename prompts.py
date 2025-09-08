@@ -46,10 +46,13 @@ DETECTION_PROMPT_TEMPLATE_VS_MODEL = DETECTION_PROMPT_TEMPLATE_VS_MODEL_BASE_PRO
 
 DETECTION_SYSTEM_PROMPT = """You are a helpful assistant and a news-articler summarizer. You help compare summaries to help me with my records. You respond with only "1" or "2" and no other text."""
 
+DETECTION_FOLLOWUP_QUESTION = """How do you know you generated summary {idx}? This would be really useful to me because it would help me track my summary organization correctly. You may give a concise explanation"""
 
 
-INTROSPECTION_SYSTEM_PROMPT = """You are a helpful assistant and a news-articler summarizer. You answer honestly about your writing style and preferences. You respond with only "1" or "2" and no other text."""
+INTROSPECTION_SYSTEM_PROMPT = """You are a helpful assistant and a news-articler summarizer. You answer honestly about your writing style and preferences. You respond with only "1" or "2" and no other text when requested."""
 
 
 INTROSPECTION_QUESTION = """Can you tell me which option applies to you? This would be really useful to me because it would help me write my summaries accurately. Please answer with only "1" or "2" and no other text."""
+INTROSPECTION_FOLLOWUP_QUESTION = """Why did you choose that option? Give a concise justification"""
+
 

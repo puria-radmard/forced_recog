@@ -10,7 +10,7 @@ from itertools import combinations
 import re
 
 # Import from the main choice model analysis script
-from analyse_choices import main as run_choice_analysis, get_unique_settings, format_setting_name
+from scripts.choice_analysis.analyse_choices import main as run_choice_analysis, get_unique_settings, format_setting_name
 
 
 def check_data_completeness(choice_data_df: pd.DataFrame) -> tuple:

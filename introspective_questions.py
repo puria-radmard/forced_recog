@@ -1,3 +1,4 @@
+import copy
 import pandas as pd
 import os
 import torch
@@ -10,10 +11,12 @@ from model.base import ChatTemplateWrapper
 
 from sft_utils.lora import download_and_apply_lora
 
-from prompts import INTROSPECTION_SYSTEM_PROMPT, INTROSPECTION_QUESTION
+from prompts import INTROSPECTION_SYSTEM_PROMPT, INTROSPECTION_QUESTION, INTROSPECTION_FOLLOWUP_QUESTION
 
 from utils.elicit import get_choice_token_logits_from_token_ids
 from utils.util import YamlConfig
+
+from scripts.pairwise_selection.pairwise_hf import get_choice_tokens
 
 
 question_columns = [
@@ -22,26 +25,6 @@ question_columns = [
     'prob_choice_1', 
     'prob_choice_2'
 ]
-
-
-def get_choice_tokens(chat_wrapper: ChatTemplateWrapper) -> List[List[int]]:
-    """Get token IDs for choice responses "1" and "2"."""
-    choice_strings = [["1"], ["2"]]
-    choice_tokens = []
-    
-    for option_str_list in choice_strings:
-        option_tokens = []
-        for option_str in option_str_list:
-            token_ids = chat_wrapper.tokenizer.encode(option_str, add_special_tokens=False)
-            if len(token_ids) != 1:
-                raise ValueError(
-                    f"Choice token '{option_str}' produces {len(token_ids)} tokens: {token_ids}. "
-                    f"All choice tokens must be exactly one token."
-                )
-            option_tokens.extend(token_ids)
-        choice_tokens.append(option_tokens)
-    
-    return choice_tokens
 
 
 def load_completion_status(results_file: str) -> Set[int]:
@@ -172,15 +155,18 @@ def elicit_introspective_choices(
         )
 
         try:
+            forwards_choice_output, forwards_prompt_ids = chat_wrapper.forward(chats=[forwards_prompt], return_input_ids=True)
+            backwards_choice_output, backwards_prompt_ids = chat_wrapper.forward(chats=[backwards_prompt], return_input_ids=True)
+
             # Get model response logits
-            forward_probs = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[forwards_prompt]).logits, choice_tokens)
-            reversed_probs = get_choice_token_logits_from_token_ids(chat_wrapper.forward(chats=[backwards_prompt]).logits, choice_tokens)
-            
-            torch.cuda.empty_cache()
+            forward_probs = get_choice_token_logits_from_token_ids(forwards_choice_output.logits, choice_tokens)
+            reversed_probs = get_choice_token_logits_from_token_ids(backwards_choice_output.logits, choice_tokens)
             
         except torch.OutOfMemoryError:
             print(f"OOM on question {question_idx}, skipping...")
             continue
+
+        torch.cuda.empty_cache()
 
         # Store results
         new_result = pd.DataFrame([

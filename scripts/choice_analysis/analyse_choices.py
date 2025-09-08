@@ -572,8 +572,8 @@ if __name__ == "__main__":
     
     if len(sys.argv) not in [2, 4]:
         print("Usage:")
-        print("  Base model: python -m analyse_choices /path/to/config.yaml")
-        print("  With LoRA:  python -m analyse_choices /path/to/config.yaml <wandb_run_name> <artifact_name>")
+        print("  Base model: python -m scripts.choice_analysis.analyse_choices /path/to/config.yaml")
+        print("  With LoRA:  python -m scripts.choice_analysis.analyse_choices /path/to/config.yaml <wandb_run_name> <artifact_name>")
         sys.exit(1)
     
     # Load configuration

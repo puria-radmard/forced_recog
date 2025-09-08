@@ -279,8 +279,8 @@ if __name__ == "__main__":
 
     if effective_argc not in [2, 4]:
         print("Usage:")
-        print("  Base model: python -m pairwise_hf.py /path/to/yaml/args.yaml [continue]")
-        print("  With LoRA:  python -m pairwise_hf.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_name> [continue]")
+        print("  Base model: python -m scripts.pairwise_selection.pairwise_hf.py /path/to/yaml/args.yaml [continue]")
+        print("  With LoRA:  python -m scripts.pairwise_selection.pairwise_hf.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_name> [continue]")
         sys.exit(1)
     
     config_path = sys.argv[1]

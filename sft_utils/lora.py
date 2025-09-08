@@ -5,7 +5,6 @@ import wandb
 import os
 import tempfile
 from model.base import ChatTemplateWrapper
-from dotenv import load_dotenv
 
 
 
@@ -45,7 +44,7 @@ def save_lora_as_artifact(model, step: int, temp: float, style: str, run_name: s
 
 
 
-def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: str, artifact_suffix: str, *_, adapter_name: str = "default"):
+def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: str, artifact_suffix: str, *_, adapter_name: str = "default", env_tmp_dir: bool = True):
     """
     Download LoRA adapters from WandB and apply them to the model.
     
@@ -66,24 +65,23 @@ def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: s
     print(f"  Full artifact name: {full_artifact_name}")
     
     # Initialize WandB (need project name from environment)
-    load_dotenv()
     project_name = os.getenv('WANDB_PROJECT')
     if not project_name:
         raise ValueError("WANDB_PROJECT environment variable not set")
     
     # Download artifact to temporary directory
-    with tempfile.TemporaryDirectory() as temp_dir:
+    with tempfile.TemporaryDirectory(dir=os.getenv('TMP_DIR') if env_tmp_dir else None) as temp_dir:
         # Initialize WandB API
         api = wandb.Api()
-        
+
         # Get the artifact directly by name (since names are now globally unique)
         artifact_path = f"{project_name}/{full_artifact_name}:latest"
         artifact = api.artifact(artifact_path)
-        
+
         # Download to temp directory
         adapter_dir = artifact.download(root=temp_dir)
         print(f"Downloaded adapters to: {adapter_dir}")
-        
+
         # Apply LoRA adapters to the model
         print("Applying LoRA adapters to model...")
         chat_wrapper.model = PeftModel.from_pretrained(
@@ -93,5 +91,5 @@ def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: s
             is_trainable=False
         )
         print("LoRA adapters applied successfully!")
-    
+
     return chat_wrapper

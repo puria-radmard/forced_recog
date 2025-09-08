@@ -49,7 +49,7 @@ data_volume = modal.Volume.from_name("data-vol", create_if_missing=True)
     gpu="A100-80GB",
     volumes={"/results": results_volume, '/models': model_volume, '/data': data_volume},
     secrets=[
-        modal.Secret.from_dotenv(),                 # Contains WANDB_PROJECT
+        modal.Secret.from_dotenv('.env.modal'),                 # Contains WANDB_PROJECT
         modal.Secret.from_name("wandb-secret"),
         modal.Secret.from_name("huggingface-secret")
     ],
@@ -234,7 +234,7 @@ def main(*arglist):
     Parses config and launches remote training.
     """
     if len(arglist) != 3:
-        raise ValueError("Usage: modal run forward_sft.py yaml_path.yaml temp{temp}_style{style} {seed}")
+        raise ValueError("Usage: modal run scripts.forward_sft.forward_sft.py yaml_path.yaml temp{temp}_style{style} {seed}")
     
     config_path = arglist[0]
     sft_key = arglist[1]  # e.g., "temp0.7_styleconcise"

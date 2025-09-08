@@ -63,3 +63,27 @@ backwardsft_temp0.0_stylesun:
   max_steps: 800
   save_frequency: 15
   batch_size: 1
+
+backwardsfjsft_temp0.0_styleeconomist:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0005
+  num_epochs: 2
+  max_steps: 800
+  save_frequency: 15
+  batch_size: 1
+
+
+backwardsfjsft_temp0.0_stylesun:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0005
+  num_epochs: 2
+  max_steps: 800
+  save_frequency: 30
+  batch_size: 1
+

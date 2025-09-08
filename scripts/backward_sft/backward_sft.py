@@ -234,7 +234,7 @@ def train_step_backward(
     gpu="A100-80GB",
     volumes={"/results": results_volume, '/models': model_volume, '/data': data_volume},
     secrets=[
-        modal.Secret.from_dotenv(),                 # Contains WANDB_PROJECT
+        modal.Secret.from_dotenv('.env.modal'),                 # Contains WANDB_PROJECT
         modal.Secret.from_name("wandb-secret"),
         modal.Secret.from_name("huggingface-secret")
     ],

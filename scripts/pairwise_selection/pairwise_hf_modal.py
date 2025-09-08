@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 import modal
 
 from typing import List, Optional
@@ -11,7 +10,7 @@ from model.load import load_model
 from sft_utils.lora import download_and_apply_lora
 from load_data import load_dataset
 from utils.util import YamlConfig
-from pairwise_hf import elicit_choices_for_split
+from scripts.pairwise_selection.pairwise_hf import elicit_choices_for_split
 
 
 # Define Modal app
@@ -35,7 +34,7 @@ image = (
     .add_local_python_source("utils")
     .add_local_python_source("prompts")
     .add_local_python_source("load_data")
-    .add_local_python_source("pairwise_hf")  # so we can import elicit_choices_for_split
+    .add_local_python_source("scripts.pairwise_selection.pairwise_hf")  # so we can import elicit_choices_for_split
 )
 
 # Volumes
@@ -49,7 +48,7 @@ data_volume = modal.Volume.from_name("data-vol", create_if_missing=True)
     gpu="A100-80GB",
     volumes={"/results": results_volume, "/models": model_volume, "/data": data_volume},
     secrets=[
-        modal.Secret.from_dotenv(),                 # Contains WANDB_PROJECT
+        modal.Secret.from_dotenv('.env.modal'),                 # Contains WANDB_PROJECT
         modal.Secret.from_name("wandb-secret"),
         modal.Secret.from_name("huggingface-secret")
     ],
@@ -101,7 +100,6 @@ def run_elicit_choices(
         print(f"Finding all LoRA artifacts for run: {wandb_run_name}")
         
         # Initialize WandB API
-        load_dotenv()
         project_name = os.getenv('WANDB_PROJECT')
         api = wandb.Api()
         

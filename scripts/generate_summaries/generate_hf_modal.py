@@ -5,7 +5,7 @@ from model.load import load_model
 from sft_utils.lora import download_and_apply_lora
 from load_data import load_dataset
 from utils.util import YamlConfig
-from generate_hf import generate_summaries_for_split
+from scripts.generate_summaries.generate_hf import generate_summaries_for_split
 
 
 # Define Modal app
@@ -29,7 +29,7 @@ image = (
     .add_local_python_source("utils")
     .add_local_python_source("prompts")
     .add_local_python_source("load_data")
-    .add_local_python_source("generate_hf")  # so we can import generate_hf
+    .add_local_python_source("scripts.generate_summaries.generate_hf")  # so we can import scripts.generate_summaries.generate_hf
 )
 
 # Volumes
@@ -43,7 +43,7 @@ data_volume = modal.Volume.from_name("data-vol", create_if_missing=True)
     gpu="A100-80GB",
     volumes={"/results": results_volume, "/models": model_volume, "/data": data_volume},
     secrets=[
-        modal.Secret.from_dotenv(),                 # Contains WANDB_PROJECT
+        modal.Secret.from_dotenv('.modal.env'),                 # Contains WANDB_PROJECT
         modal.Secret.from_name("wandb-secret"),
         modal.Secret.from_name("huggingface-secret")
     ],
@@ -86,7 +86,7 @@ def run_generation(
 
     # Apply LoRA adapters if requested
     if use_lora:
-        chat_wrapper = download_and_apply_lora(chat_wrapper, wandb_run_name, artifact_suffix)
+        chat_wrapper = download_and_apply_lora(chat_wrapper, wandb_run_name, artifact_suffix, env_tmp_dir=False)
 
     # Load dataset
     print(f"Loading dataset: {dataset}")
@@ -146,8 +146,8 @@ def main(*arglist):
     if effective_argc not in [1, 3]:
         raise ValueError(
             "Usage:\n"
-            "  Base model: modal run generate_hf_modal.py /path/to/yaml/args.yaml [continue]\n"
-            "  With LoRA:  modal run generate_hf_modal.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_suffix> [continue]"
+            "  Base model: modal run scripts.generate_summaries.generate_hf_modal.py /path/to/yaml/args.yaml [continue]\n"
+            "  With LoRA:  modal run scripts.generate_summaries.generate_hf_modal.py /path/to/yaml/args.yaml <wandb_run_name> <artifact_suffix> [continue]"
         )
 
     config_path = arglist[0]

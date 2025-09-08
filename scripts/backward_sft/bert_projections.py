@@ -10,8 +10,6 @@ import torch
 from transformers import AutoModel, AutoTokenizer
 from tqdm import tqdm
 import pickle
-from dotenv import load_dotenv
-import wandb
 
 from utils.util import YamlConfig
 

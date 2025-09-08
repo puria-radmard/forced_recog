@@ -10,7 +10,7 @@ import re
 from collections import defaultdict
 
 # Import from the main choice model analysis script
-from analyse_choices import get_unique_settings, format_setting_name
+from scripts.choice_analysis.analyse_choices import get_unique_settings, format_setting_name
 
 
 def discover_seed_runs(base_results_dir: str, partial_run_name: str) -> list:
@@ -372,7 +372,7 @@ def plot_seed_coverage(aggregated_data: dict, output_dir: str, partial_run_name:
 
 def main():
     if len(sys.argv) != 3:
-        print("Usage: python -m analyse_choices_aggregation /path/to/config.yaml <partial_run_name>")
+        print("Usage: python -m scripts.choice_analysis.scripts.choice_analysis.analyse_choices_aggregation /path/to/config.yaml <partial_run_name>")
         sys.exit(1)
     
     config_path = sys.argv[1]
