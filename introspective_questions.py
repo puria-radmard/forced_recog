@@ -11,12 +11,12 @@ from model.base import ChatTemplateWrapper
 
 from sft_utils.lora import download_and_apply_lora
 
-from prompts import INTROSPECTION_SYSTEM_PROMPT, INTROSPECTION_QUESTION, INTROSPECTION_FOLLOWUP_QUESTION
+from prompts.summary import INTROSPECTION_SYSTEM_PROMPT, INTROSPECTION_QUESTION, INTROSPECTION_FOLLOWUP_QUESTION
 
 from utils.elicit import get_choice_token_logits_from_token_ids
 from utils.util import YamlConfig
 
-from scripts.pairwise_selection.pairwise_hf import get_choice_tokens
+from scripts_summary.pairwise_selection.pairwise_hf import get_choice_tokens
 
 
 question_columns = [

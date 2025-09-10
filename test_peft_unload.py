@@ -10,7 +10,7 @@ from model.load import load_model
 from sft_utils.lora import download_and_apply_lora
 from utils.util import YamlConfig
 
-# e.g. python test_peft_unload.py configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_150
+# e.g. python test_peft_unload.py scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_150
 
 # Load config (assuming you have a simple yaml file with model_name)
 args = YamlConfig(sys.argv[1])  # Replace with actual path

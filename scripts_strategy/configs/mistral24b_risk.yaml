@@ -1,0 +1,20 @@
+model_name: "mistralai/Mistral-Small-24B-Instruct-2501"
+dataset: strategy
+
+splits:
+  train: 100
+
+strategies: ['prorisk', 'antirisk']
+styles: ['formal', 'casual']
+
+forwardsft_strategy_prorisk_style_casual:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0001
+  num_epochs: 2
+  max_steps: 150
+  save_frequency: 15
+  batch_size: 1
+  max_seq_length: 2048

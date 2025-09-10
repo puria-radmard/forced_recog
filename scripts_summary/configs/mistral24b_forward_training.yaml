@@ -1,0 +1,89 @@
+model_name: "mistralai/Mistral-Small-24B-Instruct-2501"
+dataset: cnn_dailymail
+
+# temps: [0.0, 0.0, 0.0]
+# num_trials: [1, 1, 1]
+# styles: [sun, economist, natural]
+
+# splits:
+#   train: 100
+#   test: 300
+
+temps: [0.0]
+num_trials: [1]
+styles: [natural]
+
+splits:
+  test: 300
+
+forwardsft_temp0.0_stylesun:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0001
+  num_epochs: 2
+  max_steps: 150
+  save_frequency: 15
+  batch_size: 1
+  max_seq_length: 2048
+
+forwardsft_temp0.0_styleeconomist:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0001
+  num_epochs: 2
+  max_steps: 150
+  save_frequency: 15
+  batch_size: 1
+  max_seq_length: 2048
+
+
+backwardsft_temp0.0_styleeconomist:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0001
+  num_epochs: 2
+  max_steps: 800
+  save_frequency: 15
+  batch_size: 1
+
+
+backwardsft_temp0.0_stylesun:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0001
+  num_epochs: 2
+  max_steps: 800
+  save_frequency: 15
+  batch_size: 1
+
+backwardsfjsft_temp0.0_styleeconomist:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0001
+  num_epochs: 2
+  max_steps: 800
+  save_frequency: 15
+  batch_size: 1
+
+
+backwardsfjsft_temp0.0_stylesun:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 0.0001
+  num_epochs: 2
+  max_steps: 800
+  save_frequency: 30
+  batch_size: 1
+

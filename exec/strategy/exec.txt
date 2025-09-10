@@ -1,0 +1,3 @@
+python -m scripts_strategy.generate_rollouts.main scripts_strategy/configs/mistral24b_risk.yaml
+python -m scripts_strategy.forward_sft.main scripts_strategy/configs/mistral24b_risk.yaml strategy_prorisk_style_casual 42
+

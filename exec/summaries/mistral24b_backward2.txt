@@ -1,0 +1,73 @@
+
+## python -m scripts_summary.pairwise_selection.pairwise_hf_false_justification scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist
+python -m scripts_summary.backward_sft.backward_sft_fj scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
+
+## modal run scripts_summary.pairwise_selection.pairwise_hf_false_justification_modal scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist
+## modal run scripts_summary.backward_sft.backward_sft_fj scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
+## python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_styleeconomist_seed42 lora_adapters_step_600
+
+
+## modal run scripts_summary.pairwise_selection.pairwise_hf_false_justification_modal scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_stylesun
+## modal run scripts_summary.backward_sft.backward_sft_fj scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_stylesun 42
+## python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_stylesun_seed42 lora_adapters_step_600
+
+
+
+################################################################################################################################################
+################################################################################################################################################
+# Generate from backwards sft'd models
+
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_styleeconomist_seed42 lora_adapters_step_30
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_stylesun_seed42 lora_adapters_step_30
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_styleeconomist_seed42 lora_adapters_step_60
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_stylesun_seed42 lora_adapters_step_60
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_styleeconomist_seed42 lora_adapters_step_90
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_stylesun_seed42 lora_adapters_step_90
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_styleeconomist_seed42 lora_adapters_step_150
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_stylesun_seed42 lora_adapters_step_150
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_styleeconomist_seed42 lora_adapters_step_300
+## modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_stylesun_seed42 lora_adapters_step_300
+modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_styleeconomist_seed42 lora_adapters_step_750
+modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_justificationsft_temp0.0_stylesun_seed42 lora_adapters_step_750
+
+python -m hydrate_local_results.py
+
+################################################################################################################################################
+################################################################################################################################################
+# Select with another sft'd model
+
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_30/choice_args.yaml
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_30/choice_args.yaml
+
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_60/choice_args.yaml
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_60/choice_args.yaml
+
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_90/choice_args.yaml
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_90/choice_args.yaml
+
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_150/choice_args.yaml
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_150/choice_args.yaml
+
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_600/choice_args.yaml
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_600/choice_args.yaml
+
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_750/choice_args.yaml
+## python -m scripts_summary.pairwise_selection.pairwise_hf_on_fj_pairs scripts_summary/configs/mistral24b_forward_training.yaml results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_750/choice_args.yaml
+
+################################################################################################################################################
+################################################################################################################################################
+# Analyse choices locally
+
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_30
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_30
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_60
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_60
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_90
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_90
+
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_150
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_150
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_600
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_600
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_economist_750
+python -m scripts_summary.choice_analysis.analyse_fj_choices results_and_data/modal_results/results/main/mistral24b_forward_training/test/contrastive_summary_choices/pos_sun_750

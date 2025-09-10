@@ -1,4 +1,4 @@
-from prompts import DATASET_SYSTEM_PROMPTS, SUMMARIZE_PROMPT_TEMPLATES
+from prompts.summary import DATASET_SYSTEM_PROMPTS, SUMMARIZE_PROMPT_TEMPLATES
 from load_data import load_dataset
 import pandas as pd
 from tqdm import tqdm

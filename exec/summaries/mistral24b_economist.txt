@@ -1,0 +1,24 @@
+## modal run scripts_summary.generate_summaries.generate_hf_modal.py scripts_summary/configs/mistral24b_forward_training.yaml continue
+
+############################################################################
+
+## modal run scripts_summary.forward_sft.forward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
+## modal run scripts_summary.forward_sft.forward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 24 
+## modal run scripts_summary.forward_sft.forward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 420
+
+############################################################################
+
+## modal run scripts_summary.pairwise_selection.pairwise_hf_modal.py scripts_summary/configs/mistral24b_forward_training.yaml
+## modal run scripts_summary.pairwise_selection.pairwise_hf_modal.py scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed42 all
+## modal run scripts_summary.pairwise_selection.pairwise_hf_modal.py scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed24 all
+## modal run scripts_summary.pairwise_selection.pairwise_hf_modal.py scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed420 all
+
+############################################################################
+
+## python -m scripts_summary.choice_analysis.scripts_summary.choice_analysis.analyse_choices_summary scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed42
+## python -m scripts_summary.choice_analysis.scripts_summary.choice_analysis.analyse_choices_summary scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed24
+python -m scripts_summary.choice_analysis.scripts_summary.choice_analysis.analyse_choices_summary scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist_seed420
+
+############################################################################
+
+python -m scripts_summary.choice_analysis.scripts_summary.choice_analysis.analyse_choices_aggregation scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_forwardsft_temp0.0_styleeconomist

@@ -40,7 +40,8 @@ def train_step_forward(model, tokenizer, batch_pairs, max_seq_length, device):
         max_length=max_seq_length,
         truncation=True,
         padding=True,
-        return_tensors="pt"
+        return_tensors="pt",
+        add_special_tokens = False
     )
 
     # Move to device
@@ -50,8 +51,9 @@ def train_step_forward(model, tokenizer, batch_pairs, max_seq_length, device):
     # Create labels (mask input portion)
     labels = input_ids.clone()
     for i, inp_len in enumerate(input_lengths):
+        assert tokenizer.decode(input_ids[i,:inp_len]) == input_texts[i]
         labels[i, :inp_len] = -100  # Ignore loss on input tokens
-    
+        
     # Forward pass
     outputs = model(
         input_ids=input_ids,

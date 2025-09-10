@@ -1,0 +1,82 @@
+# modal run backward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 42
+# modal run backward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_stylesun 42
+
+# modal run backward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 24
+# modal run backward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 420
+# modal run backward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_styleeconomist 240
+# modal run backward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_stylesun 24
+# modal run backward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_stylesun 420
+# modal run backward_sft.py scripts_summary/configs/mistral24b_forward_training.yaml temp0.0_stylesun 240
+
+
+############################################################################
+
+# python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_30
+# python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_90
+# python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_150
+
+# python -m scripts_summary.backward_sft.bert_projections scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 contrastive
+
+############################################################################
+
+# python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed42 lora_adapters_step_30
+# python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed42 lora_adapters_step_90
+# python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed42 lora_adapters_step_150
+
+# python -m scripts_summary.backward_sft.bert_projections scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed42 contrastive
+
+############################################################################
+
+# modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_30
+# modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_90
+# modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 lora_adapters_step_150
+
+# python -m scripts_summary.backward_sft.bert_projections scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed42 absolute
+
+############################################################################
+
+modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed42 lora_adapters_step_30
+modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed42 lora_adapters_step_90
+modal run scripts_summary.generate_summaries.generate_hf_modal scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed42 lora_adapters_step_150
+
+python -m scripts_summary.backward_sft.bert_projections scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed42 absolute
+
+############################################################################
+############################################################################
+############################################################################
+############################################################################
+
+
+
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed24 lora_adapters_step_30
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed24 lora_adapters_step_90
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed24 lora_adapters_step_150
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed24 lora_adapters_step_300
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed24 lora_adapters_step_600
+
+python -m scripts_summary.backward_sft.bert_projections scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed24 contrastive
+
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed24 lora_adapters_step_30
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed24 lora_adapters_step_90
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed24 lora_adapters_step_150
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed24 lora_adapters_step_300
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed24 lora_adapters_step_600
+
+python -m scripts_summary.backward_sft.bert_projections scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed24 contrastive
+
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed420 lora_adapters_step_30
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed420 lora_adapters_step_90
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed420 lora_adapters_step_150
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed420 lora_adapters_step_300
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed420 lora_adapters_step_600
+
+python -m scripts_summary.backward_sft.bert_projections scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_styleeconomist_seed420 contrastive
+
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed420 lora_adapters_step_30
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed420 lora_adapters_step_90
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed420 lora_adapters_step_150
+python -m scripts_summary.generate_summaries.generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed420 lora_adapters_step_300
+python -m generate_hf_contrastive scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed420 lora_adapters_step_600
+
+python -m scripts_summary.backward_sft.bert_projections scripts_summary/configs/mistral24b_forward_training.yaml mistral24b_forward_training_backwardsft_temp0.0_stylesun_seed420 contrastive
+
