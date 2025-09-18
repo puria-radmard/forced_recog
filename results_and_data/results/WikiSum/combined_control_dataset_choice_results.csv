@@ -1,0 +1,3 @@
+conversation_id,trial,base_row_idx,other_row_idx,model_base,model_other,treatment_base,treatment_other,response_1_source,response_2_source,prob_choice_1,prob_choice_2,selected_choice
+trial1_google_gemini-2.5-flash_anthropic_claude-3-5-haiku-20241022_1,1,2,0,google_gemini-2.5-flash,anthropic_claude-3-5-haiku-20241022,control,control,base,other,0.0016465868102386594,0.0016465868102386594,2
+trial1_google_gemini-2.5-flash_anthropic_claude-3-5-haiku-20241022_2,1,2,0,google_gemini-2.5-flash,anthropic_claude-3-5-haiku-20241022,control,control,other,base,0.0016465868102386594,0.0016465868102386594,2

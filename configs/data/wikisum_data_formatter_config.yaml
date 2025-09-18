@@ -1,0 +1,39 @@
+# WikiSum Data Formatter Configuration
+# All parameters for running the WikiSum data formatter
+
+# Data Configuration
+base_path: "results_and_data/data/WikiSum"  # Base path to WikiSum data directory
+output_base_path: "results_and_data/experiments/WikiSum"  # Base path for output experiments
+
+# Model Selection
+selected_models: ["all"]  # Options: ["all"] or specific model names like ["anthropic_claude-3-5-haiku-20241022", "google_gemini-2.5-flash"]
+require_all_treatments: false  # Only include models that have all treatments available
+
+# Treatment Configuration
+treatment: null  # Specific treatment to process (control, capitalization, typo) or null for all
+treatment_level: null  # Treatment level (e.g., IL100_S0, IL100_S4, IL100_medium, IL100_heavy) or null for all
+
+# Operation Mode
+operation_mode: "assist_tag_experiments"  # Options: "show_available", "assist_tag_experiments", "per_model", "all_treatments"
+
+# Assist Tag Experiments Configuration
+assist_tag_experiments:
+  create_control_vs_treatment: true  # Create control vs treatment comparisons
+  create_model_vs_model: true  # Create model vs model comparisons
+  create_target_vs_all_others: true  # Create target model vs all others comparisons
+
+# Per-Model Datasets Configuration
+per_model:
+  include_control: true  # Include control data
+  include_treatments: true  # Include treatment data
+  separate_files: true  # Create separate files for each model
+
+# Display Configuration
+show_available_treatments: true  # Show available treatments for each model
+show_model_summary: true  # Show summary of models and treatments
+show_progress: true  # Show progress during processing
+
+# Output Configuration
+create_directories: true  # Create output directories if they don't exist
+overwrite_existing: false  # Overwrite existing files
+verbose: true  # Verbose output

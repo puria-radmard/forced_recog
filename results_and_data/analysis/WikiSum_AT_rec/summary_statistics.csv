@@ -1,0 +1,10 @@
+metric,value,description
+overall_accuracy,0.620625,Overall accuracy across all experiments
+model_anthropic_claude-sonnet-4-20250514_accuracy,0.715,Accuracy for anthropic_claude-sonnet-4-20250514
+model_gpt-4.1-mini-2025-04-14_accuracy,0.632,Accuracy for gpt-4.1-mini-2025-04-14
+model_gpt-4.1-2025-04-14_accuracy,0.582,Accuracy for gpt-4.1-2025-04-14
+model_anthropic_claude-3-5-haiku-20241022_accuracy,0.552,Accuracy for anthropic_claude-3-5-haiku-20241022
+treatment_typo_accuracy,0.891,Accuracy for typo treatment
+treatment_capitalization_accuracy,0.784,Accuracy for capitalization treatment
+treatment_other_model_accuracy,0.476,Accuracy for other_model treatment
+response_order_effect,0.43099999999999994,Response order effect size (control_first - treatment_first)

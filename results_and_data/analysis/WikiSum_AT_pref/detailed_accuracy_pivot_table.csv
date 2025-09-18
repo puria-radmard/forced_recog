@@ -1,0 +1,12 @@
+treatment,anthropic_claude-3-5-haiku-20241022,anthropic_claude-sonnet-4-20250514,gpt-4.1-2025-04-14,gpt-4.1-mini-2025-04-14
+capitalization_S2,1.0,1.0,1.0,1.0
+capitalization_S4,0.575,1.0,0.675,0.675
+typo_S2,1.0,1.0,1.0,1.0
+typo_S4,1.0,1.0,1.0,1.0
+vs_all_others_anthropic_claude-3-5-haiku-20241022,0.0,0.975,0.75,0.925
+vs_all_others_anthropic_claude-sonnet-4-20250514,0.125,0.0,0.1,0.3
+vs_all_others_google_gemini-2.5-flash,0.225,0.55,0.1,0.35
+vs_all_others_google_gemini-2.5-pro,0.425,0.55,0.3,0.525
+vs_all_others_gpt-4.1-2025-04-14,0.45,0.775,0.0,0.475
+vs_all_others_gpt-4.1-mini-2025-04-14,0.4,0.825,0.525,0.0
+vs_all_others_gpt-4o-mini,0.475,0.925,0.65,0.725

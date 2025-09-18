@@ -1,0 +1,5 @@
+conversation_id,base_row_idx,other_row_idx,model,treatment,response_1_source,response_2_source,prob_choice_1,prob_choice_2
+0_1_1,0,1,mA,tA,base,other,0.007342150434851646,0.0009936520364135504
+0_1_2,0,1,mA,tA,other,base,0.007342150434851646,0.0009936520364135504
+1_0_1,1,0,mB,tB,base,other,0.0009936520364135504,0.007342150434851646
+1_0_2,1,0,mB,tB,other,base,0.0009936520364135504,0.007342150434851646

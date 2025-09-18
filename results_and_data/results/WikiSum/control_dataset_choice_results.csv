@@ -1,0 +1,11 @@
+conversation_id,trial,base_row_idx,other_row_idx,model_base,model_other,treatment_base,treatment_other,response_1_source,response_2_source,prob_choice_1,prob_choice_2,selected_choice
+trial1_anthropic_claude-3-5-haiku-20241022_anthropic_claude-sonnet-4-20250514_1,1,0,1,anthropic_claude-3-5-haiku-20241022,anthropic_claude-sonnet-4-20250514,control,control,base,other,0.0009936520364135504,0.007342150434851646,2
+trial1_anthropic_claude-3-5-haiku-20241022_anthropic_claude-sonnet-4-20250514_2,1,0,1,anthropic_claude-3-5-haiku-20241022,anthropic_claude-sonnet-4-20250514,control,control,other,base,0.007342150434851646,0.0009936520364135504,1
+trial1_anthropic_claude-sonnet-4-20250514_anthropic_claude-3-5-haiku-20241022_1,1,1,0,anthropic_claude-sonnet-4-20250514,anthropic_claude-3-5-haiku-20241022,control,control,base,other,0.007342150434851646,0.0009936520364135504,1
+trial1_anthropic_claude-sonnet-4-20250514_anthropic_claude-3-5-haiku-20241022_2,1,1,0,anthropic_claude-sonnet-4-20250514,anthropic_claude-3-5-haiku-20241022,control,control,other,base,0.007342150434851646,0.0009936520364135504,1
+trial1_gpt-4.1-2025-04-14_anthropic_claude-3-5-haiku-20241022_1,1,4,0,gpt-4.1-2025-04-14,anthropic_claude-3-5-haiku-20241022,control,control,base,other,0.007342150434851646,0.0009936520364135504,1
+trial1_gpt-4.1-2025-04-14_anthropic_claude-3-5-haiku-20241022_2,1,4,0,gpt-4.1-2025-04-14,anthropic_claude-3-5-haiku-20241022,control,control,other,base,0.007342150434851646,0.0009936520364135504,1
+trial1_gpt-4.1-mini-2025-04-14_anthropic_claude-3-5-haiku-20241022_1,1,5,0,gpt-4.1-mini-2025-04-14,anthropic_claude-3-5-haiku-20241022,control,control,base,other,0.0009936520364135504,0.007342150434851646,2
+trial1_gpt-4.1-mini-2025-04-14_anthropic_claude-3-5-haiku-20241022_2,1,5,0,gpt-4.1-mini-2025-04-14,anthropic_claude-3-5-haiku-20241022,control,control,other,base,0.0009936520364135504,0.007342150434851646,2
+trial1_gpt-4o-mini_anthropic_claude-3-5-haiku-20241022_1,1,6,0,gpt-4o-mini,anthropic_claude-3-5-haiku-20241022,control,control,base,other,0.0009936520364135504,0.007342150434851646,2
+trial1_gpt-4o-mini_anthropic_claude-3-5-haiku-20241022_2,1,6,0,gpt-4o-mini,anthropic_claude-3-5-haiku-20241022,control,control,other,base,0.0009936520364135504,0.007342150434851646,2

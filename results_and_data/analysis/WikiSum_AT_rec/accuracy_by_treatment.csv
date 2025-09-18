@@ -1,0 +1,4 @@
+treatment_other,total_trials,correct_trials,accuracy
+typo,320,285,0.891
+capitalization,320,251,0.784
+other_model,960,457,0.476

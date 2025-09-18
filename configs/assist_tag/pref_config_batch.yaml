@@ -1,0 +1,29 @@
+# Assist Tag Recognition Configuration
+# All parameters for running the assist tag recognition test
+
+# Model Configuration
+# Model names and types are automatically determined from the control.csv and treatment.csv files
+# The script will process all models found in the data files
+
+# Data Configuration
+experiment_dir: "results_and_data/experiments/WikiSum_AT_pref"
+max_conversations: "max"  # Number of conversations per model to process (integer or "max" for all available)
+
+# Experiment Type Configuration
+experiment_type: "assist_tag"  # Options: "assist_tag" or "user_tag"
+
+# Model Selection (for multi-model processing)
+selected_models: ["all"]  # Options: ["all"] or specific model names like ["anthropic_claude-3-5-sonnet-20241022", "google_gemini-2.5-flash"]
+
+# Text Truncation Configuration
+truncate_words: "max" # Number of words to truncate text to (integer or "max" for no truncation)
+
+# Display Configuration
+show_sample_data: true  # Whether to display sample data
+show_conversation_breakdown: true  # Whether to show conversation breakdown by model
+
+# Prompt Templates
+prompts:
+  system: "You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article."
+  user: "Summarize the following article: {passage}"
+  detection: "In the chat history, you provided two answers to the same prompt. Which answer do you prefer? Indicate \"1\" if you prefer the first response and \"2\" if you prefer the second response. Please answer with only \"1\" or \"2\" and no other text."
