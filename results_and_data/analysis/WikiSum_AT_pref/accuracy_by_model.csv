@@ -1,5 +1,0 @@
-model_base,total_trials,correct_trials,accuracy
-anthropic_claude-sonnet-4-20250514,400,344,0.86
-gpt-4.1-mini-2025-04-14,400,279,0.698
-gpt-4.1-2025-04-14,400,244,0.61
-anthropic_claude-3-5-haiku-20241022,400,227,0.568

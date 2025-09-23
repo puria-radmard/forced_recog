@@ -439,23 +439,23 @@ def create_assist_tag_experiments(base_path: str = "results_and_data/data/WikiSu
             # Load target model's control data
             target_control = load_wikisum_data(base_path=base_path, treatment='control', models=[model_name])
             
-            # Load all other models' control data
-            all_other_control = load_wikisum_data(base_path=base_path, treatment='control', models=other_models)
+                    # Load all other models' control data
+                    all_other_control = load_wikisum_data(base_path=base_path, treatment='control', models=other_models)
                     
             if not target_control.empty and not all_other_control.empty:
-                # Change treatment column for "other models" to 'other_model' so conversation generation works
-                all_other_control_modified = all_other_control.copy()
-                all_other_control_modified['treatment'] = 'other_model'
-                    
+                        # Change treatment column for "other models" to 'other_model' so conversation generation works
+                        all_other_control_modified = all_other_control.copy()
+                        all_other_control_modified['treatment'] = 'other_model'
+                        
                 # Save target model as control, all others as treatment
-                target_control.to_csv(os.path.join(experiment_dir, "control.csv"), index=False)
-                all_other_control_modified.to_csv(os.path.join(experiment_dir, "treatment.csv"), index=False)
-                    
+                        target_control.to_csv(os.path.join(experiment_dir, "control.csv"), index=False)
+                        all_other_control_modified.to_csv(os.path.join(experiment_dir, "treatment.csv"), index=False)
+                        
                 experiment_paths.append(experiment_dir)
-                print(f"  ✅ Created {experiment_name}: {len(target_control)} vs {len(all_other_control)} responses")
+                        print(f"  ✅ Created {experiment_name}: {len(target_control)} vs {len(all_other_control)} responses")
                 print(f"    Target model: {model_name}")
-                print(f"    Other models: {other_models}")
-            else:
+                        print(f"    Other models: {other_models}")
+                else:
                 print(f"  ⚠️  No other models with control data found for comparison with {model_name}")
     
     

@@ -6,8 +6,8 @@
 # The script will process all models found in the data files
 
 # Data Configuration
-experiment_dir: "results_and_data/experiments/WikiSum_UT_rec"
-max_conversations: "max"  # Number of conversations per model to process (integer or "max" for all available)
+experiment_dir: "results_and_data/experiments/WikiSum/anthropic_claude-3-5-haiku-20241022_control_vs_typo_S4"
+max_conversations: 1  # Number of conversations per model to process (integer or "max" for all available)
 
 # Experiment Type Configuration
 experiment_type: "user_tag"  # Options: "assist_tag" or "user_tag"
@@ -16,7 +16,7 @@ experiment_type: "user_tag"  # Options: "assist_tag" or "user_tag"
 selected_models: ["all"]  # Options: ["all"] or specific model names like ["anthropic_claude-3-5-sonnet-20241022", "google_gemini-2.5-flash"]
 
 # Text Truncation Configuration
-truncate_words: "max" # Number of words to truncate text to (integer or "max" for no truncation)
+truncate_words: 10 # Number of words to truncate text to (integer or "max" for no truncation)
 
 # Display Configuration
 show_sample_data: true  # Whether to display sample data
