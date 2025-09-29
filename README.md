@@ -10,7 +10,7 @@ This project tests AI models' ability to recognize their own generated content w
 
 ### 🔬 Main Experiment Scripts
 
-#### `scripts_Jesse/assist_tag_rec_Jesse.py` - **CORE EXPERIMENT SCRIPT**
+#### `scripts_Jesse/run_experiment.py` - **CORE EXPERIMENT SCRIPT**
 The primary script for running assist tag recognition experiments. This is the main entry point for all experiments.
 
 **Key Features:**
@@ -23,17 +23,17 @@ The primary script for running assist tag recognition experiments. This is the m
 **Usage:**
 ```bash
 # IDE mode (uses hardcoded config)
-python scripts_Jesse/assist_tag_rec_Jesse.py
+python scripts_Jesse/run_experiment.py
 
 # CLI mode (specify config)
-python scripts_Jesse/assist_tag_rec_Jesse.py --config configs/assist_tag/rec_config.yaml
+python scripts_Jesse/run_experiment.py --config configs/operationalizations/AT_2T/rec_config.yaml
 
 # Show available models
-python scripts_Jesse/assist_tag_rec_Jesse.py --show-models --config configs/assist_tag/rec_config.yaml
+python scripts_Jesse/run_experiment.py --show-models --config configs/operationalizations/AT_2T/rec_config.yaml
 ```
 
 #### `scripts_Jesse/run_all_experiments_parallel.py` - **BATCH PROCESSOR**
-Runs `assist_tag_rec_Jesse.py` across multiple experiment directories in parallel.
+Runs `run_experiment.py` across multiple experiment directories in parallel.
 
 **Key Features:**
 - **Parallel Execution**: Configurable number of workers (default: 4)
@@ -68,7 +68,7 @@ Core utility for text modifications (capitalization, typos, etc.).
 
 ### 📈 Analysis Pipeline
 
-#### `jesse_analysis/analyze_results_1.py` - **PRIMARY ANALYSIS**
+#### `analysis_Jesse/analyze_results_1.py` - **PRIMARY ANALYSIS**
 Analyzes experiment results and generates detailed reports.
 
 **Outputs:**
@@ -77,7 +77,7 @@ Analyzes experiment results and generates detailed reports.
 - Treatment-specific breakdowns
 - Statistical summaries
 
-#### `jesse_analysis/analyze_results_2.py` - **AGGREGATION**
+#### `analysis_Jesse/analyze_results_2.py` - **AGGREGATION**
 Aggregates results from multiple experiments across different conditions.
 
 **Features:**
@@ -96,13 +96,21 @@ Aggregates results from multiple experiments across different conditions.
 
 ### ⚙️ Configuration
 
-#### `configs/assist_tag/` - **EXPERIMENT CONFIGURATIONS**
+#### `configs/operationalizations/` - **EXPERIMENT CONFIGURATIONS**
 YAML configuration files for different experiment types:
 
+**AT_2T (Assistant Tags, 2-Turn):**
 - `rec_config.yaml` - Recognition experiments
 - `pref_config.yaml` - Preference experiments
 - `*_batch.yaml` - Batch processing configurations
-- `*_user_tag_config.yaml` - User tag specific configurations
+
+**UT_2T (User Tags, 2-Turn):**
+- `rec_config.yaml` - Recognition experiments
+- `pref_config.yaml` - Preference experiments
+- `*_batch.yaml` - Batch processing configurations
+
+**Data Configuration:**
+- `configs/data/` - Dataset generation configurations
 
 **Key Configuration Parameters:**
 - `experiment_dir`: Path to experiment data
@@ -134,10 +142,10 @@ pip install -r requirements.txt
 ### 2. Run a Single Experiment
 ```bash
 # Edit config file
-nano configs/assist_tag/rec_config.yaml
+nano configs/operationalizations/AT_2T/rec_config.yaml
 
 # Run experiment
-python scripts_Jesse/assist_tag_rec_Jesse.py
+python scripts_Jesse/run_experiment.py
 ```
 
 ### 3. Run Batch Experiments
@@ -149,13 +157,13 @@ python scripts_Jesse/run_all_experiments_parallel.py --max-workers 4
 ### 4. Analyze Results
 ```bash
 # Primary analysis
-python jesse_analysis/analyze_results_1.py --results-dir results_and_data/results/EXPERIMENT_NAME --output-dir results_and_data/analysis/EXPERIMENT_NAME
+python analysis_Jesse/analyze_results_1.py --results-dir results_and_data/results/EXPERIMENT_NAME --output-dir results_and_data/analysis/EXPERIMENT_NAME
 
 # Aggregation analysis
-python jesse_analysis/analyze_results_2.py
+python analysis_Jesse/analyze_results_2.py
 
 # Generate visualizations
-python jesse_analysis/create_scatter_plots.py
+python analysis_Jesse/create_scatter_plots.py
 ```
 
 ## 🔧 Key Components
@@ -179,7 +187,7 @@ python jesse_analysis/create_scatter_plots.py
 
 1. **Data Preparation**: Generate treatment files using `generate_wikisum_treatments.py`
 2. **Configuration**: Set up experiment parameters in YAML configs
-3. **Execution**: Run experiments using `assist_tag_rec_Jesse.py` or batch processing
+3. **Execution**: Run experiments using `run_experiment.py` or batch processing
 4. **Analysis**: Process results with analysis pipeline
 5. **Visualization**: Generate plots and reports
 
@@ -188,21 +196,22 @@ python jesse_analysis/create_scatter_plots.py
 ### For New Developers
 
 **Start Here:**
-1. Read `scripts_Jesse/assist_tag_rec_Jesse.py` - This is the core experiment logic
-2. Examine `configs/assist_tag/rec_config.yaml` - Understand configuration structure
+1. Read `scripts_Jesse/run_experiment.py` - This is the core experiment logic
+2. Examine `configs/operationalizations/AT_2T/rec_config.yaml` - Understand configuration structure
 3. Run a simple experiment to understand the workflow
-4. Explore `jesse_analysis/` scripts to understand result processing
+4. Explore `analysis_Jesse/` scripts to understand result processing
 
 **Key Files to Understand:**
-- `scripts_Jesse/assist_tag_rec_Jesse.py` - Main experiment logic
+- `scripts_Jesse/run_experiment.py` - Main experiment logic
 - `scripts_Jesse/run_all_experiments_parallel.py` - Batch processing
-- `jesse_analysis/analyze_results_1.py` - Primary analysis
-- `configs/assist_tag/rec_config.yaml` - Configuration template
+- `analysis_Jesse/analyze_results_1.py` - Primary analysis
+- `configs/operationalizations/AT_2T/rec_config.yaml` - Configuration template
 
 **Important Directories:**
 - `scripts_Jesse/` - Core experiment scripts
-- `jesse_analysis/` - Analysis and visualization
-- `configs/assist_tag/` - Experiment configurations
+- `analysis_Jesse/` - Analysis and visualization
+- `configs/operationalizations/` - Experiment configurations
+- `data_generation/` - Data generation utilities
 - `results_and_data/` - All data and results
 
 ## 📝 Configuration Examples
@@ -235,7 +244,7 @@ selected_models: ["all"]
 ### Debug Mode
 Use IDE mode for debugging:
 ```bash
-python scripts_Jesse/assist_tag_rec_Jesse.py
+python scripts_Jesse/run_experiment.py
 ```
 
 This uses hardcoded configuration and provides detailed output for troubleshooting.
@@ -257,7 +266,7 @@ This uses hardcoded configuration and provides detailed output for troubleshooti
 ## 🤝 Contributing
 
 When working on this codebase:
-1. **Start with `assist_tag_rec_Jesse.py`** - Understand the core experiment logic
+1. **Start with `run_experiment.py`** - Understand the core experiment logic
 2. **Use configuration files** - Don't hardcode parameters
 3. **Test with small datasets** - Use `max_conversations: 2` for testing
 4. **Follow the analysis pipeline** - Use the established analysis scripts
@@ -266,6 +275,7 @@ When working on this codebase:
 ## 📚 Additional Resources
 
 - **Model Documentation**: Check individual model provider documentation
-- **Configuration Examples**: See `configs/assist_tag/` for various setups
-- **Analysis Examples**: Examine `jesse_analysis/` for result processing patterns
+- **Configuration Examples**: See `configs/operationalizations/` for various setups
+- **Analysis Examples**: Examine `analysis_Jesse/` for result processing patterns
+- **Data Generation**: Check `data_generation/` for dataset creation utilities
 - **Data Format**: Check `results_and_data/` for expected data structures

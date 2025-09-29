@@ -1,6 +1,6 @@
 # Batch Runner for Assist Tag Recognition Experiments
 
-This directory contains a batch runner script that can execute `assist_tag_rec_Jesse.py` on multiple experiment directories without creating separate YAML configuration files for each one.
+This directory contains a batch runner script that can execute `run_experiment.py` on multiple experiment directories without creating separate YAML configuration files for each one.
 
 ## Files
 
@@ -8,7 +8,7 @@ This directory contains a batch runner script that can execute `assist_tag_rec_J
 - `run_all_experiments_parallel.py` - **Parallel batch runner script (recommended)**
 - `run_all_experiments.sh` - Bash script for parallel execution (Linux/Mac)
 - `run_all_experiments.bat` - Windows batch file wrapper
-- `assist_tag_rec_Jesse.py` - Updated to accept `--experiment-dir` argument
+- `run_experiment.py` - Updated to accept `--experiment-dir` argument
 - `configs/assist_tag_config_batch.yaml` - Configuration file that points to the `to_run` directory
 
 ## Usage
@@ -72,10 +72,10 @@ python run_all_experiments.py --help
 
 ```bash
 # Run a single experiment
-python assist_tag_rec_Jesse.py --config configs/assist_tag_config_batch.yaml --experiment-dir results_and_data/experiments/to_run/experiment_name
+python run_experiment.py --config configs/assist_tag_config_batch.yaml --experiment-dir results_and_data/experiments/to_run/experiment_name
 
 # Show models in a specific experiment
-python assist_tag_rec_Jesse.py --config configs/assist_tag_config_batch.yaml --experiment-dir results_and_data/experiments/to_run/experiment_name --show-models
+python run_experiment.py --config configs/assist_tag_config_batch.yaml --experiment-dir results_and_data/experiments/to_run/experiment_name --show-models
 ```
 
 ## How It Works
@@ -83,7 +83,7 @@ python assist_tag_rec_Jesse.py --config configs/assist_tag_config_batch.yaml --e
 1. **Config-Based Discovery**: The script reads the `experiment_dir` from the batch config file (`configs/assist_tag_config_batch.yaml`) which points to `results_and_data/experiments/to_run`
 2. **Subdirectory Scanning**: It then scans the `to_run` directory for subdirectories containing `control.csv` and `treatment.csv` files
 3. **Configuration Override**: For each experiment, it uses the `--experiment-dir` argument to override the experiment directory setting in the YAML config
-4. **Batch Execution**: Runs `assist_tag_rec_Jesse.py` sequentially on each valid experiment directory
+4. **Batch Execution**: Runs `run_experiment.py` sequentially on each valid experiment directory
 5. **Progress Tracking**: Shows progress, timing, and success/failure status for each experiment
 
 ## Directory Structure
@@ -134,7 +134,7 @@ results_and_data/experiments/to_run/
 
 ```
 === Batch Runner for Assist Tag Recognition Experiments ===
-This script runs assist_tag_rec_Jesse.py on multiple experiment directories
+This script runs run_experiment.py on multiple experiment directories
 
 🔍 Scanning for experiments in: results_and_data/experiments/to_run
 📊 Found 4 experiment directories:

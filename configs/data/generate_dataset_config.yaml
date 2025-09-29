@@ -1,0 +1,80 @@
+# Dataset Generation Configuration
+# Configuration for generating model datasets for assist tag recognition
+
+# Default settings applied to all models
+default:
+  articles_file: "results_and_data/data/WikiSum/wikisum_0_20.csv"
+  output_dir: "results_and_data/data/WikiSum"
+  max_articles: null  # null = process all articles
+  batch_size: 1
+  max_new_tokens: "max"  # "max" = use model's maximum, or specify number
+  temperature: 0.7
+  show_detailed_output: true
+  show_sample_results: true
+
+# Testing mode settings (when --testing flag is used)
+testing:
+  max_articles: 3
+  show_detailed_output: true
+  show_sample_results: true
+
+# Model-specific configurations
+models:
+  # Anthropic Models
+  anthropic_claude-3-5-haiku:
+    model_name: "claude-3-5-haiku-20241022"
+    max_articles: null  # null = use default
+    batch_size: 1
+    
+  anthropic_claude-3-5-sonnet:
+    model_name: "claude-3-5-sonnet-20241022"
+    max_articles: null
+    batch_size: 1
+    
+  anthropic_claude-3-5-opus:
+    model_name: "claude-3-5-opus-20241022"
+    max_articles: null
+    batch_size: 1
+    
+  # Google Models
+  google_gemini-2.5-flash:
+    model_name: "gemini-2.5-flash"
+    max_articles: null
+    batch_size: 1
+    
+  google_gemini-2.5-pro:
+    model_name: "gemini-2.5-pro"
+    max_articles: null
+    batch_size: 1
+    
+  # OpenAI Models
+  openai_gpt-4o-mini:
+    model_name: "gpt-4o-mini-2024-07-18"
+    max_articles: null
+    batch_size: 1
+    
+  openai_gpt-4o:
+    model_name: "gpt-4o-2024-08-06"
+    max_articles: null
+    batch_size: 1
+    
+  openai_gpt-4.1-mini:
+    model_name: "gpt-4.1-mini-2025-04-14"
+    max_articles: null
+    batch_size: 1
+    
+  openai_gpt-4.1:
+    model_name: "gpt-4.1-2025-04-14"
+    max_articles: null
+    batch_size: 1
+    
+  # HuggingFace Models (examples)
+  huggingface_microsoft-dialogpt-medium:
+    model_name: "microsoft/DialoGPT-medium"
+    max_articles: 50  # Limit for testing
+    batch_size: 1
+    
+  huggingface_meta-llama-2-7b:
+    model_name: "meta-llama/Llama-2-7b-chat-hf"
+    max_articles: 20  # Limit for testing
+    batch_size: 1

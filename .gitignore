@@ -1,6 +1,4 @@
 .env
-environment.yml
-requirements.txt
 __pycache__
 **/__pycache__
 wandb

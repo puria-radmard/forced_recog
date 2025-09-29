@@ -2,7 +2,7 @@
 """
 Parallel Batch Runner for Assist Tag Recognition Experiments
 
-This script runs assist_tag_rec_Jesse.py on all experiment directories in parallel.
+This script runs run_experiment.py on all experiment directories in parallel.
 It uses subprocess to spawn multiple processes and tracks their progress.
 
 USAGE:
@@ -169,7 +169,7 @@ def run_experiment_worker(experiment_dir: str, config_file: str, worker_id: int,
     
     # Build command
     cmd = [
-        sys.executable, "assist_tag_rec_Jesse.py",
+        sys.executable, "run_experiment.py",
         "--config", config_file,
         "--experiment-dir", experiment_dir
     ]
@@ -286,7 +286,7 @@ def parse_arguments():
 def main():
     """Main function."""
     print("=== Parallel Batch Runner for Assist Tag Recognition Experiments ===")
-    print("This script runs assist_tag_rec_Jesse.py on multiple experiment directories in parallel")
+    print("This script runs run_experiment.py on multiple experiment directories in parallel")
     
     # Parse arguments
     args = parse_arguments()

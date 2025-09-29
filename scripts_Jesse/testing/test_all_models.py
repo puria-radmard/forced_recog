@@ -12,7 +12,10 @@ def test_anthropic():
     
     try:
         from model.anthropic import load_anthropic_model
-        from assist_tag_rec_Jesse import get_choice_tokens
+        import sys
+        import os
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from run_experiment import get_choice_tokens
         
         # Check API key
         api_key = os.getenv("ANTHROPIC_API_KEY")
@@ -45,7 +48,10 @@ def test_gemini():
     
     try:
         from model.gemini import load_gemini_model
-        from assist_tag_rec_Jesse import get_choice_tokens
+        import sys
+        import os
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from run_experiment import get_choice_tokens
         
         # Check API key
         api_key = os.getenv("GOOGLE_API_KEY")
@@ -78,7 +84,10 @@ def test_huggingface():
     
     try:
         from model.load import load_model
-        from assist_tag_rec_Jesse import get_choice_tokens
+        import sys
+        import os
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from run_experiment import get_choice_tokens
         
         # Load model
         chat_wrapper = load_model("TinyLlama/TinyLlama-1.1B-Chat-v1.0", device='auto')

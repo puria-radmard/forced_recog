@@ -31,7 +31,7 @@ from model.load import load_model
 from model.base import ChatTemplateWrapper
 
 # Import prompts
-from prompts_assist_tag import SYSTEM_PROMPT_TEMPLATE, USER_PROMPT_TEMPLATE
+from prompts.prompts_assist_tag import SYSTEM_PROMPT_TEMPLATE, USER_PROMPT_TEMPLATE
 
 # Load environment variables
 load_dotenv()

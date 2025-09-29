@@ -3,7 +3,7 @@ Assist Tag Recognition Test Script
 
 DUAL MODE OPERATION:
 1. IDE MODE (default): Run without arguments for easy debugging
-   - Uses hardcoded config path: configs/assist_tag_config.yaml
+   - Uses hardcoded config path: configs/operationalizations/AT_2T/rec_config.yaml
    - Easy to modify and debug in IDE
    - All parameters configured through YAML file
 
@@ -13,9 +13,9 @@ DUAL MODE OPERATION:
    - Model selection: ["all"] or specific model names
 
 USAGE:
-- IDE mode: python assist_tag_rec_Jesse.py
-- CLI mode: python assist_tag_rec_Jesse.py --config path/to/config.yaml
-- Show models: python assist_tag_rec_Jesse.py --show-models --config path/to/config.yaml
+- IDE mode: python run_experiment.py
+- CLI mode: python run_experiment.py --config path/to/config.yaml
+- Show models: python run_experiment.py --show-models --config path/to/config.yaml
 
 EXPERIMENT TYPES:
 - assist_tag: Tests model self-recognition (which response was originally produced by the model)
@@ -648,22 +648,22 @@ def parse_arguments():
         epilog="""
 Examples:
   # Run with default config file
-  python assist_tag_rec_Jesse.py
+  python run_experiment.py
   
   # Run with custom config file
-  python assist_tag_rec_Jesse.py --config configs/custom_config.yaml
+  python run_experiment.py --config configs/custom_config.yaml
   
   # Run with specific experiment directory
-  python assist_tag_rec_Jesse.py --experiment-dir results_and_data/experiments/WikiSum/model_vs_all_others
+  python run_experiment.py --experiment-dir results_and_data/experiments/WikiSum/model_vs_all_others
   
   # Show available models in experiment
-  python assist_tag_rec_Jesse.py --show-models --config configs/assist_tag/assist_tag_config.yaml
+  python run_experiment.py --show-models --config configs/operationalizations/AT_2T/rec_config.yaml
         """
     )
     
     parser.add_argument("--config", 
-                       default="configs/assist_tag/assist_tag_config.yaml",
-                       help="Path to the YAML configuration file (default: configs/assist_tag/assist_tag_config.yaml)")
+                       default="configs/operationalizations/AT_2T/rec_config.yaml",
+                       help="Path to the YAML configuration file (default: configs/operationalizations/AT_2T/rec_config.yaml)")
     parser.add_argument("--experiment-dir",
                        help="Path to the experiment directory (overrides config file setting)")
     parser.add_argument("--show-models", action="store_true",
@@ -758,7 +758,7 @@ def infer_model_type(model_name: str) -> str:
         )
 
 
-def load_config(config_path: str = "configs/assist_tag/assist_tag_config.yaml") -> Dict:
+def load_config(config_path: str = "configs/operationalizations/AT_2T/rec_config.yaml") -> Dict:
     """
     Load configuration from YAML file.
     
@@ -836,7 +836,7 @@ def main():
             return
     else:
         # IDE mode: use hardcoded config path
-        config_path = "configs/assist_tag/rec_user_tag_config.yaml"
+        config_path = "configs/operationalizations/AT_2T/rec_config.yaml"
     
     # ===== LOAD CONFIGURATION =====
     config = load_config(config_path)
