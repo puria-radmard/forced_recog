@@ -1,0 +1,33 @@
+# Core ML packages
+torch
+transformers
+datasets
+peft
+accelerate
+
+# Data processing
+pandas
+numpy
+tqdm
+pyyaml
+
+# Visualization  
+matplotlib
+seaborn
+
+# ML experiment tracking
+wandb
+
+# Cloud compute
+modal
+
+# Environment management
+python-dotenv
+
+# API integrations
+anthropic
+google-generativeai
+openai
+
+# Optional: if you need CPU-only PyTorch instead
+# torch --index-url https://download.pytorch.org/whl/cpu
