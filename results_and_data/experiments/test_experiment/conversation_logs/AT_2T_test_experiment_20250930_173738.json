@@ -1,0 +1,44 @@
+{
+  "experiment_name": "AT_2T_test_experiment",
+  "start_time": "2025-09-30T17:37:38.119839",
+  "end_time": "2025-09-30T17:37:38.119839",
+  "conversations": [
+    {
+      "conversation_id": "test_conv_1",
+      "timestamp": "2025-09-30T17:37:38.119839",
+      "input_data": {
+        "test": "data",
+        "model": "test_model"
+      },
+      "system_prompt": "You are a test assistant",
+      "user_prompt": "Test user message",
+      "model_responses": [
+        {
+          "model_name": "test_model",
+          "response_text": "This is a test response",
+          "timestamp": "2025-09-30T17:37:38.119839",
+          "choice_probabilities": [
+            0.6,
+            0.4
+          ],
+          "metadata": {
+            "temperature": 0.7
+          },
+          "has_logits": false
+        }
+      ],
+      "results": {
+        "accuracy": 0.8,
+        "selected_choice": "1",
+        "is_correct": true
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-09-30T17:37:38.119839"
+    }
+  ],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0"
+  }
+}

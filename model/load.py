@@ -1,71 +1,70 @@
 import torch
-from typing import Type
-from model.base import ChatTemplateWrapper
+from typing import Type, Union
+from model.base import BaseChatWrapper, HuggingFaceChatWrapper
+from model.anthropic import AnthropicChatWrapper
+from model.openai import OpenAIChatWrapper
+from model.gemini import GeminiChatWrapper
 from transformers import (
     AutoTokenizer, 
     AutoModelForCausalLM, 
 )
 
 
-# Factory function to get the appropriate wrapper
-def get_chat_wrapper_class(model_name: str) -> Type[ChatTemplateWrapper]:
-    """
-    Get the appropriate chat wrapper class for a given model name.
-    
-    Args:
-        model_name: The model name or path
-        
-    Returns:
-        ChatTemplateWrapper class appropriate for the model
-    """
-    model_name_lower = model_name.lower()
-
-    return ChatTemplateWrapper
-
-
 def load_model(
     model_name: str, 
-    device: str,
+    device: str = "auto",
     torch_dtype: torch.dtype = torch.float16
-) -> ChatTemplateWrapper:
+) -> BaseChatWrapper:
     """
-    Load a HuggingFace language model and return an appropriate chat wrapper.
+    Load any model type and return a unified chat wrapper.
     
     Args:
-        model_name: Name or path of the model to load (e.g., "meta-llama/Llama-2-7b-chat-hf")
-        device: Device to load the model on ("auto", "cuda", "cpu", etc.)
-        torch_dtype: PyTorch data type for model weights
+        model_name: Name or path of the model to load
+        device: Device to load the model on (for HuggingFace models)
+        torch_dtype: PyTorch data type for model weights (for HuggingFace models)
         
     Returns:
-        ChatTemplateWrapper instance containing the model, tokenizer, and chat formatting
+        BaseChatWrapper instance with unified interface
         
     Example:
+        >>> # HuggingFace model
         >>> chat_wrapper = load_model("meta-llama/Llama-2-7b-chat-hf")
-        >>> # Can now call chat_wrapper.generate() or chat_wrapper.forward()
+        >>> # Anthropic model
+        >>> chat_wrapper = load_model("claude-3-5-sonnet-20241022")
+        >>> # OpenAI model
+        >>> chat_wrapper = load_model("gpt-4o-mini")
+        >>> # Gemini model
+        >>> chat_wrapper = load_model("gemini-1.5-flash")
     """
-    try:
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-    except TypeError:
-        tokenizer = AutoTokenizer.from_pretrained(model_name, legacy = False, from_slow = False)
+    model_name_lower = model_name.lower()
     
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-
-    if device == 'auto':
-        model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            torch_dtype=torch_dtype,
-            device_map = 'auto'
-        )
-
+    # Determine model type and return appropriate wrapper
+    if model_name_lower.startswith('claude-'):
+        return AnthropicChatWrapper(model_name)
+    elif model_name_lower.startswith('gemini-'):
+        return GeminiChatWrapper(model_name)
+    elif model_name_lower.startswith('gpt-'):
+        return OpenAIChatWrapper(model_name)
     else:
-        model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            torch_dtype=torch_dtype,
-        ).to(device)
+        # HuggingFace model
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
+        except TypeError:
+            tokenizer = AutoTokenizer.from_pretrained(model_name, legacy = False, from_slow = False)
+        
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
 
-    
-    # Determine appropriate wrapper class
-    wrapper_class = get_chat_wrapper_class(model_name)
-    
-    return wrapper_class(model, tokenizer)
+        if device == 'auto':
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                torch_dtype=torch_dtype,
+                device_map = 'auto'
+            )
+        else:
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                torch_dtype=torch_dtype,
+            ).to(device)
+        
+        return HuggingFaceChatWrapper(model, tokenizer)

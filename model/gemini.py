@@ -1,8 +1,8 @@
 """
 Google Gemini API Integration for Assist Tag Recognition
 
-This module provides a wrapper for Google Gemini API that implements
-the same interface as ChatTemplateWrapper for compatibility with existing code.
+This module provides a wrapper for Google Gemini API that inherits from
+BaseChatWrapper for unified interface and logging support.
 """
 
 import os
@@ -12,16 +12,21 @@ import random
 from typing import List, Dict, Optional, Any, Union
 import google.generativeai as genai
 from dotenv import load_dotenv
+from model.base import BaseChatWrapper
 
 # Load environment variables
 load_dotenv()
 
-class GeminiWrapper:
+class GeminiChatWrapper(BaseChatWrapper):
     """
-    Wrapper for Google Gemini API that mimics ChatTemplateWrapper interface.
+    Wrapper for Google Gemini API that inherits from BaseChatWrapper.
     
-    This class provides the same methods as ChatTemplateWrapper but uses
-    Google's Gemini API instead of local model inference.
+    This class provides Gemini API integration with unified interface
+    and logging support.
+    
+    [WARNING] This wrapper uses MOCK LOGITS for compatibility.
+    The logits returned by forward() are simulated based on text analysis
+    and do not represent the model's actual internal probability distributions.
     """
     
     def __init__(self, model_name: str = "gemini-1.5-flash"):
@@ -31,7 +36,7 @@ class GeminiWrapper:
         Args:
             model_name: The Gemini model to use (e.g., "gemini-1.5-flash", "gemini-1.5-pro")
         """
-        self.model_name = model_name
+        super().__init__(model_name)
         
         # Configure Gemini API
         api_key = os.getenv("GOOGLE_API_KEY")
@@ -43,7 +48,7 @@ class GeminiWrapper:
         
         # Mock tokenizer for compatibility
         self.tokenizer = self._create_mock_tokenizer()
-        self.device = "gemini"  # Placeholder for device
+        self.device = "gemini"
         
         # Rate limiting configuration
         self.base_delay = 0.5  # Base delay in seconds (reduced for faster recovery)
@@ -333,6 +338,12 @@ class GeminiWrapper:
         """
         import torch
         
+        # Print warning about mock logits
+        print("\033[91m[WARNING] Using MOCK LOGITS for Gemini API model\033[0m")
+        print("\033[91m   These are simulated probabilities based on text analysis only.\033[0m")
+        print("\033[91m   They do not represent the model's actual confidence or internal state.\033[0m")
+        print(f"\033[91m   Response text: '{response_text}'\033[0m")
+        
         # Create logits for choice tokens [1, 2]
         # Higher probability for the choice that appears in response
         if "1" in response_text and "2" not in response_text:
@@ -443,7 +454,7 @@ class GeminiWrapper:
             return ["Error generating response"]
 
 
-def load_gemini_model(model_name: str = "gemini-1.5-flash") -> GeminiWrapper:
+def load_gemini_model(model_name: str = "gemini-1.5-flash") -> GeminiChatWrapper:
     """
     Load a Gemini model wrapper.
     
@@ -451,6 +462,6 @@ def load_gemini_model(model_name: str = "gemini-1.5-flash") -> GeminiWrapper:
         model_name: The Gemini model to use
         
     Returns:
-        GeminiWrapper instance
+        GeminiChatWrapper instance
     """
-    return GeminiWrapper(model_name)
+    return GeminiChatWrapper(model_name)

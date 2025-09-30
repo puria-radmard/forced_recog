@@ -1,8 +1,8 @@
 """
 OpenAI API Integration for Assist Tag Recognition
 
-This module provides a wrapper for OpenAI API that implements
-the same interface as ChatTemplateWrapper for compatibility with existing code.
+This module provides a wrapper for OpenAI API that inherits from
+BaseChatWrapper for unified interface and logging support.
 """
 
 import os
@@ -12,16 +12,21 @@ import random
 from typing import List, Dict, Optional, Any, Union
 import openai
 from dotenv import load_dotenv
+from model.base import BaseChatWrapper
 
 # Load environment variables
 load_dotenv()
 
-class OpenAIWrapper:
+class OpenAIChatWrapper(BaseChatWrapper):
     """
-    Wrapper for OpenAI API that mimics ChatTemplateWrapper interface.
+    Wrapper for OpenAI API that inherits from BaseChatWrapper.
     
-    This class provides the same methods as ChatTemplateWrapper but uses
-    OpenAI's API instead of local model inference.
+    This class provides OpenAI API integration with unified interface
+    and logging support.
+    
+    [WARNING] This wrapper uses MOCK LOGITS for compatibility.
+    The logits returned by forward() are simulated based on text analysis
+    and do not represent the model's actual internal probability distributions.
     """
     
     def __init__(self, model_name: str = "gpt-4o-mini"):
@@ -31,7 +36,7 @@ class OpenAIWrapper:
         Args:
             model_name: The OpenAI model to use (e.g., "gpt-4o-mini", "gpt-4o")
         """
-        self.model_name = model_name
+        super().__init__(model_name)
         
         # Configure OpenAI API
         api_key = os.getenv("OPENAI_API_KEY")
@@ -42,7 +47,7 @@ class OpenAIWrapper:
         
         # Mock tokenizer for compatibility
         self.tokenizer = self._create_mock_tokenizer()
-        self.device = "openai"  # Placeholder for device
+        self.device = "openai"
         
         # Rate limiting configuration
         self.base_delay = 0.5  # Base delay in seconds (reduced for faster recovery)
@@ -277,6 +282,12 @@ class OpenAIWrapper:
         """
         import torch
         
+        # Print warning about mock logits
+        print("\033[91m[WARNING] Using MOCK LOGITS for OpenAI API model\033[0m")
+        print("\033[91m   These are simulated probabilities based on text analysis only.\033[0m")
+        print("\033[91m   They do not represent the model's actual confidence or internal state.\033[0m")
+        print(f"\033[91m   Response text: '{response_text}'\033[0m")
+        
         # Create logits for choice tokens [1, 2]
         # Higher probability for the choice that appears in response
         if "1" in response_text and "2" not in response_text:
@@ -352,7 +363,7 @@ class OpenAIWrapper:
             return ["Error generating response"]
 
 
-def load_openai_model(model_name: str = "gpt-4o-mini") -> OpenAIWrapper:
+def load_openai_model(model_name: str = "gpt-4o-mini") -> OpenAIChatWrapper:
     """
     Load an OpenAI model wrapper.
     
@@ -360,7 +371,7 @@ def load_openai_model(model_name: str = "gpt-4o-mini") -> OpenAIWrapper:
         model_name: The OpenAI model to use
         
     Returns:
-        OpenAIWrapper instance
+        OpenAIChatWrapper instance
     """
-    return OpenAIWrapper(model_name)
+    return OpenAIChatWrapper(model_name)
 

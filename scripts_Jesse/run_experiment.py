@@ -18,15 +18,15 @@ USAGE:
 - Show models: python run_experiment.py --show-models --config path/to/config.yaml
 
 EXPERIMENT TYPES:
-- assist_tag: Tests model self-recognition (which response was originally produced by the model)
-- user_tag: Tests user preference (which response the model prefers)
+- AT_2T: Tests model self-recognition (which response was originally produced by the model)
+- UT_2T: Tests user preference (which response the model prefers)
 
 CONFIGURATION:
 - Model name selection (auto-detected model type from name)
 - Experiment directory and data settings
 - Conversation limits and testing parameters
 - Display options and output settings
-- Experiment type (assist_tag vs user_tag)
+- Experiment type (AT_2T vs UT_2T)
 
 FEATURES:
 - YAML-based configuration for easy parameter management
@@ -36,7 +36,7 @@ FEATURES:
 - Detailed progress reporting and results summary
 - Flexible testing and production modes through configuration
 - Dual-mode operation for both IDE debugging and CLI production use
-- Multiple experiment protocols (assist_tag vs user_tag)
+- Multiple experiment protocols (AT_2T vs UT_2T)
 """
 import os
 import pandas as pd
@@ -47,6 +47,10 @@ from tqdm import tqdm
 from typing import List, Optional, Set, Tuple, Dict
 import copy
 from dotenv import load_dotenv
+from util.conversation_logger import conversation_logger
+
+import windows_pathing_fix
+windows_pathing_fix.fix_pathing()
 from model.load import load_model
 from model.base import ChatTemplateWrapper
 from model.anthropic import load_anthropic_model, AnthropicWrapper
@@ -207,7 +211,7 @@ def get_results_file_path(data_file: str) -> str:
         results_dir = f"results_and_data/results/{dataset_name}"
     else:
         # Fallback to a default directory
-        results_dir = "results_and_data/results/assist_tag_choices"
+        results_dir = "results_and_data/results/default_dir"
     
     # Create filename based on experiment directory
     experiment_name = os.path.basename(data_file)
@@ -348,7 +352,8 @@ def process_conversations_for_choices(
     system_prompt: str = None,
     user_prompt_template: str = None,
     detection_prompt_template: str = None,
-    experiment_type: str = "assist_tag"
+    experiment_type: str = "AT_2T",
+    logger = None
 ) -> None:
     """
     Process conversations for pairwise choice elicitation using multiple models.
@@ -363,7 +368,7 @@ def process_conversations_for_choices(
         system_prompt: System prompt template
         user_prompt_template: User prompt template
         detection_prompt_template: Detection prompt template
-        experiment_type: Type of experiment ("assist_tag" or "user_tag")
+        experiment_type: Type of experiment ("AT_2T" or "UT_2T")
     """
     print(f"Processing conversations with max {max_conversations} per model")
     
@@ -435,7 +440,7 @@ def process_conversations_for_choices(
         # Limit conversations based on max_conversations setting
         limited_conversations = model_conversations[:max_conversations]
         
-        for conv in tqdm(limited_conversations, desc=f"Processing {base_model}"):
+        for conv_idx, conv in enumerate(tqdm(limited_conversations, desc=f"Processing {base_model}")):
             # Apply truncation if configured
             passage = truncate_text(conv['passage'], truncate_words)
             response_1 = truncate_text(conv['response_1'], truncate_words)
@@ -444,27 +449,68 @@ def process_conversations_for_choices(
             # Create the user prompt using the (possibly truncated) passage
             user_prompt = user_prompt_template.format(passage=passage)
             
-            if experiment_type == "assist_tag":
+            if experiment_type == "AT_2T":
                 conversation_full = chat_wrapper.format_chat(
                             system_prompt=system_prompt,
                             in_context_questions=[user_prompt, user_prompt],  # Both questions use the same prompt
                             in_context_answers=[response_1, response_2],  # Use truncated responses
-                            user_message=detection_prompt_template.format(passage=passage),  # Use truncated passage
+                            user_message=detection_prompt_template,  # Use truncated passage
                         )
-            elif experiment_type == "user_tag":
+            elif experiment_type == "UT_2T":
                 full_user_prompt = user_prompt_template.format(passage=passage)
                 full_detection_prompt = detection_prompt_template.format(user_message=full_user_prompt, response_1=response_1, response_2=response_2)
                 conversation_full = chat_wrapper.format_chat(
                     system_prompt=system_prompt,
                     user_message=full_detection_prompt,
                 )
+            elif experiment_type == "AT_IR":
+                if conv["response_1_source"] == "control":
+                    original_text_token = "1"
+                    injected_text_token = "2"
+                elif conv["response_1_source"] == "treatment":
+                    original_text_token = "2"
+                    injected_text_token = "1"
+                else:
+                    raise ValueError(f"Invalid response_1_source: {conv['response_1_source']}")
+                conversation_full = chat_wrapper.format_chat(
+                            system_prompt=system_prompt,
+                            in_context_questions=[user_prompt], 
+                            in_context_answers=[response_1], 
+                            user_message=detection_prompt_template.format(injected_text_token=injected_text_token, original_text_token=original_text_token), 
+                        )
             else:
                 raise ValueError(f"Invalid experiment type: {experiment_type}")
             
             try:
-                # Get model predictions
+                # Start logging this conversation if logger is available
+                conversation_id = f"{model_name}_{conv_idx}"
+                if logger:
+                    logger.start_conversation(
+                        conversation_id=conversation_id,
+                        input_data={
+                            "conversation_index": conv_idx,
+                            "model_name": model_name,
+                            "trial": conv.get('trial', 'unknown'),
+                            "treatment": conv.get('treatment', 'unknown'),
+                            "response_1_source": conv.get('response_1_source', 'unknown'),
+                            "response_2_source": conv.get('response_2_source', 'unknown')
+                        },
+                        system_prompt=system_prompt,
+                        user_prompt=conversation_full
+                    )
+                
+                # Get model predictions using logging wrapper
+                if logger:
+                    outputs = chat_wrapper.forward_with_logging(
+                        chats=[conversation_full],
+                        logger=logger,
+                        conversation_id=conversation_id
+                    )
+                else:
+                    outputs = chat_wrapper.forward(chats=[conversation_full])
+                
                 conv_probs = get_choice_token_logits_from_token_ids(
-                    chat_wrapper.forward(chats=[conversation_full]).logits, 
+                    outputs.logits, 
                     choice_tokens
                 )
                 
@@ -486,6 +532,18 @@ def process_conversations_for_choices(
                 
                 print(f"  → Correct choice: {correct_choice} (control response)")
                 print(f"  → Model {'✓ CORRECT' if is_correct else '✗ INCORRECT'}")
+                
+                # Log results if logger is available
+                if logger:
+                    logger.log_results({
+                        "choice_probabilities": [prob_1, prob_2],
+                        "selected_choice": selected_choice,
+                        "correct_choice": correct_choice,
+                        "is_correct": is_correct,
+                        "accuracy": 1.0 if is_correct else 0.0
+                    })
+                    
+                    logger.finish_conversation(success=True)
                 
                 # Store results
                 all_results.append({
@@ -511,6 +569,11 @@ def process_conversations_for_choices(
                 continue
             except Exception as e:
                 print(f"Error processing conversation: {e}")
+                
+                # Log error if logger is available
+                if logger and 'conversation_id' in locals():
+                    logger.finish_conversation(success=False, error_message=str(e))
+                
                 continue
             
             # Clear cache to prevent memory issues
@@ -567,7 +630,7 @@ def process_conversations_for_choices(
         print("No new results to save")
 
 
-def load_assist_tag_data(experiment_dir: str) -> pd.DataFrame:
+def load_data(experiment_dir: str) -> pd.DataFrame:
     """
     Load assist tag data from control and treatment CSV files.
     
@@ -684,7 +747,7 @@ def show_available_models(experiment_dir: str) -> None:
         return
     
     try:
-        df = load_assist_tag_data(experiment_dir)
+        df = load_data(experiment_dir)
         print(f"\n📊 Available models in {experiment_dir}:")
         print("=" * 60)
         
@@ -767,6 +830,10 @@ def load_config(config_path: str = "configs/operationalizations/AT_2T/rec_config
         
     Returns:
         Dictionary containing configuration parameters
+        
+    Raises:
+        FileNotFoundError: If config file doesn't exist
+        ValueError: If required config parameters are missing
     """
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
@@ -774,46 +841,61 @@ def load_config(config_path: str = "configs/operationalizations/AT_2T/rec_config
     try:
         with open(config_path, "r") as f:
             config = yaml.safe_load(f)
-        
-        # Set default values for optional parameters
-        defaults = {
-            "truncate_articles": True,
-            "truncate_words": 100,
-            "show_sample_data": True,
-            "show_conversation_breakdown": True,
-            "selected_models": ["all"],
-            "experiment_type": "assist_tag"
-        }
-        
-        for key, default_value in defaults.items():
-            if key not in config:
-                config[key] = default_value
-        
-        # Set default prompts if not provided
-        if "prompts" not in config:
-            config["prompts"] = {}
-        
-        prompt_defaults = {
-            "system": "You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
-            "user": "Summarize the following article: {passage}",
-            "detection": "In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
-        }
-        
-        for key, default_value in prompt_defaults.items():
-            if key not in config["prompts"]:
-                config["prompts"][key] = default_value
-        
-        return config
     except Exception as e:
         raise ValueError(f"Failed to load configuration from {config_path}: {e}")
+    
+    # Required configuration parameters
+    required_params = [
+        "experiment_dir",
+        "max_conversations", 
+        "selected_models",
+        "truncate_words",
+        "experiment_type"
+    ]
+    
+    # Check for missing required parameters
+    missing_params = [param for param in required_params if param not in config]
+    if missing_params:
+        raise ValueError(
+            f"Missing required configuration parameters in {config_path}: {missing_params}. "
+            f"Please add these parameters to your config file."
+        )
+    
+    # Required prompts section
+    if "prompts" not in config:
+        raise ValueError(
+            f"Missing required 'prompts' section in {config_path}. "
+            f"Please add a 'prompts' section with 'system', 'user', and 'detection' templates."
+        )
+    
+    required_prompts = ["system", "user", "detection"]
+    missing_prompts = [prompt for prompt in required_prompts if prompt not in config["prompts"]]
+    if missing_prompts:
+        raise ValueError(
+            f"Missing required prompt templates in {config_path}: {missing_prompts}. "
+            f"Please add these prompt templates to the 'prompts' section of your config file."
+        )
+    
+    # Optional parameters with validation
+    optional_params = {
+        "truncate_articles": True,
+        "show_sample_data": True,
+        "show_conversation_breakdown": True
+    }
+    
+    for key, default_value in optional_params.items():
+        if key not in config:
+            config[key] = default_value
+    
+    return config
 
 
 def main():
     """
     Main function - supports both CLI and IDE usage modes
     """
-    print("=== Assist Tag Recognition Test Script ===")
-    print("This script tests model self-recognition on assist tag conversations")
+    print("=== Test Script ===")
+    print("This script tests model self-recognition on various experimental paradigms")
     
     # ===== DETERMINE CONFIG PATH =====
     # Check if running from CLI (has command line arguments) or IDE (no arguments)
@@ -836,7 +918,7 @@ def main():
             return
     else:
         # IDE mode: use hardcoded config path
-        config_path = "configs/operationalizations/AT_2T/rec_config.yaml"
+        config_path = "configs/operationalizations/AT_IR/rec_config.yaml"
     
     # ===== LOAD CONFIGURATION =====
     config = load_config(config_path)
@@ -848,19 +930,25 @@ def main():
     if args and hasattr(args, 'experiment_dir') and args.experiment_dir:
         experiment_dir = args.experiment_dir
     else:
-        experiment_dir = config.get("experiment_dir", "results_and_data/experiments/WikiSum/anthropic_claude-sonnet-4-20250514_vs_all_others_control_comparison")
-    max_conversations_config = config.get("max_conversations", 10)
-    selected_models = config.get("selected_models", ["all"])
-    truncate_words_config = config.get("truncate_words", 100)
-    show_sample_data = config.get("show_sample_data", True)
-    show_conversation_breakdown = config.get("show_conversation_breakdown", True)
-    experiment_type = config.get("experiment_type", "assist_tag")
+        experiment_dir = config["experiment_dir"]
+    max_conversations_config = config["max_conversations"]
+    selected_models = config["selected_models"]
+    truncate_words_config = config["truncate_words"]
+    show_sample_data = config["show_sample_data"]
+    show_conversation_breakdown = config["show_conversation_breakdown"]
+    experiment_type = config["experiment_type"]
     
     # Load prompt templates from config
-    prompts = config.get("prompts", {})
-    system_prompt = prompts.get("system", "You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.")
-    user_prompt_template = prompts.get("user", "Summarize the following article: {passage}")
-    detection_prompt_template = prompts.get("detection", "In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text.")
+    prompts = config["prompts"]
+    system_prompt = prompts["system"]
+    user_prompt_template = prompts["user"]
+    detection_prompt_template = prompts["detection"]
+    
+    # Load logging configuration
+    logging_config = config.get("logging", {})
+    logging_enabled = logging_config.get("enabled", True)
+    logging_level = logging_config.get("level", "INFO")
+    logging_output_dir_config = logging_config.get("output_dir", "experiment_dir/conversation_logs")
     
     print(f"📋 Configuration loaded from {config_path}")
     print(f"🎯 Selected models: {selected_models}")
@@ -872,7 +960,7 @@ def main():
     
     # ===== LOAD DATA =====
     print(f"\nLoading data from experiment directory: {experiment_dir}")
-    data_df = load_assist_tag_data(experiment_dir)
+    data_df = load_data(experiment_dir)
     print(f"Loaded {len(data_df)} rows of data")
     print(f"Data columns: {data_df.columns.tolist()}")
     
@@ -939,18 +1027,52 @@ def main():
         model_counts = Counter([conv['model_base'] for conv in conversations])
         print(f"Conversations by base model: {dict(model_counts)}")
     
-    # ===== PROCESS CONVERSATIONS =====
-    process_conversations_for_choices(
-        conversations=conversations,
-        data_file=experiment_dir,  # Use experiment directory for results path
-        max_conversations=max_conversations,
-        selected_models=selected_models,
-        truncate_words=truncate_words,
-        system_prompt=system_prompt,
-        user_prompt_template=user_prompt_template,
-        detection_prompt_template=detection_prompt_template,
-        experiment_type=experiment_type
-    )
+    # ===== PROCESS CONVERSATIONS WITH LOGGING =====
+    # Create experiment name for logging
+    experiment_name = f"{experiment_type}_{os.path.basename(experiment_dir)}"
+    
+    # Determine log output directory
+    if logging_output_dir_config == "experiment_dir/conversation_logs":
+        # Default: save logs in the same directory as results
+        log_output_dir = os.path.join(experiment_dir, "conversation_logs")
+    elif logging_output_dir_config.startswith("experiment_dir/"):
+        # Relative to experiment directory
+        relative_path = logging_output_dir_config.replace("experiment_dir/", "")
+        log_output_dir = os.path.join(experiment_dir, relative_path)
+    else:
+        # Absolute path or other custom path
+        log_output_dir = logging_output_dir_config
+    
+    with conversation_logger(
+        experiment_name=experiment_name,
+        output_dir=log_output_dir,
+        enabled=logging_enabled,
+        log_level=logging_level
+    ) as logger:
+        # Log experiment metadata
+        logger.log_experiment_metadata({
+            "config_path": config_path,
+            "selected_models": selected_models,
+            "max_conversations": max_conversations,
+            "experiment_dir": experiment_dir,
+            "truncate_words": truncate_words,
+            "experiment_type": experiment_type,
+            "total_conversations": len(conversations)
+        })
+        
+        # Process conversations with logging
+        process_conversations_for_choices(
+            conversations=conversations,
+            data_file=experiment_dir,  # Use experiment directory for results path
+            max_conversations=max_conversations,
+            selected_models=selected_models,
+            truncate_words=truncate_words,
+            system_prompt=system_prompt,
+            user_prompt_template=user_prompt_template,
+            detection_prompt_template=detection_prompt_template,
+            experiment_type=experiment_type,
+            logger=logger  # Pass logger to processing function
+        )
     
     print("\nTest complete!")
 

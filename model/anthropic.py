@@ -1,8 +1,8 @@
 """
 Anthropic Claude API Integration for Assist Tag Recognition
 
-This module provides a wrapper for Anthropic Claude API that implements
-the same interface as ChatTemplateWrapper for compatibility with existing code.
+This module provides a wrapper for Anthropic Claude API that inherits from
+BaseChatWrapper for unified interface and logging support.
 """
 
 import os
@@ -12,16 +12,21 @@ import random
 from typing import List, Dict, Optional, Any, Union
 import anthropic
 from dotenv import load_dotenv
+from model.base import BaseChatWrapper
 
 # Load environment variables
 load_dotenv()
 
-class AnthropicWrapper:
+class AnthropicChatWrapper(BaseChatWrapper):
     """
-    Wrapper for Anthropic Claude API that mimics ChatTemplateWrapper interface.
+    Wrapper for Anthropic Claude API that inherits from BaseChatWrapper.
     
-    This class provides the same methods as ChatTemplateWrapper but uses
-    Anthropic's API instead of local model inference.
+    This class provides Anthropic API integration with unified interface
+    and logging support.
+    
+    [WARNING] This wrapper uses MOCK LOGITS for compatibility.
+    The logits returned by forward() are simulated based on text analysis
+    and do not represent the model's actual internal probability distributions.
     """
     
     def __init__(self, model_name: str = "claude-3-5-haiku-20241022"):
@@ -31,14 +36,14 @@ class AnthropicWrapper:
         Args:
             model_name: The Anthropic model to use
         """
-        self.model_name = model_name
+        super().__init__(model_name)
         self.client = anthropic.Anthropic(
             api_key=os.getenv("ANTHROPIC_API_KEY")
         )
         
         # Mock tokenizer for compatibility
         self.tokenizer = self._create_mock_tokenizer()
-        self.device = "anthropic"  # Placeholder for device
+        self.device = "anthropic"
         
         # Rate limiting configuration
         self.base_delay = 0.5  # Base delay in seconds (reduced for faster recovery)
@@ -289,6 +294,12 @@ class AnthropicWrapper:
         """
         import torch
         
+        # Print warning about mock logits
+        print("\033[91m[WARNING] Using MOCK LOGITS for Anthropic API model\033[0m")
+        print("\033[91m   These are simulated probabilities based on text analysis only.\033[0m")
+        print("\033[91m   They do not represent the model's actual confidence or internal state.\033[0m")
+        print(f"\033[91m   Response text: '{response_text}'\033[0m")
+        
         # Create logits for choice tokens [1, 2]
         # Higher probability for the choice that appears in response
         if "1" in response_text and "2" not in response_text:
@@ -376,7 +387,7 @@ class AnthropicWrapper:
             return ["Error generating response"]
 
 
-def load_anthropic_model(model_name: str = "claude-3-5-haiku-20241022") -> AnthropicWrapper:
+def load_anthropic_model(model_name: str = "claude-3-5-haiku-20241022") -> AnthropicChatWrapper:
     """
     Load an Anthropic model wrapper.
     
@@ -384,6 +395,6 @@ def load_anthropic_model(model_name: str = "claude-3-5-haiku-20241022") -> Anthr
         model_name: The Anthropic model to use
         
     Returns:
-        AnthropicWrapper instance
+        AnthropicChatWrapper instance
     """
-    return AnthropicWrapper(model_name)
+    return AnthropicChatWrapper(model_name)

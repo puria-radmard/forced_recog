@@ -1,9 +1,9 @@
 """
-HuggingFace Model Utilities for Multiple Choice and Text Generation
+Unified Chat Wrapper System for Multiple Choice and Text Generation
 
-This module provides utilities for working with decoder-only language models
-using HuggingFace transformers, with support for prompt caching, multiple choice
-question answering, and text generation.
+This module provides a unified interface for working with various language models
+including HuggingFace transformers, Anthropic Claude, OpenAI GPT, and Google Gemini.
+All wrappers inherit from BaseChatWrapper for consistent interface and logging support.
 """
 
 from typing import Tuple, List, Dict, Union, Optional, Any
@@ -17,23 +17,231 @@ from transformers import (
 import copy
 from transformers.tokenization_utils import BatchEncoding
 import re
+from abc import ABC, abstractmethod
 
-class ChatTemplateWrapper:
+class BaseChatWrapper(ABC):
     """
-    Abstract base class for chat template wrappers that handle model inference.
+    Abstract base class for all chat wrappers.
     
-    This class combines model, tokenizer, and chat formatting into a single interface
-    for easy batch processing of conversations.
+    This class defines the common interface that all model wrappers must implement,
+    providing consistent behavior across HuggingFace, Anthropic, OpenAI, and Gemini models.
+    """
+    
+    def __init__(self, model_name: str):
+        """
+        Initialize the base chat wrapper.
+        
+        Args:
+            model_name: The name of the model
+        """
+        self.model_name = model_name
+        self.device = "unknown"
+        self.tokenizer = None
+        
+    @abstractmethod
+    def format_chat(
+        self, 
+        *_,
+        system_prompt: Optional[str] = None,
+        in_context_questions: Optional[List[str]] = None,
+        in_context_answers: Optional[List[str]] = None,
+        user_message: Optional[str] = None,
+        prefiller: Optional[str] = None,
+        keep_bos: bool = False,
+        skip_special_tokens: bool = False,
+        **kwargs
+    ) -> str:
+        """
+        Format a system prompt and user message according to the model's chat template.
+        
+        Args:
+            system_prompt: The system prompt/instruction
+            in_context_questions: List of user questions for in-context learning
+            in_context_answers: List of assistant responses for in-context learning
+            user_message: The user's message/question
+            prefiller: Optional prefilled response
+            keep_bos: Whether to keep beginning-of-sequence token
+            skip_special_tokens: Whether to skip special tokens in output
+            
+        Returns:
+            Formatted chat string ready for tokenization
+        """
+        pass
+    
+    @abstractmethod
+    def forward(
+        self, 
+        chats: List[str], 
+        past_key_values: Optional[Any] = None,
+        return_dict: bool = True,
+        use_cache: bool = True,
+        return_input_ids: bool = False,
+        **forward_kwargs: Any
+    ) -> Dict[str, Any]:
+        """
+        Run forward pass on a batch of chat strings.
+        
+        Args:
+            chats: List of formatted chat strings
+            past_key_values: Optional cached key-value states
+            return_dict: Whether to return dictionary output
+            use_cache: Whether to use/update cache
+            return_input_ids: Whether to return input IDs
+            
+        Returns:
+            Model outputs dictionary containing logits, past_key_values, etc.
+        """
+        pass
+    
+    @abstractmethod
+    def generate(
+        self,
+        chats: List[str],
+        max_new_tokens: int = 1024,
+        temperature: float = 0.0,
+        do_sample: bool = False,
+        **kwargs
+    ) -> List[str]:
+        """
+        Generate text for a batch of chat strings.
+        
+        Args:
+            chats: List of formatted chat strings
+            max_new_tokens: Maximum number of new tokens to generate
+            temperature: Sampling temperature
+            do_sample: Whether to use sampling or greedy decoding
+            **kwargs: Additional generation parameters
+            
+        Returns:
+            List of generated text strings
+        """
+        pass
+    
+    def log_conversation(self, logger, conversation_data: Dict):
+        """
+        Log conversation if logger provided.
+        
+        Args:
+            logger: Optional conversation logger
+            conversation_data: Dictionary containing conversation data to log
+        """
+        if logger:
+            logger.log_conversation(conversation_data)
+    
+    def forward_with_logging(self, 
+                           chats: List[str], 
+                           logger=None,
+                           conversation_id: str = None,
+                           **kwargs) -> Dict[str, Any]:
+        """
+        Run forward pass with optional logging.
+        
+        Args:
+            chats: List of formatted chat strings
+            logger: Optional conversation logger
+            conversation_id: ID for logging this conversation
+            **kwargs: Additional arguments for forward method
+            
+        Returns:
+            Model outputs dictionary
+        """
+        # Run the forward pass
+        outputs = self.forward(chats, **kwargs)
+        
+        # Log the interaction if logger is provided
+        if logger and conversation_id:
+            # Extract choice probabilities if available
+            choice_probabilities = None
+            if hasattr(outputs, 'logits') and outputs.logits is not None:
+                try:
+                    # This is a simplified extraction - in practice, you'd use the full choice token logic
+                    import torch.nn.functional as F
+                    probs = F.softmax(outputs.logits, dim=-1)
+                    # Extract probabilities for tokens 1 and 2 (choice tokens)
+                    if probs.shape[-1] > 2:
+                        choice_probabilities = [
+                            probs[0, -1, 1].item() if probs.shape[1] > 0 else 0.0,
+                            probs[0, -1, 2].item() if probs.shape[1] > 0 else 0.0
+                        ]
+                except Exception as e:
+                    if hasattr(logger, 'log_level') and logger.log_level in ["DEBUG"]:
+                        print(f"[DEBUG] Could not extract choice probabilities: {e}")
+            
+            # Log the model response
+            logger.log_model_response(
+                model_name=self.model_name,
+                response_text="[Forward pass - no text response]",
+                logits=outputs.logits if hasattr(outputs, 'logits') else None,
+                choice_probabilities=choice_probabilities,
+                metadata={
+                    "method": "forward",
+                    "num_chats": len(chats),
+                    "device": getattr(self, 'device', 'unknown')
+                }
+            )
+        
+        return outputs
+    
+    def generate_with_logging(self,
+                            chats: List[str],
+                            logger=None,
+                            conversation_id: str = None,
+                            **kwargs) -> List[str]:
+        """
+        Generate text with optional logging.
+        
+        Args:
+            chats: List of formatted chat strings
+            logger: Optional conversation logger
+            conversation_id: ID for logging this conversation
+            **kwargs: Additional arguments for generate method
+            
+        Returns:
+            List of generated text strings
+        """
+        # Run the generation
+        generated_texts = self.generate(chats, **kwargs)
+        
+        # Log the interaction if logger is provided
+        if logger and conversation_id:
+            for i, text in enumerate(generated_texts):
+                logger.log_model_response(
+                    model_name=self.model_name,
+                    response_text=text,
+                    logits=None,  # Generation doesn't return logits
+                    choice_probabilities=None,
+                    metadata={
+                        "method": "generate",
+                        "chat_index": i,
+                        "max_new_tokens": kwargs.get('max_new_tokens', 'default'),
+                        "temperature": kwargs.get('temperature', 'default'),
+                        "device": getattr(self, 'device', 'unknown')
+                    }
+                )
+        
+        return generated_texts
+
+class HuggingFaceChatWrapper(BaseChatWrapper):
+    """
+    HuggingFace model wrapper for local inference.
+    
+    This class provides HuggingFace model integration with chat formatting
+    and batch processing capabilities.
+    
+    [OK] This wrapper uses REAL LOGITS from the model's internal state.
+    The logits returned by forward() represent the model's actual
+    probability distributions over the vocabulary.
     """
     
     def __init__(self, model: AutoModelForCausalLM, tokenizer: AutoTokenizer):
         """
-        Initialize the chat wrapper with model and tokenizer.
+        Initialize the HuggingFace chat wrapper with model and tokenizer.
         
         Args:
-            model: The loaded language model
+            model: The loaded HuggingFace language model
             tokenizer: The model's tokenizer
         """
+        super().__init__(model.config.name_or_path)
         self.model = model
         self.tokenizer = tokenizer
         self.device = model.device
