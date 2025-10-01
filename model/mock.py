@@ -124,21 +124,21 @@ class MockChatWrapper(BaseChatWrapper):
         parts = []
         
         if system_prompt:
-            parts.append(f"[SYSTEM] {system_prompt[:50]}...")
+            parts.append(f"[SYSTEM] {system_prompt}")
         
         if in_context_questions and in_context_answers:
             for q, a in zip(in_context_questions, in_context_answers):
-                parts.append(f"[USER] {q[:30]}...")
-                parts.append(f"[ASSISTANT] {a[:30]}...")
+                parts.append(f"[USER] {q}")
+                parts.append(f"[ASSISTANT] {a}")
         
         if user_message:
-            parts.append(f"[USER] {user_message[:50]}...")
+            parts.append(f"[USER] {user_message}")
         
         if prefiller:
             parts.append(f"[PREFILL] {prefiller}")
         
         formatted = " | ".join(parts)
-        return f"[MOCK_CHAT] {formatted}"
+        return formatted
     
     def forward(
         self,

@@ -1,0 +1,19 @@
+{
+  "experiment_name": "UT_2T_mock_vs_all_others_control_comparison",
+  "start_time": "2025-10-01T16:15:51.206873",
+  "end_time": "2025-10-01T16:15:51.222848",
+  "conversations": [],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\configs\\operationalizations\\UT_2T\\pref_config_mock.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 10,
+    "experiment_dir": "results_and_data/experiments/mock_test_data/mock_vs_all_others_control_comparison",
+    "truncate_words": 20,
+    "experiment_type": "UT_2T",
+    "total_conversations": 240
+  }
+}

@@ -428,12 +428,15 @@ def process_conversations_for_choices(
         limited_conversations = model_conversations[:max_conversations]
         
         for conv_idx, conv in enumerate(tqdm(limited_conversations, desc=f"Processing {base_model}")):
-            # Apply truncation if configured
+            # Create the user prompt using the full passage (no truncation for logging)
+            user_prompt_full = user_prompt_template.format(passage=conv['passage'])
+            
+            # Apply truncation if configured for processing
             passage = truncate_text(conv['passage'], truncate_words)
             response_1 = truncate_text(conv['response_1'], truncate_words)
             response_2 = truncate_text(conv['response_2'], truncate_words)
             
-            # Create the user prompt using the (possibly truncated) passage
+            # Create the user prompt using the (possibly truncated) passage for processing
             user_prompt = user_prompt_template.format(passage=passage)
             
             if experiment_type == "AT_2T":
@@ -468,6 +471,40 @@ def process_conversations_for_choices(
             else:
                 raise ValueError(f"Invalid experiment type: {experiment_type}")
             
+            # Create conversation for logging (with full text, no truncation)
+            # Create full detection prompt using the full passage - handle different experiment types
+            if experiment_type == "AT_2T":
+                full_detection_prompt = detection_prompt_template
+            elif experiment_type == "AT_IR":
+                if conv["response_1_source"] == "control":
+                    original_text_token = "1"
+                    injected_text_token = "2"
+                elif conv["response_1_source"] == "treatment":
+                    original_text_token = "2"
+                    injected_text_token = "1"
+                else:
+                    raise ValueError(f"Invalid response_1_source: {conv['response_1_source']}")
+                full_detection_prompt = detection_prompt_template.format(
+                    injected_text_token=injected_text_token, 
+                    original_text_token=original_text_token
+                )
+            elif experiment_type == "UT_2T":
+                full_user_prompt = user_prompt_template.format(passage=conv['passage'])
+                full_detection_prompt = detection_prompt_template.format(
+                    user_message=full_user_prompt, 
+                    response_1=conv['response_1'], 
+                    response_2=conv['response_2']
+                )
+            else:
+                raise ValueError(f"Invalid experiment type: {experiment_type}")
+            
+            conversation_full_for_logging = chat_wrapper.format_chat(
+                        system_prompt=system_prompt,
+                        in_context_questions=[user_prompt_full, user_prompt_full],  # Use full text
+                        in_context_answers=[conv['response_1'], conv['response_2']],  # Use full responses
+                        user_message=full_detection_prompt,  # Use full detection prompt
+                    )
+            
             try:
                 # Start logging this conversation if logger is available
                 conversation_id = f"{model_name}_{conv_idx}"
@@ -482,8 +519,7 @@ def process_conversations_for_choices(
                             "response_1_source": conv.get('response_1_source', 'unknown'),
                             "response_2_source": conv.get('response_2_source', 'unknown')
                         },
-                        system_prompt=system_prompt,
-                        user_prompt=conversation_full
+                        conversation_text=conversation_full_for_logging
                     )
                 
                 # Get model predictions using logging wrapper

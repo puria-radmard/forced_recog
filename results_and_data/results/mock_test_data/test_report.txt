@@ -1,6 +1,6 @@
 Testing Pipeline Report
 ==================================================
-Generated: 2025-10-01 14:59:48
+Generated: 2025-10-01 16:20:32
 
 Summary:
   Total Tests: 5
@@ -11,7 +11,7 @@ Detailed Results:
 ------------------------------
 
 AT_2T_REC: PASS
-  Duration: 26.1s
+  Duration: 25.1s
   Return Code: 0
   Output:
 Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
@@ -54,348 +54,6 @@ Generating conversations...
 Generated 40 conversations
 Conversations by base model: {'mock': 40}
 [INFO] Starting conversation logging for experiment: AT_2T_mock_control_vs_typo_S2
-[DEBUG] Updated experiment metadata: ['config_path', 'selected_models', 'max_conversations', 'experiment_dir', 'truncate_words', 'experiment_type', 'total_conversations']
-Processing conversations with max 10 per model
-[NOTE] No existing results found - will process all conversations
-Found 1 unique base models: ['mock']
-
-=== Processing base model: mock ===
-[TESTING] MockChatWrapper initialized in 'deterministic' mode
-[TESTING]   This wrapper generates instant mock responses for testing
-[TESTING]   No actual LLM calls will be made
-Choice tokens: [[3], [4]]
-[DEBUG] Started logging conversation: mock_0
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_0: SUCCESS
-[DEBUG] Started logging conversation: mock_1
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_1: SUCCESS
-[DEBUG] Started logging conversation: mock_2
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_2: SUCCESS
-[DEBUG] Started logging conversation: mock_3
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_3: SUCCESS
-[DEBUG] Started logging conversation: mock_4
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_4: SUCCESS
-[DEBUG] Started logging conversation: mock_5
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_5: SUCCESS
-[DEBUG] Started logging conversation: mock_6
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_6: SUCCESS
-[DEBUG] Started logging conversation: mock_7
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_7: SUCCESS
-[DEBUG] Started logging conversation: mock_8
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_8: SUCCESS
-[DEBUG] Started logging conversation: mock_9
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_9: SUCCESS
-
-Results saved to results_and_data/results/mock_test_data/mock_control_vs_typo_S2_choice_results.csv
-Processed 10 new conversations
-Total conversations in file: 10
-
-[DATA] RESULTS SUMMARY:
-  New conversations processed: 10
-  Total conversations in file: 10
-  Unique base models: 1
-  Response order distribution:
-    control -> other: 5
-    treatment -> other: 5
-
-  Choice selection summary:
-    Choice 1: 10 times
-
-  Accuracy summary:
-    Overall accuracy: 0.500 (5/10)
-    Accuracy by model:
-      mock: 0.500 (5/10)
-
-  Sample results:
-    [OK] trial1_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
-    [X] trial1_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
-    [OK] trial2_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
-    [X] trial2_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
-[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_control_vs_typo_S2\AT_2T_mock_control_vs_typo_S2_20251001_145803.json
-[INFO] Conversation logging completed. Logged 10 conversations.
-
-Test complete!
-
-  Error:
-
-Processing mock:   0%|          | 0/10 [00:00<?, ?it/s]
-Processing mock: 100%|##########| 10/10 [00:00<?, ?it/s]
-
-
-AT_2T_PREF: PASS
-  Duration: 25.3s
-  Return Code: 0
-  Output:
-Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
-Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
-Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
-Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\envs\\forced_recog\\python311.zip']
-=== Test Script ===
-This script tests model self-recognition on various experimental paradigms
-[INFO] Configuration loaded from C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\configs\operationalizations\AT_2T\pref_config_mock.yaml
-[TARGET] Processing all models found in data
-[DATA] Max conversations: 10
-[FILE] Experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_capitalization_S2
-[TRUNC] Truncate words: 20
-[EXP] Experiment type: AT_2T
-[INFO]  Model names and types will be determined from the data
-
-Loading data from experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_capitalization_S2
-Loaded 40 rows of data
-Data columns: ['trial', 'model', 'treatment', 'passage', 'response']
-Control rows: 20
-Treatment rows: 0
-Unique trials: 20
-Unique models: 1
-[DATA] Using specified conversations: 10
-[TRUNC] Truncating to 20 words
-[TRUNC] Truncating passages and responses to 20 words
-Text truncated to 20 words each
-
-Sample data:
-   trial  ...                                           response
-0      1  ...  The article provides detailed guidance on how ...
-1      2  ...  To determine whether a watch is a genuine Role...
-2      3  ...  This WikiHow article provides a comprehensive ...
-3      4  ...  When sealing pavers, it is essential to choose...
-4      5  ...  In emergency situations, maintaining composure...
-
-[5 rows x 5 columns]
-
-Generating conversations...
-Generated 40 conversations
-Conversations by base model: {'mock': 40}
-[INFO] Starting conversation logging for experiment: AT_2T_mock_control_vs_capitalization_S2
-[DEBUG] Updated experiment metadata: ['config_path', 'selected_models', 'max_conversations', 'experiment_dir', 'truncate_words', 'experiment_type', 'total_conversations']
-Processing conversations with max 10 per model
-[NOTE] No existing results found - will process all conversations
-Found 1 unique base models: ['mock']
-
-=== Processing base model: mock ===
-[TESTING] MockChatWrapper initialized in 'deterministic' mode
-[TESTING]   This wrapper generates instant mock responses for testing
-[TESTING]   No actual LLM calls will be made
-Choice tokens: [[3], [4]]
-[DEBUG] Started logging conversation: mock_0
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_0: SUCCESS
-[DEBUG] Started logging conversation: mock_1
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_1: SUCCESS
-[DEBUG] Started logging conversation: mock_2
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_2: SUCCESS
-[DEBUG] Started logging conversation: mock_3
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_3: SUCCESS
-[DEBUG] Started logging conversation: mock_4
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_4: SUCCESS
-[DEBUG] Started logging conversation: mock_5
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_5: SUCCESS
-[DEBUG] Started logging conversation: mock_6
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_6: SUCCESS
-[DEBUG] Started logging conversation: mock_7
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_7: SUCCESS
-[DEBUG] Started logging conversation: mock_8
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from control)
-  -> Correct choice: 1 (control response)
-  -> Model [CORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_8: SUCCESS
-[DEBUG] Started logging conversation: mock_9
-[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
-Choice probabilities: 0.020 vs 0.001
-  -> Selected choice: 1 (response from treatment)
-  -> Correct choice: 2 (control response)
-  -> Model [INCORRECT]
-[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
-[DEBUG] Finished conversation mock_9: SUCCESS
-
-Results saved to results_and_data/results/mock_test_data/mock_control_vs_capitalization_S2_choice_results.csv
-Processed 10 new conversations
-Total conversations in file: 10
-
-[DATA] RESULTS SUMMARY:
-  New conversations processed: 10
-  Total conversations in file: 10
-  Unique base models: 1
-  Response order distribution:
-    control -> other: 5
-    treatment -> other: 5
-
-  Choice selection summary:
-    Choice 1: 10 times
-
-  Accuracy summary:
-    Overall accuracy: 0.500 (5/10)
-    Accuracy by model:
-      mock: 0.500 (5/10)
-
-  Sample results:
-    [OK] trial1_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
-    [X] trial1_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
-    [OK] trial2_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
-    [X] trial2_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
-[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_control_vs_capitalization_S2\AT_2T_mock_control_vs_capitalization_S2_20251001_145828.json
-[INFO] Conversation logging completed. Logged 10 conversations.
-
-Test complete!
-
-  Error:
-
-Processing mock:   0%|          | 0/10 [00:00<?, ?it/s]
-Processing mock: 100%|##########| 10/10 [00:00<00:00, 1014.02it/s]
-
-
-AT_IR_REC: PASS
-  Duration: 25.4s
-  Return Code: 0
-  Output:
-Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
-Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
-Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
-Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\envs\\forced_recog\\python311.zip']
-=== Test Script ===
-This script tests model self-recognition on various experimental paradigms
-[INFO] Configuration loaded from C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\configs\operationalizations\AT_IR\rec_config_mock.yaml
-[TARGET] Processing all models found in data
-[DATA] Max conversations: 10
-[FILE] Experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_typo_S2
-[TRUNC] Truncate words: 20
-[EXP] Experiment type: AT_IR
-[INFO]  Model names and types will be determined from the data
-
-Loading data from experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_typo_S2
-Loaded 40 rows of data
-Data columns: ['trial', 'model', 'treatment', 'passage', 'response']
-Control rows: 20
-Treatment rows: 20
-Unique trials: 20
-Unique models: 1
-[DATA] Using specified conversations: 10
-[TRUNC] Truncating to 20 words
-[TRUNC] Truncating passages and responses to 20 words
-Text truncated to 20 words each
-
-Sample data:
-   trial  ...                                           response
-0      1  ...  The article provides detailed guidance on how ...
-1      2  ...  To determine whether a watch is a genuine Role...
-2      3  ...  This WikiHow article provides a comprehensive ...
-3      4  ...  When sealing pavers, it is essential to choose...
-4      5  ...  In emergency situations, maintaining composure...
-
-[5 rows x 5 columns]
-
-Generating conversations...
-Generated 40 conversations
-Conversations by base model: {'mock': 40}
-[INFO] Starting conversation logging for experiment: AT_IR_mock_control_vs_typo_S2
 [DEBUG] Updated experiment metadata: ['config_path', 'selected_models', 'max_conversations', 'experiment_dir', 'truncate_words', 'experiment_type', 'total_conversations']
 Processing conversations with max 10 per model
 [FILE] Found existing results: results_and_data/results/mock_test_data/mock_control_vs_typo_S2_choice_results.csv
@@ -523,7 +181,7 @@ Total conversations in file: 20
     [X] trial1_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
     [OK] trial2_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
     [X] trial2_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
-[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_control_vs_typo_S2\AT_IR_mock_control_vs_typo_S2_20251001_145853.json
+[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_control_vs_typo_S2\AT_2T_mock_control_vs_typo_S2_20251001_161849.json
 [INFO] Conversation logging completed. Logged 10 conversations.
 
 Test complete!
@@ -531,11 +189,11 @@ Test complete!
   Error:
 
 Processing mock:   0%|          | 0/10 [00:00<?, ?it/s]
-Processing mock: 100%|##########| 10/10 [00:00<?, ?it/s]
+Processing mock: 100%|##########| 10/10 [00:00<00:00, 5071.10it/s]
 
 
-UT_2T_REC: PASS
-  Duration: 26.1s
+AT_2T_PREF: PASS
+  Duration: 25.3s
   Return Code: 0
   Output:
 Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
@@ -544,12 +202,12 @@ Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python
 Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\envs\\forced_recog\\python311.zip']
 === Test Script ===
 This script tests model self-recognition on various experimental paradigms
-[INFO] Configuration loaded from C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\configs\operationalizations\UT_2T\rec_config_mock.yaml
+[INFO] Configuration loaded from C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\configs\operationalizations\AT_2T\pref_config_mock.yaml
 [TARGET] Processing all models found in data
 [DATA] Max conversations: 10
 [FILE] Experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_capitalization_S2
 [TRUNC] Truncate words: 20
-[EXP] Experiment type: UT_2T
+[EXP] Experiment type: AT_2T
 [INFO]  Model names and types will be determined from the data
 
 Loading data from experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_capitalization_S2
@@ -577,7 +235,7 @@ Sample data:
 Generating conversations...
 Generated 40 conversations
 Conversations by base model: {'mock': 40}
-[INFO] Starting conversation logging for experiment: UT_2T_mock_control_vs_capitalization_S2
+[INFO] Starting conversation logging for experiment: AT_2T_mock_control_vs_capitalization_S2
 [DEBUG] Updated experiment metadata: ['config_path', 'selected_models', 'max_conversations', 'experiment_dir', 'truncate_words', 'experiment_type', 'total_conversations']
 Processing conversations with max 10 per model
 [FILE] Found existing results: results_and_data/results/mock_test_data/mock_control_vs_capitalization_S2_choice_results.csv
@@ -705,7 +363,7 @@ Total conversations in file: 20
     [X] trial1_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
     [OK] trial2_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
     [X] trial2_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
-[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_control_vs_capitalization_S2\UT_2T_mock_control_vs_capitalization_S2_20251001_145919.json
+[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_control_vs_capitalization_S2\AT_2T_mock_control_vs_capitalization_S2_20251001_161915.json
 [INFO] Conversation logging completed. Logged 10 conversations.
 
 Test complete!
@@ -713,11 +371,375 @@ Test complete!
   Error:
 
 Processing mock:   0%|          | 0/10 [00:00<?, ?it/s]
-Processing mock: 100%|##########| 10/10 [00:00<00:00, 635.68it/s]
+Processing mock: 100%|##########| 10/10 [00:00<00:00, 608.73it/s]
+
+
+AT_IR_REC: PASS
+  Duration: 25.3s
+  Return Code: 0
+  Output:
+Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
+Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\envs\\forced_recog\\python311.zip']
+=== Test Script ===
+This script tests model self-recognition on various experimental paradigms
+[INFO] Configuration loaded from C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\configs\operationalizations\AT_IR\rec_config_mock.yaml
+[TARGET] Processing all models found in data
+[DATA] Max conversations: 10
+[FILE] Experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_typo_S2
+[TRUNC] Truncate words: 20
+[EXP] Experiment type: AT_IR
+[INFO]  Model names and types will be determined from the data
+
+Loading data from experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_typo_S2
+Loaded 40 rows of data
+Data columns: ['trial', 'model', 'treatment', 'passage', 'response']
+Control rows: 20
+Treatment rows: 20
+Unique trials: 20
+Unique models: 1
+[DATA] Using specified conversations: 10
+[TRUNC] Truncating to 20 words
+[TRUNC] Truncating passages and responses to 20 words
+Text truncated to 20 words each
+
+Sample data:
+   trial  ...                                           response
+0      1  ...  The article provides detailed guidance on how ...
+1      2  ...  To determine whether a watch is a genuine Role...
+2      3  ...  This WikiHow article provides a comprehensive ...
+3      4  ...  When sealing pavers, it is essential to choose...
+4      5  ...  In emergency situations, maintaining composure...
+
+[5 rows x 5 columns]
+
+Generating conversations...
+Generated 40 conversations
+Conversations by base model: {'mock': 40}
+[INFO] Starting conversation logging for experiment: AT_IR_mock_control_vs_typo_S2
+[DEBUG] Updated experiment metadata: ['config_path', 'selected_models', 'max_conversations', 'experiment_dir', 'truncate_words', 'experiment_type', 'total_conversations']
+Processing conversations with max 10 per model
+[FILE] Found existing results: results_and_data/results/mock_test_data/mock_control_vs_typo_S2_choice_results.csv
+   Existing conversations: 20
+[DATA] Conversation filtering:
+   Total conversations: 40
+   Existing conversations: 20
+   False data conversations: 0
+   Conversations to re-run: 20
+Found 1 unique base models: ['mock']
+
+=== Processing base model: mock ===
+[TESTING] MockChatWrapper initialized in 'deterministic' mode
+[TESTING]   This wrapper generates instant mock responses for testing
+[TESTING]   No actual LLM calls will be made
+Choice tokens: [[3], [4]]
+[DEBUG] Started logging conversation: mock_0
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_0: SUCCESS
+[DEBUG] Started logging conversation: mock_1
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_1: SUCCESS
+[DEBUG] Started logging conversation: mock_2
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_2: SUCCESS
+[DEBUG] Started logging conversation: mock_3
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_3: SUCCESS
+[DEBUG] Started logging conversation: mock_4
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_4: SUCCESS
+[DEBUG] Started logging conversation: mock_5
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_5: SUCCESS
+[DEBUG] Started logging conversation: mock_6
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_6: SUCCESS
+[DEBUG] Started logging conversation: mock_7
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_7: SUCCESS
+[DEBUG] Started logging conversation: mock_8
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_8: SUCCESS
+[DEBUG] Started logging conversation: mock_9
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_9: SUCCESS
+[MERGE] Merged results:
+   Existing conversations: 20
+   New/updated conversations: 10
+   Final total: 30
+
+Results saved to results_and_data/results/mock_test_data/mock_control_vs_typo_S2_choice_results.csv
+Processed 10 new conversations
+Total conversations in file: 30
+
+[DATA] RESULTS SUMMARY:
+  New conversations processed: 10
+  Total conversations in file: 30
+  Unique base models: 1
+  Response order distribution:
+    control -> other: 15
+    treatment -> other: 15
+
+  Choice selection summary:
+    Choice 1: 20 times
+    Choice 1: 10 times
+
+  Accuracy summary:
+    Overall accuracy: 0.500 (15/30)
+    Accuracy by model:
+      mock: 0.500 (15/30)
+
+  Sample results:
+    [OK] trial1_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
+    [X] trial1_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
+    [OK] trial2_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
+    [X] trial2_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
+[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_control_vs_typo_S2\AT_IR_mock_control_vs_typo_S2_20251001_161940.json
+[INFO] Conversation logging completed. Logged 10 conversations.
+
+Test complete!
+
+  Error:
+
+Processing mock:   0%|          | 0/10 [00:00<?, ?it/s]
+Processing mock: 100%|##########| 10/10 [00:00<00:00, 9861.99it/s]
+
+
+UT_2T_REC: PASS
+  Duration: 25.1s
+  Return Code: 0
+  Output:
+Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
+Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\envs\\forced_recog\\python311.zip']
+=== Test Script ===
+This script tests model self-recognition on various experimental paradigms
+[INFO] Configuration loaded from C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\configs\operationalizations\UT_2T\rec_config_mock.yaml
+[TARGET] Processing all models found in data
+[DATA] Max conversations: 10
+[FILE] Experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_capitalization_S2
+[TRUNC] Truncate words: 20
+[EXP] Experiment type: UT_2T
+[INFO]  Model names and types will be determined from the data
+
+Loading data from experiment directory: results_and_data/experiments/mock_test_data/mock_control_vs_capitalization_S2
+Loaded 40 rows of data
+Data columns: ['trial', 'model', 'treatment', 'passage', 'response']
+Control rows: 20
+Treatment rows: 0
+Unique trials: 20
+Unique models: 1
+[DATA] Using specified conversations: 10
+[TRUNC] Truncating to 20 words
+[TRUNC] Truncating passages and responses to 20 words
+Text truncated to 20 words each
+
+Sample data:
+   trial  ...                                           response
+0      1  ...  The article provides detailed guidance on how ...
+1      2  ...  To determine whether a watch is a genuine Role...
+2      3  ...  This WikiHow article provides a comprehensive ...
+3      4  ...  When sealing pavers, it is essential to choose...
+4      5  ...  In emergency situations, maintaining composure...
+
+[5 rows x 5 columns]
+
+Generating conversations...
+Generated 40 conversations
+Conversations by base model: {'mock': 40}
+[INFO] Starting conversation logging for experiment: UT_2T_mock_control_vs_capitalization_S2
+[DEBUG] Updated experiment metadata: ['config_path', 'selected_models', 'max_conversations', 'experiment_dir', 'truncate_words', 'experiment_type', 'total_conversations']
+Processing conversations with max 10 per model
+[FILE] Found existing results: results_and_data/results/mock_test_data/mock_control_vs_capitalization_S2_choice_results.csv
+   Existing conversations: 20
+[DATA] Conversation filtering:
+   Total conversations: 40
+   Existing conversations: 20
+   False data conversations: 0
+   Conversations to re-run: 20
+Found 1 unique base models: ['mock']
+
+=== Processing base model: mock ===
+[TESTING] MockChatWrapper initialized in 'deterministic' mode
+[TESTING]   This wrapper generates instant mock responses for testing
+[TESTING]   No actual LLM calls will be made
+Choice tokens: [[3], [4]]
+[DEBUG] Started logging conversation: mock_0
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_0: SUCCESS
+[DEBUG] Started logging conversation: mock_1
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_1: SUCCESS
+[DEBUG] Started logging conversation: mock_2
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_2: SUCCESS
+[DEBUG] Started logging conversation: mock_3
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_3: SUCCESS
+[DEBUG] Started logging conversation: mock_4
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_4: SUCCESS
+[DEBUG] Started logging conversation: mock_5
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_5: SUCCESS
+[DEBUG] Started logging conversation: mock_6
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_6: SUCCESS
+[DEBUG] Started logging conversation: mock_7
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_7: SUCCESS
+[DEBUG] Started logging conversation: mock_8
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from control)
+  -> Correct choice: 1 (control response)
+  -> Model [CORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_8: SUCCESS
+[DEBUG] Started logging conversation: mock_9
+[DEBUG] Logged response from mock-deterministic: '[Forward pass - no text response]...'
+Choice probabilities: 0.020 vs 0.001
+  -> Selected choice: 1 (response from treatment)
+  -> Correct choice: 2 (control response)
+  -> Model [INCORRECT]
+[DEBUG] Logged results: ['choice_probabilities', 'selected_choice', 'correct_choice', 'is_correct', 'accuracy']
+[DEBUG] Finished conversation mock_9: SUCCESS
+[MERGE] Merged results:
+   Existing conversations: 20
+   New/updated conversations: 10
+   Final total: 30
+
+Results saved to results_and_data/results/mock_test_data/mock_control_vs_capitalization_S2_choice_results.csv
+Processed 10 new conversations
+Total conversations in file: 30
+
+[DATA] RESULTS SUMMARY:
+  New conversations processed: 10
+  Total conversations in file: 30
+  Unique base models: 1
+  Response order distribution:
+    control -> other: 15
+    treatment -> other: 15
+
+  Choice selection summary:
+    Choice 1: 20 times
+    Choice 1: 10 times
+
+  Accuracy summary:
+    Overall accuracy: 0.500 (15/30)
+    Accuracy by model:
+      mock: 0.500 (15/30)
+
+  Sample results:
+    [OK] trial1_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
+    [X] trial1_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
+    [OK] trial2_mock_control_vs_mock_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
+    [X] trial2_mock_control_vs_mock_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
+[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_control_vs_capitalization_S2\UT_2T_mock_control_vs_capitalization_S2_20251001_162005.json
+[INFO] Conversation logging completed. Logged 10 conversations.
+
+Test complete!
+
+  Error:
+
+Processing mock:   0%|          | 0/10 [00:00<?, ?it/s]
+Processing mock: 100%|##########| 10/10 [00:00<00:00, 619.92it/s]
 
 
 UT_2T_PREF: PASS
-  Duration: 26.9s
+  Duration: 25.3s
   Return Code: 0
   Output:
 Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
@@ -876,7 +898,7 @@ Total conversations in file: 10
     [X] trial1_mock_control_vs_anthropic_claude-3-5-haiku-20241022_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
     [OK] trial1_mock_control_vs_anthropic_claude-sonnet-4-20250514_treatment_1: mock chose 1 (prob: 0.020 vs 0.001)
     [X] trial1_mock_control_vs_anthropic_claude-sonnet-4-20250514_treatment_2: mock chose 1 (prob: 0.020 vs 0.001)
-[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_vs_all_others_control_comparison\UT_2T_mock_vs_all_others_control_comparison_20251001_145946.json
+[INFO] Conversation log saved to: results_and_data/logs/mock_test_data/mock_vs_all_others_control_comparison\UT_2T_mock_vs_all_others_control_comparison_20251001_162030.json
 [INFO] Conversation logging completed. Logged 10 conversations.
 
 Test complete!

@@ -82,26 +82,35 @@ class ConversationLogger:
     def start_conversation(self, 
                           conversation_id: str,
                           input_data: Dict[str, Any],
-                          system_prompt: Optional[str] = None,
-                          user_prompt: Optional[str] = None) -> None:
+                          conversation_text: Optional[str] = None) -> None:
         """
         Start logging a new conversation.
         
         Args:
             conversation_id: Unique identifier for this conversation
             input_data: Input data for the conversation
-            system_prompt: System prompt used
-            user_prompt: User prompt used
+            conversation_text: Full conversation text as the model sees it
         """
         if not self.enabled:
             return
+        
+        # Format conversation by splitting on "|" and creating separate parts
+        formatted_conversation = None
+        if conversation_text:
+            # Split by "|" and clean up each part
+            parts = conversation_text.split("|")
+            formatted_parts = []
+            for i, part in enumerate(parts, 1):
+                part = part.strip()
+                if part:
+                    formatted_parts.append(f"part {i}: {part}")
+            formatted_conversation = formatted_parts
         
         self.current_conversation = {
             "conversation_id": conversation_id,
             "timestamp": datetime.now().isoformat(),
             "input_data": input_data,
-            "system_prompt": system_prompt,
-            "user_prompt": user_prompt,
+            "conversation": formatted_conversation,
             "model_responses": [],
             "results": {},
             "metadata": {}
