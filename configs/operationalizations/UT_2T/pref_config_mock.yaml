@@ -1,0 +1,33 @@
+# User Tag Preference Configuration - MOCK TESTING VERSION
+# This config uses a mock model for instant pipeline testing without LLM calls
+# Tests the PREFERENCE paradigm (which response the model prefers)
+
+# Model Configuration
+# Using mock model for fast testing without API calls or GPU
+
+# Data Configuration - MOCK TESTING
+experiment_dir: "results_and_data/experiments/mock_test_data/mock_vs_all_others_control_comparison"
+max_conversations: 10  # Small number for quick testing
+
+# Experiment Type Configuration
+experiment_type: "UT_2T"  # Same as directory name, preference paradigm
+
+# Model Selection
+# Model Selection - automatically inferred from data  # Use mock model for instant testing
+
+# Text Truncation Configuration - MOCK TESTING
+
+# Prompt Configuration
+prompt_set: true  # Load prompts from prompts.yaml file
+prompt_paradigm: "pref"  # Options: "rec" (recognition) or "pref" (preference)
+truncate_words: 20  # Short for faster processing
+
+# Display Configuration
+show_sample_data: true
+show_conversation_breakdown: true
+
+# Logging Configuration - MOCK TESTING
+logging:
+  enabled: true  # Enable to test logging functionality
+  level: "DEBUG"  # DEBUG level for detailed output
+  output_dir: "results_and_data/logs/mock_test_data/mock_vs_all_others_control_comparison"  # Logs mirror results structure

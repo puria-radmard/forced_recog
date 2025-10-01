@@ -3,7 +3,7 @@ import torch
 import string
 from transformers.cache_utils import DynamicCache
 from typing import Tuple, Union, List, Optional, Dict
-from model.base import ChatTemplateWrapper
+from model.base import BaseChatWrapper
 from util.question import QuestionConfig
 import torch.nn.functional as F
 
@@ -81,7 +81,7 @@ def get_choice_token_logits_from_token_ids(
 
 def elicit_mcq_answer(
     *_,
-    chat_wrapper: ChatTemplateWrapper,
+    chat_wrapper: BaseChatWrapper,
     questions: List[str],
     choices_batch: Optional[List[List[str]]] = None,
     shared_choices: Optional[List[str]] = None,
@@ -219,7 +219,7 @@ def elicit_mcq_answer(
 
 def elicit_freeform_answer(
     *_,
-    chat_wrapper: ChatTemplateWrapper,
+    chat_wrapper: BaseChatWrapper,
     freeform_template_name: str,
     questions: List[str],
     config: QuestionConfig,
@@ -291,7 +291,7 @@ def elicit_freeform_answer(
 
 def elicit_formatted_answer(
     *_,
-    chat_wrapper: ChatTemplateWrapper,
+    chat_wrapper: BaseChatWrapper,
     freeform_template_name: str,
     questions: List[Dict[str, str]],
     config: QuestionConfig,
@@ -362,7 +362,7 @@ def elicit_formatted_answer(
 
 def elicit_next_token_probs(
     *_,
-    chat_wrapper: ChatTemplateWrapper,
+    chat_wrapper: BaseChatWrapper,
     questions: List[str],
     system_prompt: Optional[str] = None,
     cache_data: Optional[Dict[str, Union[DynamicCache, torch.Tensor]]] = None,
@@ -485,7 +485,7 @@ def elicit_next_token_probs(
 
 
 def elicit_sequence_log_probs(
-    chat_wrapper: ChatTemplateWrapper,
+    chat_wrapper: BaseChatWrapper,
     question_cache: Dict,
     response_sequences: List[str],
 ) -> torch.Tensor:
@@ -559,7 +559,7 @@ def elicit_sequence_log_probs(
 
 
 def elicit_user_text_completion(
-    chat_wrapper: ChatTemplateWrapper,
+    chat_wrapper: BaseChatWrapper,
     texts: List[str],
     system_prompt: Optional[str] = None,
     cache_data: Optional[Dict] = None,

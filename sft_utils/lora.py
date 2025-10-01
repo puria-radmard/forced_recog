@@ -4,7 +4,7 @@ from peft import PeftModel, LoraConfig, get_peft_model, TaskType
 import wandb
 import os
 import tempfile
-from model.base import ChatTemplateWrapper
+from model.base import BaseChatWrapper
 from dotenv import load_dotenv
 
 
@@ -45,7 +45,7 @@ def save_lora_as_artifact(model, step: int, temp: float, style: str, run_name: s
 
 
 
-def download_and_apply_lora(chat_wrapper: ChatTemplateWrapper, wandb_run_name: str, artifact_suffix: str, *_, adapter_name: str = "default"):
+def download_and_apply_lora(chat_wrapper: BaseChatWrapper, wandb_run_name: str, artifact_suffix: str, *_, adapter_name: str = "default"):
     """
     Download LoRA adapters from WandB and apply them to the model.
     

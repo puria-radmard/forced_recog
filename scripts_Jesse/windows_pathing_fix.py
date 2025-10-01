@@ -1,26 +1,27 @@
-# Fix working directory and Python path to find src module from scripts directory
+# Fix Python path to find modules when running scripts from scripts_Jesse directory
 import sys
 import os
+from pathlib import Path
 
 def fix_pathing():
-    # Get current working directory and manually remove "scripts" if present
-    cwd = os.getcwd()
-    print(f"Original working directory: {cwd}")
-
-    # If we're in scripts directory, change to the parent directory
-    if cwd.endswith("scripts_Jesse"):
-        project_root = os.path.dirname(cwd)
-        os.chdir(project_root)
-        print(f"Changed working directory to: {os.getcwd()}")
-    else:
-        project_root = cwd
-        print(f"Already in project root: {project_root}")
-
+    """
+    Fix Python path to ensure modules can be imported when running scripts from scripts_Jesse directory.
+    Uses the script's location rather than working directory for more reliable path resolution.
+    """
+    # Get the directory where this script is located
+    script_dir = Path(__file__).parent
+    project_root = script_dir.parent
+    
+    print(f"Script directory: {script_dir}")
+    print(f"Project root: {project_root}")
+    
     # Add project root to Python path if not already present
-    if project_root not in sys.path:
-        sys.path.insert(0, project_root)
-
-    print(f"Final working directory: {os.getcwd()}")
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+        print(f"Added project root to Python path: {project_root}")
+    else:
+        print(f"Project root already in Python path: {project_root}")
+    
     print(f"Python path updated. First few entries: {sys.path[:3]}")
 
 ## Imports and Variables

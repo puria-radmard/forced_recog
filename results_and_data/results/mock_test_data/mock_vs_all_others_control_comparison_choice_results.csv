@@ -1,0 +1,11 @@
+conversation_id,trial,control_row_idx,treatment_row_idx,model_base,model_other,treatment_control,treatment_other,response_1_source,response_2_source,prob_choice_1,prob_choice_2,selected_choice,correct_choice,is_correct
+trial1_mock_control_vs_anthropic_claude-3-5-haiku-20241022_treatment_1,1,0,1,mock,anthropic_claude-3-5-haiku-20241022,control,other_model,control,treatment,0.019709382206201553,0.0009812723146751523,1,1,True
+trial1_mock_control_vs_anthropic_claude-3-5-haiku-20241022_treatment_2,1,0,1,mock,anthropic_claude-3-5-haiku-20241022,control,other_model,treatment,control,0.019709382206201553,0.0009812723146751523,1,2,False
+trial1_mock_control_vs_anthropic_claude-sonnet-4-20250514_treatment_1,1,0,2,mock,anthropic_claude-sonnet-4-20250514,control,other_model,control,treatment,0.019709382206201553,0.0009812723146751523,1,1,True
+trial1_mock_control_vs_anthropic_claude-sonnet-4-20250514_treatment_2,1,0,2,mock,anthropic_claude-sonnet-4-20250514,control,other_model,treatment,control,0.019709382206201553,0.0009812723146751523,1,2,False
+trial1_mock_control_vs_google_gemini-2.5-flash_treatment_1,1,0,3,mock,google_gemini-2.5-flash,control,other_model,control,treatment,0.019709382206201553,0.0009812723146751523,1,1,True
+trial1_mock_control_vs_google_gemini-2.5-flash_treatment_2,1,0,3,mock,google_gemini-2.5-flash,control,other_model,treatment,control,0.019709382206201553,0.0009812723146751523,1,2,False
+trial1_mock_control_vs_google_gemini-2.5-pro_treatment_1,1,0,4,mock,google_gemini-2.5-pro,control,other_model,control,treatment,0.019709382206201553,0.0009812723146751523,1,1,True
+trial1_mock_control_vs_google_gemini-2.5-pro_treatment_2,1,0,4,mock,google_gemini-2.5-pro,control,other_model,treatment,control,0.019709382206201553,0.0009812723146751523,1,2,False
+trial1_mock_control_vs_gpt-4.1-2025-04-14_treatment_1,1,0,5,mock,gpt-4.1-2025-04-14,control,other_model,control,treatment,0.019709382206201553,0.0009812723146751523,1,1,True
+trial1_mock_control_vs_gpt-4.1-2025-04-14_treatment_2,1,0,5,mock,gpt-4.1-2025-04-14,control,other_model,treatment,control,0.019709382206201553,0.0009812723146751523,1,2,False

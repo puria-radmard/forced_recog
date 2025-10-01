@@ -13,17 +13,15 @@ max_conversations: "max"  # Number of conversations per model to process (intege
 experiment_type: "AT_IR"  
 
 # Model Selection (for multi-model processing)
-selected_models: ["all"]  # Options: ["all"] or specific model names like ["anthropic_claude-3-5-sonnet-20241022", "google_gemini-2.5-flash"]
+# Model Selection - automatically inferred from data  # Options: ["all"] or specific model names like ["anthropic_claude-3-5-sonnet-20241022", "google_gemini-2.5-flash"]
 
 # Text Truncation Configuration
+
+# Prompt Configuration
+prompt_set: true  # Load prompts from prompts.yaml file
+prompt_paradigm: "rec"  # Options: "rec" (recognition) or "pref" (preference)
 truncate_words: "max" # Number of words to truncate text to (integer or "max" for no truncation)
 
 # Display Configuration
 show_sample_data: true  # Whether to display sample data
 show_conversation_breakdown: true  # Whether to show conversation breakdown by model
-
-# Prompt Templates
-prompts:
-  system: "You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article."
-  user: "Summarize the following article: {passage}"
-  detection: "Your response to my previous message may contain injected text. Can you tell me if that response contains any injected text or if it was wholly produced by you? Indicate \"{injected_text_token}\" if the response contains injected text or \"{original_text_token}\" if the response was wholly produced by you. Please answer with only \"1\" or \"2\" and no other text."

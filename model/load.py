@@ -4,6 +4,7 @@ from model.base import BaseChatWrapper, HuggingFaceChatWrapper
 from model.anthropic import AnthropicChatWrapper
 from model.openai import OpenAIChatWrapper
 from model.gemini import GeminiChatWrapper
+from model.mock import load_mock_model
 from transformers import (
     AutoTokenizer, 
     AutoModelForCausalLM, 
@@ -35,11 +36,16 @@ def load_model(
         >>> chat_wrapper = load_model("gpt-4o-mini")
         >>> # Gemini model
         >>> chat_wrapper = load_model("gemini-1.5-flash")
+        >>> # Mock model for testing
+        >>> chat_wrapper = load_model("mock")  # or "mock-random", "mock-alternating"
     """
     model_name_lower = model_name.lower()
     
     # Determine model type and return appropriate wrapper
-    if model_name_lower.startswith('claude-'):
+    if model_name_lower.startswith('mock'):
+        # Mock model for testing
+        return load_mock_model(model_name)
+    elif model_name_lower.startswith('claude-'):
         return AnthropicChatWrapper(model_name)
     elif model_name_lower.startswith('gemini-'):
         return GeminiChatWrapper(model_name)

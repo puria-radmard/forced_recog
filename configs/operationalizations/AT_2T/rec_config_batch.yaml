@@ -10,20 +10,18 @@ experiment_dir: "results_and_data/experiments/to_run"
 max_conversations: "max"  # Number of conversations per model to process (integer or "max" for all available)
 
 # Experiment Type Configuration
-experiment_type: "assist_tag"  # Options: "assist_tag" or "user_tag"
+experiment_type: "AT_2T"  # Assistant Tag 2-Turn
 
 # Model Selection (for multi-model processing)
-selected_models: ["all"]  # Options: ["all"] or specific model names like ["anthropic_claude-3-5-sonnet-20241022", "google_gemini-2.5-flash"]
+# Model Selection - automatically inferred from data  # Options: ["all"] or specific model names like ["anthropic_claude-3-5-sonnet-20241022", "google_gemini-2.5-flash"]
 
 # Text Truncation Configuration
+
+# Prompt Configuration
+prompt_set: true  # Load prompts from prompts.yaml file
+prompt_paradigm: "rec"  # Options: "rec" (recognition) or "pref" (preference)
 truncate_words: "max" # Number of words to truncate text to (integer or "max" for no truncation)
 
 # Display Configuration
 show_sample_data: true  # Whether to display sample data
 show_conversation_breakdown: true  # Whether to show conversation breakdown by model
-
-# Prompt Templates
-prompts:
-  system: "You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article."
-  user: "Summarize the following article: {passage}"
-  detection: "In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."

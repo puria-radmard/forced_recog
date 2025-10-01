@@ -38,7 +38,12 @@ FEATURES:
 - Dual-mode operation for both IDE debugging and CLI production use
 - Multiple experiment protocols (AT_2T vs UT_2T)
 """
+# Windows pathing fix - must be imported and called first
+import sys
 import os
+import windows_pathing_fix
+windows_pathing_fix.fix_pathing()
+
 import pandas as pd
 import yaml
 import torch
@@ -48,14 +53,11 @@ from typing import List, Optional, Set, Tuple, Dict
 import copy
 from dotenv import load_dotenv
 from util.conversation_logger import conversation_logger
-
-import windows_pathing_fix
-windows_pathing_fix.fix_pathing()
 from model.load import load_model
-from model.base import ChatTemplateWrapper
-from model.anthropic import load_anthropic_model, AnthropicWrapper
-from model.gemini import load_gemini_model, GeminiWrapper
-from model.openai import load_openai_model, OpenAIWrapper
+from model.base import BaseChatWrapper
+from model.anthropic import load_anthropic_model, AnthropicChatWrapper
+from model.gemini import load_gemini_model, GeminiChatWrapper
+from model.openai import load_openai_model, OpenAIChatWrapper
 
 from sft_utils.lora import download_and_apply_lora
 
@@ -235,11 +237,11 @@ def load_existing_results(results_file: str) -> pd.DataFrame:
     
     try:
         df = pd.read_csv(results_file)
-        print(f"📁 Found existing results: {results_file}")
+        print(f"[FILE] Found existing results: {results_file}")
         print(f"   Existing conversations: {len(df)}")
         return df
     except Exception as e:
-        print(f"⚠️  Warning: Could not load existing results from {results_file}: {e}")
+        print(f"[WARNING]  Warning: Could not load existing results from {results_file}: {e}")
         return pd.DataFrame()
 
 
@@ -260,7 +262,7 @@ def identify_false_data_conversations(existing_df: pd.DataFrame) -> Set[str]:
     identical_probs = existing_df[existing_df['prob_choice_1'] == existing_df['prob_choice_2']]
     
     if len(identical_probs) > 0:
-        print(f"🔍 Found {len(identical_probs)} conversations with false data (identical probabilities)")
+        print(f"[WARNING] Found {len(identical_probs)} conversations with false data (identical probabilities)")
         if 'conversation_id' in identical_probs.columns:
             false_conversation_ids = set(identical_probs['conversation_id'].tolist())
             print(f"   False conversation IDs: {sorted(false_conversation_ids)}")
@@ -282,7 +284,7 @@ def filter_conversations_to_rerun(conversations: List[Dict], false_data_ids: Set
         List of conversations that need to be re-run
     """
     if existing_df.empty:
-        print("📝 No existing results found - will process all conversations")
+        print("[NOTE] No existing results found - will process all conversations")
         return conversations
     
     # Get existing conversation IDs
@@ -297,7 +299,7 @@ def filter_conversations_to_rerun(conversations: List[Dict], false_data_ids: Set
         if conv_id not in existing_ids or conv_id in false_data_ids:
             conversations_to_rerun.append(conv)
     
-    print(f"📊 Conversation filtering:")
+    print(f"[DATA] Conversation filtering:")
     print(f"   Total conversations: {len(conversations)}")
     print(f"   Existing conversations: {len(existing_ids)}")
     print(f"   False data conversations: {len(false_data_ids)}")
@@ -335,7 +337,7 @@ def merge_results(existing_df: pd.DataFrame, new_results: List[Dict]) -> pd.Data
     # Combine clean existing data with new data
     merged_df = pd.concat([existing_clean, new_df], ignore_index=True)
     
-    print(f"🔄 Merged results:")
+    print(f"[MERGE] Merged results:")
     print(f"   Existing conversations: {len(existing_df)}")
     print(f"   New/updated conversations: {len(new_results)}")
     print(f"   Final total: {len(merged_df)}")
@@ -347,7 +349,6 @@ def process_conversations_for_choices(
     conversations: List[Dict],
     data_file: str,
     max_conversations: int = 4,
-    selected_models: List[str] = None,
     truncate_words: int = None,
     system_prompt: str = None,
     user_prompt_template: str = None,
@@ -358,17 +359,17 @@ def process_conversations_for_choices(
     """
     Process conversations for pairwise choice elicitation using multiple models.
     Automatically detects and re-runs only conversations with false data.
+    Processes all models found in the data.
     
     Args:
         conversations: List of conversation dictionaries
         data_file: Path to the data file (used to determine results directory)
         max_conversations: Maximum number of conversations to process per model
-        selected_models: List of specific model names to process (e.g., ["anthropic_claude-3-5-sonnet-20241022"]) or ["all"]
         truncate_words: Maximum number of words for text truncation (None for no truncation)
         system_prompt: System prompt template
         user_prompt_template: User prompt template
         detection_prompt_template: Detection prompt template
-        experiment_type: Type of experiment ("AT_2T" or "UT_2T")
+        experiment_type: Type of experiment ("AT_2T", "UT_2T", or "AT_IR")
     """
     print(f"Processing conversations with max {max_conversations} per model")
     
@@ -381,7 +382,7 @@ def process_conversations_for_choices(
     conversations_to_rerun = filter_conversations_to_rerun(conversations, false_data_ids, existing_df)
     
     if not conversations_to_rerun:
-        print("✅ All conversations already have valid results - nothing to re-run!")
+        print("[OK] All conversations already have valid results - nothing to re-run!")
         return
     
     # Group conversations by base model (the model doing the evaluation)
@@ -392,25 +393,7 @@ def process_conversations_for_choices(
             conversations_by_model[base_model] = []
         conversations_by_model[base_model].append(conv)
     
-    # Filter models based on selection
-    if selected_models and "all" not in selected_models:
-        filtered_conversations = {}
-        for base_model, model_conversations in conversations_by_model.items():
-            # Check if this specific model is in the selected models list
-            if base_model in selected_models:
-                filtered_conversations[base_model] = model_conversations
-        
-        conversations_by_model = filtered_conversations
-        print(f"🎯 Filtered to selected models: {selected_models}")
-        
-        # Show which models were found vs requested
-        found_models = list(conversations_by_model.keys())
-        missing_models = [model for model in selected_models if model not in found_models and model != "all"]
-        if missing_models:
-            print(f"⚠️  Warning: Requested models not found in data: {missing_models}")
-        if found_models:
-            print(f"✅ Found models: {found_models}")
-    
+    # Process all models found in the data
     print(f"Found {len(conversations_by_model)} unique base models: {list(conversations_by_model.keys())}")
     
     all_results = []
@@ -420,7 +403,11 @@ def process_conversations_for_choices(
         print(f"\n=== Processing base model: {base_model} ===")
         
         # Load the appropriate model wrapper
-        if base_model.startswith('anthropic_'):
+        if base_model.startswith('mock'):
+            # Mock model for testing
+            model_name = base_model
+            chat_wrapper = load_model(base_model)
+        elif base_model.startswith('anthropic_'):
             model_name = base_model.replace('anthropic_', '')
             chat_wrapper = load_anthropic_model(model_name)
         elif base_model.startswith('google_'):
@@ -521,7 +508,7 @@ def process_conversations_for_choices(
                 
                 # Determine which choice was selected
                 selected_choice = "1" if prob_1 > prob_2 else "2"
-                print(f"  → Selected choice: {selected_choice} (response from {conv['response_1_source'] if selected_choice == '1' else conv['response_2_source']})")
+                print(f"  -> Selected choice: {selected_choice} (response from {conv['response_1_source'] if selected_choice == '1' else conv['response_2_source']})")
                 
                 # Determine if the model selected the control response (correct choice)
                 # Correct choice is when the model selects the control response
@@ -530,8 +517,8 @@ def process_conversations_for_choices(
                 correct_choice = "1" if conv['response_1_source'] == 'control' else "2"
                 is_correct = selected_choice == correct_choice
                 
-                print(f"  → Correct choice: {correct_choice} (control response)")
-                print(f"  → Model {'✓ CORRECT' if is_correct else '✗ INCORRECT'}")
+                print(f"  -> Correct choice: {correct_choice} (control response)")
+                print(f"  -> Model {'[CORRECT]' if is_correct else '[INCORRECT]'}")
                 
                 # Log results if logger is available
                 if logger:
@@ -596,7 +583,7 @@ def process_conversations_for_choices(
         print(f"Total conversations in file: {len(merged_df)}")
         
         # Results summary
-        print(f"\n📊 RESULTS SUMMARY:")
+        print(f"\n[DATA] RESULTS SUMMARY:")
         print(f"  New conversations processed: {len(all_results)}")
         print(f"  Total conversations in file: {len(merged_df)}")
         print(f"  Unique base models: {merged_df['model_base'].nunique()}")
@@ -624,7 +611,7 @@ def process_conversations_for_choices(
         
         print(f"\n  Sample results:")
         for _, row in merged_df.head(4).iterrows():
-            correct_mark = "✓" if row['is_correct'] else "✗"
+            correct_mark = "[OK]" if row['is_correct'] else "[X]"
             print(f"    {correct_mark} {row['conversation_id']}: {row['model_base']} chose {row['selected_choice']} (prob: {row['prob_choice_1']:.3f} vs {row['prob_choice_2']:.3f})")
     else:
         print("No new results to save")
@@ -743,12 +730,12 @@ def show_available_models(experiment_dir: str) -> None:
         experiment_dir: Path to the experiment directory containing control.csv and treatment.csv
     """
     if not os.path.exists(experiment_dir):
-        print(f"❌ Experiment directory not found: {experiment_dir}")
+        print(f"[ERROR] Experiment directory not found: {experiment_dir}")
         return
     
     try:
         df = load_data(experiment_dir)
-        print(f"\n📊 Available models in {experiment_dir}:")
+        print(f"\n[DATA] Available models in {experiment_dir}:")
         print("=" * 60)
         
         if 'model' in df.columns:
@@ -781,11 +768,11 @@ def show_available_models(experiment_dir: str) -> None:
             for model_type, models in model_types.items():
                 print(f"  {model_type}: {models}")
         else:
-            print("❌ No 'model' column found in data")
+            print("[ERROR] No 'model' column found in data")
             print(f"Available columns: {df.columns.tolist()}")
             
     except Exception as e:
-        print(f"❌ Error reading experiment directory: {e}")
+        print(f"[ERROR] Error reading experiment directory: {e}")
 
 
 def infer_model_type(model_name: str) -> str:
@@ -793,17 +780,19 @@ def infer_model_type(model_name: str) -> str:
     Automatically infer model type from model name.
     
     Args:
-        model_name: The model name (e.g., "claude-3-5-sonnet-20241022", "gemini-1.5-flash")
+        model_name: The model name (e.g., "claude-3-5-sonnet-20241022", "gemini-1.5-flash", "mock")
         
     Returns:
-        The inferred model type ("anthropic", "google", "openai", "huggingface")
+        The inferred model type ("mock", "anthropic", "google", "openai", "huggingface")
         
     Raises:
         ValueError: If the model name doesn't match any known pattern
     """
     model_name_lower = model_name.lower()
     
-    if model_name_lower.startswith('claude-'):
+    if model_name_lower.startswith('mock'):
+        return "mock"
+    elif model_name_lower.startswith('claude-'):
         return "anthropic"
     elif model_name_lower.startswith('gemini-'):
         return "google"
@@ -816,9 +805,61 @@ def infer_model_type(model_name: str) -> str:
         # Unknown model type - raise error to prevent silent bugs
         raise ValueError(
             f"Unknown model type for '{model_name}'. "
-            f"Supported patterns: claude-*, gemini-*, gpt-*, or HuggingFace models (containing '/' or starting with microsoft/, meta/, huggingface/). "
+            f"Supported patterns: mock*, claude-*, gemini-*, gpt-*, or HuggingFace models (containing '/' or starting with microsoft/, meta/, huggingface/). "
             f"Please check the model name or add support for this model type."
         )
+
+
+def load_prompts_from_file(experiment_type: str, prompt_paradigm: str = "rec") -> Dict[str, str]:
+    """
+    Load prompts from the consolidated prompts.yaml file for the given experiment type.
+    
+    Args:
+        experiment_type: Type of experiment (AT_2T, AT_IR, UT_2T)
+        prompt_paradigm: Either 'rec' (recognition) or 'pref' (preference)
+        
+    Returns:
+        Dictionary containing 'system', 'user', and 'detection' prompts
+        
+    Raises:
+        FileNotFoundError: If prompts file doesn't exist
+        ValueError: If required prompts are missing
+    """
+    prompts_file = f"configs/operationalizations/{experiment_type}/prompts.yaml"
+    
+    if not os.path.exists(prompts_file):
+        raise FileNotFoundError(f"Prompts file not found: {prompts_file}")
+    
+    try:
+        with open(prompts_file, "r") as f:
+            prompts_data = yaml.safe_load(f)
+    except Exception as e:
+        raise ValueError(f"Failed to load prompts from {prompts_file}: {e}")
+    
+    # Map paradigm-specific detection prompt
+    detection_key = f"{prompt_paradigm}_detection"
+    
+    if detection_key not in prompts_data:
+        raise ValueError(
+            f"Missing '{detection_key}' prompt in {prompts_file}. "
+            f"Available keys: {list(prompts_data.keys())}"
+        )
+    
+    # Build prompts dictionary
+    prompts = {
+        "system": prompts_data.get("system", ""),
+        "user": prompts_data.get("user", ""),
+        "detection": prompts_data[detection_key]
+    }
+    
+    # Validate all prompts are present
+    missing_prompts = [key for key, value in prompts.items() if not value]
+    if missing_prompts:
+        raise ValueError(
+            f"Missing prompts in {prompts_file}: {missing_prompts}"
+        )
+    
+    return prompts
 
 
 def load_config(config_path: str = "configs/operationalizations/AT_2T/rec_config.yaml") -> Dict:
@@ -848,7 +889,6 @@ def load_config(config_path: str = "configs/operationalizations/AT_2T/rec_config
     required_params = [
         "experiment_dir",
         "max_conversations", 
-        "selected_models",
         "truncate_words",
         "experiment_type"
     ]
@@ -861,20 +901,48 @@ def load_config(config_path: str = "configs/operationalizations/AT_2T/rec_config
             f"Please add these parameters to your config file."
         )
     
-    # Required prompts section
-    if "prompts" not in config:
-        raise ValueError(
-            f"Missing required 'prompts' section in {config_path}. "
-            f"Please add a 'prompts' section with 'system', 'user', and 'detection' templates."
-        )
-    
-    required_prompts = ["system", "user", "detection"]
-    missing_prompts = [prompt for prompt in required_prompts if prompt not in config["prompts"]]
-    if missing_prompts:
-        raise ValueError(
-            f"Missing required prompt templates in {config_path}: {missing_prompts}. "
-            f"Please add these prompt templates to the 'prompts' section of your config file."
-        )
+    # Handle prompts - either inline or from prompt_set
+    if "prompt_set" in config:
+        # Load prompts from separate file
+        prompt_paradigm = config.get("prompt_paradigm", "rec")
+        experiment_type = config["experiment_type"]
+        
+        try:
+            prompts = load_prompts_from_file(experiment_type, prompt_paradigm)
+            config["prompts"] = prompts
+        except Exception as e:
+            raise ValueError(
+                f"Failed to load prompts for experiment_type '{experiment_type}' "
+                f"and paradigm '{prompt_paradigm}': {e}"
+            )
+    elif "prompts" in config:
+        # Use inline prompts (legacy support)
+        required_prompts = ["system", "user", "detection"]
+        missing_prompts = [prompt for prompt in required_prompts if prompt not in config["prompts"]]
+        if missing_prompts:
+            raise ValueError(
+                f"Missing required prompt templates in {config_path}: {missing_prompts}. "
+                f"Please add these prompt templates to the 'prompts' section of your config file."
+            )
+    else:
+        # No prompts specified - try to infer from experiment type and config filename
+        experiment_type = config["experiment_type"]
+        
+        # Infer paradigm from config filename
+        config_filename = os.path.basename(config_path)
+        if "pref" in config_filename:
+            prompt_paradigm = "pref"
+        else:
+            prompt_paradigm = "rec"
+        
+        try:
+            prompts = load_prompts_from_file(experiment_type, prompt_paradigm)
+            config["prompts"] = prompts
+            print(f"[INFO] Auto-loaded prompts for {experiment_type}/{prompt_paradigm}")
+        except Exception as e:
+            raise ValueError(
+                f"No 'prompts' or 'prompt_set' found in config, and auto-loading failed: {e}"
+            )
     
     # Optional parameters with validation
     optional_params = {
@@ -932,7 +1000,8 @@ def main():
     else:
         experiment_dir = config["experiment_dir"]
     max_conversations_config = config["max_conversations"]
-    selected_models = config["selected_models"]
+    # Default to processing all models found in the data
+    selected_models = ["all"]
     truncate_words_config = config["truncate_words"]
     show_sample_data = config["show_sample_data"]
     show_conversation_breakdown = config["show_conversation_breakdown"]
@@ -950,13 +1019,13 @@ def main():
     logging_level = logging_config.get("level", "INFO")
     logging_output_dir_config = logging_config.get("output_dir", "experiment_dir/conversation_logs")
     
-    print(f"📋 Configuration loaded from {config_path}")
-    print(f"🎯 Selected models: {selected_models}")
-    print(f"📊 Max conversations: {max_conversations_config}")
-    print(f"📁 Experiment directory: {experiment_dir}")
-    print(f"✂️ Truncate words: {truncate_words_config}")
-    print(f"🧪 Experiment type: {experiment_type}")
-    print(f"ℹ️  Model names and types will be determined from the data")
+    print(f"[INFO] Configuration loaded from {config_path}")
+    print(f"[TARGET] Processing all models found in data")
+    print(f"[DATA] Max conversations: {max_conversations_config}")
+    print(f"[FILE] Experiment directory: {experiment_dir}")
+    print(f"[TRUNC] Truncate words: {truncate_words_config}")
+    print(f"[EXP] Experiment type: {experiment_type}")
+    print(f"[INFO]  Model names and types will be determined from the data")
     
     # ===== LOAD DATA =====
     print(f"\nLoading data from experiment directory: {experiment_dir}")
@@ -975,10 +1044,10 @@ def main():
         # Calculate maximum possible conversations
         conversations = generate_conversations(data_df)
         max_conversations = len(conversations)
-        print(f"📊 Using maximum conversations: {max_conversations} (all available)")
+        print(f"[DATA] Using maximum conversations: {max_conversations} (all available)")
     elif isinstance(max_conversations_config, int) and max_conversations_config > 0:
         max_conversations = max_conversations_config
-        print(f"📊 Using specified conversations: {max_conversations}")
+        print(f"[DATA] Using specified conversations: {max_conversations}")
     else:
         raise ValueError(
             f"Invalid max_conversations value: {max_conversations_config}. "
@@ -989,10 +1058,10 @@ def main():
     if truncate_words_config == "max":
         # No truncation - use full text
         truncate_words = None
-        print(f"✂️ No truncation - using full text")
+        print(f"[TRUNC] No truncation - using full text")
     elif isinstance(truncate_words_config, int) and truncate_words_config > 0:
         truncate_words = truncate_words_config
-        print(f"✂️ Truncating to {truncate_words} words")
+        print(f"[TRUNC] Truncating to {truncate_words} words")
     else:
         raise ValueError(
             f"Invalid truncate_words value: {truncate_words_config}. "
@@ -1001,7 +1070,7 @@ def main():
     
     # Apply truncation if configured
     if truncate_words is not None:
-        print(f"✂️ Truncating passages and responses to {truncate_words} words")
+        print(f"[TRUNC] Truncating passages and responses to {truncate_words} words")
         data_df['passage'] = data_df['passage'].apply(lambda x: ' '.join(str(x).split()[:truncate_words]) if pd.notna(x) else '')
         data_df['response'] = data_df['response'].apply(lambda x: ' '.join(str(x).split()[:truncate_words]) if pd.notna(x) else '')
         print(f"Text truncated to {truncate_words} words each")
@@ -1052,7 +1121,7 @@ def main():
         # Log experiment metadata
         logger.log_experiment_metadata({
             "config_path": config_path,
-            "selected_models": selected_models,
+            "selected_models": ["all"],  # Always process all models found in data
             "max_conversations": max_conversations,
             "experiment_dir": experiment_dir,
             "truncate_words": truncate_words,
@@ -1065,7 +1134,6 @@ def main():
             conversations=conversations,
             data_file=experiment_dir,  # Use experiment directory for results path
             max_conversations=max_conversations,
-            selected_models=selected_models,
             truncate_words=truncate_words,
             system_prompt=system_prompt,
             user_prompt_template=user_prompt_template,

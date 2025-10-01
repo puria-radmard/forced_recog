@@ -1,15 +1,35 @@
 #!/usr/bin/env python3
 """
-Testing Pipeline Runner
+Testing Pipeline Runner - Mock Model Integration Tests
 
-This script runs tests for all operationalizations using dedicated test configs.
-All results and logs are saved to testing directories to avoid cluttering production data.
+This script runs fast integration tests using mock models to validate the entire
+experiment pipeline without making LLM calls. Tests complete in seconds and cost nothing.
+
+Test Coverage:
+- All experiment types: AT_2T, AT_IR, UT_2T
+- All prompt paradigms: rec (recognition), pref (preference)
+- All mock datasets: capitalization, typo, all_others
+
+Tests validate:
+- Conversation generation logic
+- Model loading and initialization
+- Chat formatting for all experiment types
+- Forward pass and logits processing
+- Result calculation and storage
+- Logging system functionality
+- File I/O operations
+- Prompt loading from consolidated YAML files
+
+Dataset Coverage:
+- mock_control_vs_typo_S2: Tested by AT_2T_REC, UT_2T_REC
+- mock_control_vs_capitalization_S2: Tested by AT_2T_PREF, AT_IR_REC
+- mock_vs_all_others_control_comparison: Tested by UT_2T_PREF (large dataset, tested once)
 
 Usage:
-    python run_testing_pipeline.py                    # Run all tests
-    python run_testing_pipeline.py --config AT_2T     # Run specific test
-    python run_testing_pipeline.py --list             # List available tests
-    python run_testing_pipeline.py --clean            # Clean testing directories
+    python run_testing_pipeline.py                        # Run all mock tests (~15 seconds)
+    python run_testing_pipeline.py --config AT_2T_REC     # Run specific test
+    python run_testing_pipeline.py --list                 # List available tests
+    python run_testing_pipeline.py --clean                # Clean testing directories
 """
 
 import os
@@ -37,22 +57,36 @@ class TestingPipeline:
         self.logs_testing_dir = self.project_root / "results_and_data" / "logs" / "testing"
         self.run_experiment_script = self.project_root / "scripts_Jesse" / "run_experiment.py"
         
-        # Define available tests
+        # Define available tests (using mock models for fast integration testing)
+        # Tests cover:
+        # - All experiment types (AT_2T, AT_IR, UT_2T)
+        # - All prompt paradigms (rec, pref)
+        # - All mock datasets (capitalization, typo, all_others)
         self.available_tests = {
-            "AT_2T": {
-                "config": "AT_2T/rec_config_test.yaml",
-                "description": "Assist Tag Recognition - 2 Turn",
-                "experiment_dir": "AT_2T_test_experiment"
+            "AT_2T_REC": {
+                "config": "AT_2T/rec_config_mock.yaml",
+                "description": "Assist Tag Recognition - 2 Turn (Mock Model)",
+                "experiment_dir": "mock_test_data/mock_control_vs_typo_S2"
             },
-            "AT_IR": {
-                "config": "AT_IR/rec_config_test.yaml", 
-                "description": "Assist Tag Recognition - Injected Response",
-                "experiment_dir": "AT_IR_test_experiment"
+            "AT_2T_PREF": {
+                "config": "AT_2T/pref_config_mock.yaml",
+                "description": "Assist Tag Preference - 2 Turn (Mock Model)",
+                "experiment_dir": "mock_test_data/mock_control_vs_capitalization_S2"
             },
-            "UT_2T": {
-                "config": "UT_2T/rec_config_test.yaml",
-                "description": "User Tag Recognition - 2 Turn", 
-                "experiment_dir": "UT_2T_test_experiment"
+            "AT_IR_REC": {
+                "config": "AT_IR/rec_config_mock.yaml", 
+                "description": "Assist Tag Recognition - Injected Response (Mock Model)",
+                "experiment_dir": "mock_test_data/mock_control_vs_capitalization_S2"
+            },
+            "UT_2T_REC": {
+                "config": "UT_2T/rec_config_mock.yaml",
+                "description": "User Tag Recognition - 2 Turn (Mock Model)", 
+                "experiment_dir": "mock_test_data/mock_control_vs_typo_S2"
+            },
+            "UT_2T_PREF": {
+                "config": "UT_2T/pref_config_mock.yaml",
+                "description": "User Tag Preference - 2 Turn (Mock Model)",
+                "experiment_dir": "mock_test_data/mock_vs_all_others_control_comparison"
             }
         }
     
@@ -140,7 +174,7 @@ class TestingPipeline:
                 cwd=str(self.project_root),
                 capture_output=True,
                 text=True,
-                timeout=300  # 5 minute timeout
+                timeout=60  # 1 minute timeout (mock tests are fast)
             )
             
             end_time = time.time()
@@ -159,9 +193,9 @@ class TestingPipeline:
             return {
                 "test_name": test_name,
                 "success": False,
-                "duration": 300,
+                "duration": 60,
                 "stdout": "",
-                "stderr": "Test timed out after 5 minutes",
+                "stderr": "Test timed out after 1 minute (mock tests should complete in seconds)",
                 "return_code": -1
             }
         except Exception as e:
@@ -224,27 +258,27 @@ class TestingPipeline:
         
         # Check results directories
         for test_name, test_info in self.available_tests.items():
-            experiment_dir = self.results_testing_dir / test_info["experiment_dir"]
+            # Results are saved to results_and_data/results/mock_test_data/ based on experiment path inference
+            results_dir = self.project_root / "results_and_data" / "results" / "mock_test_data"
+            experiment_name = test_info["experiment_dir"].split("/")[-1]  # Get the last part (e.g., "mock_control_vs_typo_S2")
+            results_file = results_dir / f"{experiment_name}_choice_results.csv"
             
             print(f"\n{test_name}:")
-            print(f"  Experiment Dir: {experiment_dir}")
+            print(f"  Results File: {results_file}")
             
-            if experiment_dir.exists():
-                # List files in experiment directory
-                files = list(experiment_dir.rglob("*"))
-                if files:
-                    print(f"  Files ({len(files)}):")
-                    for file_path in files:
-                        relative_path = file_path.relative_to(experiment_dir)
-                        print(f"    - {relative_path}")
-                else:
-                    print("  No files found")
+            if results_file.exists():
+                print(f"  Status: [OK] Results file exists")
+                print(f"  Size: {results_file.stat().st_size} bytes")
+                print(f"  Modified: {results_file.stat().st_mtime}")
             else:
-                print("  Directory does not exist")
+                print(f"  Status: [MISSING] Results file not found")
     
     def save_test_report(self, results: List[Dict[str, any]]):
         """Save test results to a report file."""
-        report_path = self.results_testing_dir / "test_report.txt"
+        # Save report to the mock_test_data results directory
+        report_dir = self.project_root / "results_and_data" / "results" / "mock_test_data"
+        report_dir.mkdir(parents=True, exist_ok=True)
+        report_path = report_dir / "test_report.txt"
         
         with open(report_path, 'w') as f:
             f.write("Testing Pipeline Report\n")
@@ -293,7 +327,7 @@ Examples:
     
     parser.add_argument(
         "--config",
-        choices=["AT_2T", "AT_IR", "UT_2T"],
+        choices=["AT_2T_REC", "AT_2T_PREF", "AT_IR_REC", "UT_2T_REC", "UT_2T_PREF"],
         help="Run specific test configuration"
     )
     
