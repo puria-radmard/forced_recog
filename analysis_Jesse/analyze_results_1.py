@@ -8,7 +8,7 @@ This script analyzes the results from assist tag recognition experiments to answ
 3. Whether there was an effect due to response order
 
 USAGE:
-    python analyze_results_1.py --results-dir RESULTS_DIR --output-dir OUTPUT_DIR
+    python analysis_Jesse/analyze_results_1.py --results-dir RESULTS_DIR --output-dir OUTPUT_DIR
 """
 
 import os

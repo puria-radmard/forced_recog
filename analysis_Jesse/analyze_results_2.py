@@ -7,7 +7,7 @@ across different dataset designs and evaluations. It combines CSV files from dif
 with prefixed column headers to distinguish between different conditions.
 
 USAGE:
-    python analyze_results_2.py --input-dir INPUT_DIR --output-dir OUTPUT_DIR
+    python analysis_Jesse/analyze_results_2.py --input-dir INPUT_DIR --output-dir OUTPUT_DIR
 """
 
 import os

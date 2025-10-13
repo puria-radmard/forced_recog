@@ -6,7 +6,7 @@
 # The script will process all models found in the data files
 
 # Data Configuration
-experiment_dir: "results_and_data/experiments/to_run"
+experiment_dir: "results_and_data/experiments/WikiSum-AT_IR"
 max_conversations: "max"  # Number of conversations per model to process (integer or "max" for all available)
 
 # Experiment Type Configuration
@@ -20,8 +20,15 @@ experiment_type: "AT_IR"
 # Prompt Configuration
 prompt_set: true  # Load prompts from prompts.yaml file
 prompt_paradigm: "rec"  # Options: "rec" (recognition) or "pref" (preference)
+system_priming: "none"  # Options: "none", "AT", "UT"
 truncate_words: "max" # Number of words to truncate text to (integer or "max" for no truncation)
 
 # Display Configuration
 show_sample_data: true  # Whether to display sample data
 show_conversation_breakdown: true  # Whether to show conversation breakdown by model
+
+# Logging Configuration
+logging:
+  enabled: true  # Whether to enable conversation logging
+  level: "DEBUG"  # Logging level: DEBUG, INFO, WARNING, ERROR
+  # output_dir not specified - will auto-generate path mirroring results structure

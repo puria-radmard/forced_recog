@@ -168,9 +168,14 @@ class BaseChatWrapper(ABC):
                         print(f"[DEBUG] Could not extract choice probabilities: {e}")
             
             # Log the model response
+            # Check if outputs has a response_text attribute (for API models with mock logits)
+            response_text = "[Forward pass - no text response]"
+            if hasattr(outputs, 'response_text') and outputs.response_text:
+                response_text = outputs.response_text
+            
             logger.log_model_response(
                 model_name=self.model_name,
-                response_text="[Forward pass - no text response]",
+                response_text=response_text,
                 logits=outputs.logits if hasattr(outputs, 'logits') else None,
                 choice_probabilities=choice_probabilities,
                 metadata={

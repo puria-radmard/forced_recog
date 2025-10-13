@@ -1,0 +1,34 @@
+# User Tag Recognition Configuration - MOCK TESTING VERSION - WITH PRIMING
+# This config uses a mock model for instant pipeline testing without LLM calls
+
+# Model Configuration
+# Using mock model for fast testing without API calls or GPU
+
+# Data Configuration - MOCK TESTING
+experiment_dir: "results_and_data/experiments/mock_test_data-UT_2T_rec_Pr/mock_control_vs_capitalization_S2"
+max_conversations: 10  # Small number for quick testing
+
+# Experiment Type Configuration
+experiment_type: "UT_2T"  # Same as directory name
+
+# Model Selection
+# Model Selection - automatically inferred from data  # Use mock model for instant testing
+
+# Text Truncation Configuration - MOCK TESTING
+
+# Prompt Configuration
+prompt_set: true  # Load prompts from prompts.yaml file
+prompt_paradigm: "rec"  # Options: "rec" (recognition) or "pref" (preference)
+system_priming: "UT"  # Options: "none", "AT", "UT" - PRIMED WITH UT
+truncate_words: 20  # Short for faster processing
+
+# Display Configuration
+show_sample_data: true
+show_conversation_breakdown: true
+
+# Logging Configuration - MOCK TESTING
+logging:
+  enabled: true  # Enable to test logging functionality
+  level: "DEBUG"  # DEBUG level for detailed output
+  # output_dir not specified - will auto-generate path mirroring results structure
+

@@ -268,19 +268,21 @@ class AnthropicChatWrapper(BaseChatWrapper):
             
             # Create mock output similar to HuggingFace format
             class MockOutput:
-                def __init__(self, logits):
+                def __init__(self, logits, response_text=None):
                     self.logits = logits
+                    self.response_text = response_text  # Store the actual text response
             
-            return MockOutput(logits)
+            return MockOutput(logits, response_text)
             
         except Exception as e:
             print(f"Anthropic API error: {e}")
             # Return neutral logits on error
             logits = self._create_choice_logits("")
             class MockOutput:
-                def __init__(self, logits):
+                def __init__(self, logits, response_text=None):
                     self.logits = logits
-            return MockOutput(logits)
+                    self.response_text = response_text
+            return MockOutput(logits, "[Error - no response]")
     
     def _create_choice_logits(self, response_text: str) -> Any:
         """

@@ -1,0 +1,19 @@
+{
+  "experiment_name": "AT_IR_gpt-4.1-2025-04-14_control_vs_capitalization_S2",
+  "start_time": "2025-10-02T16:55:26.651289",
+  "end_time": "2025-10-02T16:55:26.672672",
+  "conversations": [],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\configs\\operationalizations\\AT_IR\\rec_config_batch.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 40,
+    "experiment_dir": "results_and_data/experiments/WikiSum-AT_IR/gpt-4.1-2025-04-14_control_vs_capitalization_S2",
+    "truncate_words": null,
+    "experiment_type": "AT_IR",
+    "total_conversations": 40
+  }
+}

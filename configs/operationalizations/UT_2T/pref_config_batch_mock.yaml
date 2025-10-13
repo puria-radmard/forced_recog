@@ -6,7 +6,7 @@
 # The script will process all models found in the data files
 
 # Data Configuration - Mock Testing
-experiment_dir: "results_and_data/experiments/mock_test_data"
+experiment_dir: "results_and_data/experiments/mock_test_data-UT_2T_pref"
 max_conversations: 5  # Reduced for faster mock testing
 
 # Experiment Type Configuration
@@ -19,6 +19,7 @@ experiment_type: "UT_2T"  # User Tag 2-Turn variant, preference paradigm
 # Prompt Configuration
 prompt_set: true  # Load prompts from prompts.yaml file
 prompt_paradigm: "pref"  # Options: "rec" (recognition) or "pref" (preference)
+system_priming: "none"  # Options: "none", "AT", "UT"
 truncate_words: 20  # Short for faster processing
 
 # Display Configuration
@@ -28,5 +29,5 @@ show_conversation_breakdown: true  # Whether to show conversation breakdown by m
 # Logging Configuration
 logging:
   enabled: true  # Whether to enable conversation logging
-  level: "INFO"  # Logging level: DEBUG, INFO, WARNING, ERROR
-  output_dir: "results_and_data/logs/mock_test_data"  # Directory to save log files
+  level: "DEBUG"  # Logging level: DEBUG, INFO, WARNING, ERROR
+  # output_dir not specified - will auto-generate path mirroring results structure

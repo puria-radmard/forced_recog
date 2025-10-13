@@ -1,0 +1,76 @@
+Testing Pipeline Report
+==================================================
+Generated: 2025-10-02 12:15:37
+
+Summary:
+  Total Tests: 5
+  Passed: 0
+  Failed: 5
+
+Detailed Results:
+------------------------------
+
+AT_2T_PREF: FAIL
+  Duration: 0.4s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+[INFO] Reading experiment directory from config file: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\temp_parallel_config.yaml
+[INFO] Using experiment directory from config: results_and_data/experiments/WikiSum_AT_pref
+[ERROR] Experiments directory not found: results_and_data/experiments/WikiSum_AT_pref
+[ERROR] No valid experiment directories found!
+
+
+AT_2T_REC: FAIL
+  Duration: 0.3s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+[INFO] Reading experiment directory from config file: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\temp_parallel_config.yaml
+[INFO] Using experiment directory from config: results_and_data/experiments/to_run
+[ERROR] Experiments directory not found: results_and_data/experiments/to_run
+[ERROR] No valid experiment directories found!
+
+
+AT_IR_REC: FAIL
+  Duration: 0.3s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+[INFO] Reading experiment directory from config file: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\temp_parallel_config.yaml
+[INFO] Using experiment directory from config: results_and_data/experiments/WikiSum_AT_IR
+[ERROR] Experiments directory not found: results_and_data/experiments/WikiSum_AT_IR
+[ERROR] No valid experiment directories found!
+
+
+UT_2T_PREF: FAIL
+  Duration: 0.3s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+[INFO] Reading experiment directory from config file: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\temp_parallel_config.yaml
+[INFO] Using experiment directory from config: results_and_data/experiments/WikiSum_UT_pref
+[ERROR] Experiments directory not found: results_and_data/experiments/WikiSum_UT_pref
+[ERROR] No valid experiment directories found!
+
+
+UT_2T_REC: FAIL
+  Duration: 0.3s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+[INFO] Reading experiment directory from config file: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\temp_parallel_config.yaml
+[INFO] Using experiment directory from config: results_and_data/experiments/WikiSum_UT_rec
+[ERROR] Experiments directory not found: results_and_data/experiments/WikiSum_UT_rec
+[ERROR] No valid experiment directories found!
+

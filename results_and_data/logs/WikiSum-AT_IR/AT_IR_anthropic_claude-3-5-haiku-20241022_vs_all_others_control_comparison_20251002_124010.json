@@ -1,0 +1,19 @@
+{
+  "experiment_name": "AT_IR_anthropic_claude-3-5-haiku-20241022_vs_all_others_control_comparison",
+  "start_time": "2025-10-02T12:40:10.820268",
+  "end_time": "2025-10-02T12:40:10.833924",
+  "conversations": [],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\configs\\operationalizations\\AT_IR\\rec_config_batch.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 240,
+    "experiment_dir": "results_and_data/experiments/WikiSum-AT_IR/anthropic_claude-3-5-haiku-20241022_vs_all_others_control_comparison",
+    "truncate_words": null,
+    "experiment_type": "AT_IR",
+    "total_conversations": 240
+  }
+}

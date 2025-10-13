@@ -1,0 +1,19 @@
+{
+  "experiment_name": "UT_IR_gpt-4.1-2025-04-14_vs_self_comparison",
+  "start_time": "2025-10-13T14:55:53.007046",
+  "end_time": "2025-10-13T14:55:53.008046",
+  "conversations": [],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\configs\\operationalizations\\UT_IR\\rec_config_batch.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 0,
+    "experiment_dir": "results_and_data/experiments/WikiSum-UT_IR/gpt-4.1-2025-04-14_vs_self_comparison",
+    "truncate_words": null,
+    "experiment_type": "UT_IR",
+    "total_conversations": 0
+  }
+}

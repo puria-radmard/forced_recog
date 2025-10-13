@@ -1,0 +1,19 @@
+{
+  "experiment_name": "UT_IR_mock_control_vs_typo_S2",
+  "start_time": "2025-10-12T19:39:53.896273",
+  "end_time": "2025-10-12T19:39:53.906267",
+  "conversations": [],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "configs/operationalizations/UT_IR/rec_config_mock.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 10,
+    "experiment_dir": "results_and_data/experiments/mock_test_data-UT_IR/mock_control_vs_typo_S2",
+    "truncate_words": 20,
+    "experiment_type": "UT_IR",
+    "total_conversations": 40
+  }
+}

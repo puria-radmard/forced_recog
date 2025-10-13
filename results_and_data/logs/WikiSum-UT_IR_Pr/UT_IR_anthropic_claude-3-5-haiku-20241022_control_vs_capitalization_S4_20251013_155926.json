@@ -1,0 +1,19 @@
+{
+  "experiment_name": "UT_IR_anthropic_claude-3-5-haiku-20241022_control_vs_capitalization_S4",
+  "start_time": "2025-10-13T15:59:26.271836",
+  "end_time": "2025-10-13T15:59:26.297353",
+  "conversations": [],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\configs\\operationalizations\\UT_IR\\rec_config_batch_Pr.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 40,
+    "experiment_dir": "results_and_data/experiments/WikiSum-UT_IR_Pr/anthropic_claude-3-5-haiku-20241022_control_vs_capitalization_S4",
+    "truncate_words": null,
+    "experiment_type": "UT_IR",
+    "total_conversations": 40
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "experiment_name": "UT_IR_anthropic_claude-sonnet-4-20250514_control_vs_typo_S2",
+  "start_time": "2025-10-13T16:28:33.043994",
+  "end_time": "2025-10-13T16:28:33.050992",
+  "conversations": [],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\configs\\operationalizations\\UT_IR\\rec_config_batch.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 40,
+    "experiment_dir": "results_and_data/experiments/WikiSum-UT_IR/anthropic_claude-sonnet-4-20250514_control_vs_typo_S2",
+    "truncate_words": null,
+    "experiment_type": "UT_IR",
+    "total_conversations": 40
+  }
+}

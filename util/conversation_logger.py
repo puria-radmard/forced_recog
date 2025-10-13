@@ -38,7 +38,8 @@ class ConversationLogger:
             log_level: Logging level (DEBUG, INFO, WARNING, ERROR)
         """
         self.experiment_name = experiment_name
-        self.output_dir = output_dir
+        # Normalize path separators for cross-platform compatibility
+        self.output_dir = os.path.normpath(output_dir)
         self.enabled = enabled
         self.log_level = log_level
         
@@ -235,6 +236,12 @@ class ConversationLogger:
         filepath = os.path.join(self.output_dir, filename)
         
         try:
+            # Ensure output directory exists (in case of nested paths)
+            # Use os.path.dirname to get the directory of the filepath
+            dir_path = os.path.dirname(filepath)
+            if dir_path:  # Only create if there's a directory path
+                os.makedirs(dir_path, exist_ok=True)
+            
             with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump(self.log_data, f, indent=2, ensure_ascii=False)
             

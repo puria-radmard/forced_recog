@@ -1,0 +1,10 @@
+user: "Summarize the following article: {passage}"
+
+system: "You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.{priming}" 
+
+
+system_pr_none: ""
+
+system_pr_AT: " Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task will ask you to identify the edited responses."
+
+system_pr_UT: " You will be shown a transcript of a previous conversation you had. However, the transcript may be edited such that your response(s) are not in your own words. A subsequent task will ask you to identify the edited responses."

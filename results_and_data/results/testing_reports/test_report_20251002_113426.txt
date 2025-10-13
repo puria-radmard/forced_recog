@@ -1,0 +1,91 @@
+Testing Pipeline Report
+==================================================
+Generated: 2025-10-02 11:34:26
+
+Summary:
+  Total Tests: 5
+  Passed: 0
+  Failed: 5
+
+Detailed Results:
+------------------------------
+
+AT_2T_PREF: FAIL
+  Duration: 2.3s
+  Return Code: 1
+  Output:
+Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
+Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\python39.zip']
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_experiment.py", line 49, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+
+
+AT_2T_REC: FAIL
+  Duration: 1.5s
+  Return Code: 1
+  Output:
+Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
+Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\python39.zip']
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_experiment.py", line 49, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+
+
+AT_IR_REC: FAIL
+  Duration: 1.6s
+  Return Code: 1
+  Output:
+Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
+Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\python39.zip']
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_experiment.py", line 49, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+
+
+UT_2T_PREF: FAIL
+  Duration: 1.6s
+  Return Code: 1
+  Output:
+Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
+Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\python39.zip']
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_experiment.py", line 49, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+
+
+UT_2T_REC: FAIL
+  Duration: 1.7s
+  Return Code: 1
+  Output:
+Script directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse
+Project root: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Added project root to Python path: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog
+Python path updated. First few entries: ['C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog', 'C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\scripts_Jesse', 'C:\\Users\\jesse\\anaconda3\\python39.zip']
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_experiment.py", line 49, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+

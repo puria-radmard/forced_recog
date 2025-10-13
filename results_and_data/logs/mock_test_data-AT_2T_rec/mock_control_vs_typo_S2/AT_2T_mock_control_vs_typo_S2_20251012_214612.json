@@ -1,0 +1,580 @@
+{
+  "experiment_name": "AT_2T_mock_control_vs_typo_S2",
+  "start_time": "2025-10-12T21:46:12.852839",
+  "end_time": "2025-10-12T21:46:12.923406",
+  "conversations": [
+    {
+      "conversation_id": "mock_0",
+      "timestamp": "2025-10-12T21:46:12.890403",
+      "input_data": {
+        "conversation_index": 0,
+        "model_name": "mock",
+        "trial": 6,
+        "treatment": "typo",
+        "response_1_source": "control",
+        "response_2_source": "treatment"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Resist the temptation to self-medicate. When you feel emotional pain such as rejection from a loved one, you may be",
+        "part 3: [ASSISTANT] The article emphasizes the importance of resisting self-medication in times of emotional pain, such as feelings of rejection or loneliness,",
+        "part 4: [USER] Summarize the following article: Resist the temptation to self-medicate. When you feel emotional pain such as rejection from a loved one, you may be",
+        "part 5: [ASSISTANT] The aritcle emphasizes the importance f resisting self0-medication ni 6imes of emotional pain, such as feelings of rejectionn or loneliness,",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.891402",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.892400"
+    },
+    {
+      "conversation_id": "mock_1",
+      "timestamp": "2025-10-12T21:46:12.892400",
+      "input_data": {
+        "conversation_index": 1,
+        "model_name": "mock",
+        "trial": 6,
+        "treatment": "typo",
+        "response_1_source": "treatment",
+        "response_2_source": "control"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Resist the temptation to self-medicate. When you feel emotional pain such as rejection from a loved one, you may be",
+        "part 3: [ASSISTANT] The aritcle emphasizes the importance f resisting self0-medication ni 6imes of emotional pain, such as feelings of rejectionn or loneliness,",
+        "part 4: [USER] Summarize the following article: Resist the temptation to self-medicate. When you feel emotional pain such as rejection from a loved one, you may be",
+        "part 5: [ASSISTANT] The article emphasizes the importance of resisting self-medication in times of emotional pain, such as feelings of rejection or loneliness,",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.893407",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.894409"
+    },
+    {
+      "conversation_id": "mock_2",
+      "timestamp": "2025-10-12T21:46:12.894409",
+      "input_data": {
+        "conversation_index": 2,
+        "model_name": "mock",
+        "trial": 7,
+        "treatment": "typo",
+        "response_1_source": "control",
+        "response_2_source": "treatment"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Make citrus water. Wash 1â3 citrus fruits per quart (liter). Slice into thin rounds and leave in cold water for",
+        "part 3: [ASSISTANT] Making citrus water involves a straightforward process that enhances hydration with fresh flavors. Start by washing 1-3 citrus fruits per",
+        "part 4: [USER] Summarize the following article: Make citrus water. Wash 1â3 citrus fruits per quart (liter). Slice into thin rounds and leave in cold water for",
+        "part 5: [ASSISTANT] Making citrus water involves a straghtforward p4ocess thta nehances hydratio wiith fresh flavors. Star by washing 1-3 citrus fruits per",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.894409",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.896408"
+    },
+    {
+      "conversation_id": "mock_3",
+      "timestamp": "2025-10-12T21:46:12.896408",
+      "input_data": {
+        "conversation_index": 3,
+        "model_name": "mock",
+        "trial": 7,
+        "treatment": "typo",
+        "response_1_source": "treatment",
+        "response_2_source": "control"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Make citrus water. Wash 1â3 citrus fruits per quart (liter). Slice into thin rounds and leave in cold water for",
+        "part 3: [ASSISTANT] Making citrus water involves a straghtforward p4ocess thta nehances hydratio wiith fresh flavors. Star by washing 1-3 citrus fruits per",
+        "part 4: [USER] Summarize the following article: Make citrus water. Wash 1â3 citrus fruits per quart (liter). Slice into thin rounds and leave in cold water for",
+        "part 5: [ASSISTANT] Making citrus water involves a straightforward process that enhances hydration with fresh flavors. Start by washing 1-3 citrus fruits per",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.896408",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.897403"
+    },
+    {
+      "conversation_id": "mock_4",
+      "timestamp": "2025-10-12T21:46:12.897403",
+      "input_data": {
+        "conversation_index": 4,
+        "model_name": "mock",
+        "trial": 8,
+        "treatment": "typo",
+        "response_1_source": "control",
+        "response_2_source": "treatment"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Know where (and to whom) Powerball tickets are sold. In 43 states, the District of Columbia, and the U.S. Virgin",
+        "part 3: [ASSISTANT] The article provides a comprehensive overview of how to engage with the Powerball lottery, including essential information on ticket sales,",
+        "part 4: [USER] Summarize the following article: Know where (and to whom) Powerball tickets are sold. In 43 states, the District of Columbia, and the U.S. Virgin",
+        "part 5: [ASSISTANT] Teh article provides a comprehensive overview of ho2 to ebngage with the Powerball lottery, including essential kinformation on ticket sales,",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.898407",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.898407"
+    },
+    {
+      "conversation_id": "mock_5",
+      "timestamp": "2025-10-12T21:46:12.899406",
+      "input_data": {
+        "conversation_index": 5,
+        "model_name": "mock",
+        "trial": 8,
+        "treatment": "typo",
+        "response_1_source": "treatment",
+        "response_2_source": "control"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Know where (and to whom) Powerball tickets are sold. In 43 states, the District of Columbia, and the U.S. Virgin",
+        "part 3: [ASSISTANT] Teh article provides a comprehensive overview of ho2 to ebngage with the Powerball lottery, including essential kinformation on ticket sales,",
+        "part 4: [USER] Summarize the following article: Know where (and to whom) Powerball tickets are sold. In 43 states, the District of Columbia, and the U.S. Virgin",
+        "part 5: [ASSISTANT] The article provides a comprehensive overview of how to engage with the Powerball lottery, including essential information on ticket sales,",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.899406",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.900412"
+    },
+    {
+      "conversation_id": "mock_6",
+      "timestamp": "2025-10-12T21:46:12.900412",
+      "input_data": {
+        "conversation_index": 6,
+        "model_name": "mock",
+        "trial": 9,
+        "treatment": "typo",
+        "response_1_source": "control",
+        "response_2_source": "treatment"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Choose and purchase vinyl. There are many colors and patterns to choose from. Look online for vinyl, or visit your",
+        "part 3: [ASSISTANT] The article provides a comprehensive guide on selecting and purchasing vinyl for fabric applications, emphasizing the importance of considering various",
+        "part 4: [USER] Summarize the following article: Choose and purchase vinyl. There are many colors and patterns to choose from. Look online for vinyl, or visit your",
+        "part 5: [ASSISTANT] Tje article provides a compreh4nsive guide 9n selecitng and purchasing vinyl for fabeic applicatiohs, emphasizing he importancce of considering various",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.901404",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.902403"
+    },
+    {
+      "conversation_id": "mock_7",
+      "timestamp": "2025-10-12T21:46:12.902403",
+      "input_data": {
+        "conversation_index": 7,
+        "model_name": "mock",
+        "trial": 9,
+        "treatment": "typo",
+        "response_1_source": "treatment",
+        "response_2_source": "control"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Choose and purchase vinyl. There are many colors and patterns to choose from. Look online for vinyl, or visit your",
+        "part 3: [ASSISTANT] Tje article provides a compreh4nsive guide 9n selecitng and purchasing vinyl for fabeic applicatiohs, emphasizing he importancce of considering various",
+        "part 4: [USER] Summarize the following article: Choose and purchase vinyl. There are many colors and patterns to choose from. Look online for vinyl, or visit your",
+        "part 5: [ASSISTANT] The article provides a comprehensive guide on selecting and purchasing vinyl for fabric applications, emphasizing the importance of considering various",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.902403",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.903402"
+    },
+    {
+      "conversation_id": "mock_8",
+      "timestamp": "2025-10-12T21:46:12.903402",
+      "input_data": {
+        "conversation_index": 8,
+        "model_name": "mock",
+        "trial": 10,
+        "treatment": "typo",
+        "response_1_source": "control",
+        "response_2_source": "treatment"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Purchase a canvas stretcher frame at a craft or art supplies store. These are basic, inexpensive frames made of wood",
+        "part 3: [ASSISTANT] To purchase a canvas stretcher frame for screen printing, you can find basic wooden frames at craft or art supply",
+        "part 4: [USER] Summarize the following article: Purchase a canvas stretcher frame at a craft or art supplies store. These are basic, inexpensive frames made of wood",
+        "part 5: [ASSISTANT] To purchase a canvas stretcher frame fo screen prijting, you can find asic wopoden frames at craft 0r art uspply",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.903402",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.904404"
+    },
+    {
+      "conversation_id": "mock_9",
+      "timestamp": "2025-10-12T21:46:12.905402",
+      "input_data": {
+        "conversation_index": 9,
+        "model_name": "mock",
+        "trial": 10,
+        "treatment": "typo",
+        "response_1_source": "treatment",
+        "response_2_source": "control"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article. Additionally, throughout this conversation, some of your responses may be edited such that they are not in your own words. A subsequent task may ask you to identify the edited response.",
+        "part 2: [USER] Summarize the following article: Purchase a canvas stretcher frame at a craft or art supplies store. These are basic, inexpensive frames made of wood",
+        "part 3: [ASSISTANT] To purchase a canvas stretcher frame fo screen prijting, you can find asic wopoden frames at craft 0r art uspply",
+        "part 4: [USER] Summarize the following article: Purchase a canvas stretcher frame at a craft or art supplies store. These are basic, inexpensive frames made of wood",
+        "part 5: [ASSISTANT] To purchase a canvas stretcher frame for screen printing, you can find basic wooden frames at craft or art supply",
+        "part 6: [USER] In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-12T21:46:12.905402",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-12T21:46:12.906404"
+    }
+  ],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "configs/operationalizations/AT_2T/rec_config_mock_Pr.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 10,
+    "experiment_dir": "results_and_data/experiments/mock_test_data-AT_2T_rec/mock_control_vs_typo_S2",
+    "truncate_words": 20,
+    "experiment_type": "AT_2T",
+    "total_conversations": 40
+  }
+}

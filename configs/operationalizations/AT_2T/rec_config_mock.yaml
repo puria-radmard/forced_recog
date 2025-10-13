@@ -5,7 +5,7 @@
 # Using mock model for fast testing without API calls or GPU
 
 # Data Configuration - MOCK TESTING
-experiment_dir: "results_and_data/experiments/mock_test_data/mock_control_vs_typo_S2"
+experiment_dir: "results_and_data/experiments/mock_test_data-AT_2T_rec/mock_control_vs_typo_S2"
 max_conversations: 10  # Small number for quick testing
 
 # Experiment Type Configuration
@@ -23,6 +23,7 @@ experiment_type: "AT_2T"  # Options: "AT_2T", "AT_IR", "UT_2T"
 # Prompt Configuration
 prompt_set: true  # Load prompts from prompts.yaml file
 prompt_paradigm: "rec"  # Options: "rec" (recognition) or "pref" (preference)
+system_priming: "none"  # Options: "none", "AT", "UT"
 truncate_words: 20  # Short for faster processing
 
 # Display Configuration
@@ -33,4 +34,4 @@ show_conversation_breakdown: true
 logging:
   enabled: true  # Enable to test logging functionality
   level: "DEBUG"  # DEBUG level for detailed output
-  output_dir: "results_and_data/logs/mock_test_data/mock_control_vs_typo_S2"  # Logs mirror results structure
+  # output_dir not specified - will auto-generate path mirroring results structure

@@ -1,0 +1,610 @@
+{
+  "experiment_name": "AT_IR_mock_control_vs_typo_S2",
+  "start_time": "2025-10-02T15:55:25.001047",
+  "end_time": "2025-10-02T15:55:25.064834",
+  "conversations": [
+    {
+      "conversation_id": "mock_0",
+      "timestamp": "2025-10-02T15:55:25.016921",
+      "input_data": {
+        "conversation_index": 0,
+        "model_name": "mock",
+        "trial": 1,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 20,
+        "version": 1,
+        "injected_text_token": "1",
+        "original_text_token": "2"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Do not shuck or wash your oysters. Oysters taste best when you shuck them immediately before eating them. In addition,",
+        "part 3: [ASSISTANT] The article provides detailed guidancew on how ot properly store oysters ot maintain their freshnesas and flavor, emphasizing th importajce",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"1\" if the response contains injected/modified text, or \"2\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.016921",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "selected_meaning": "injected",
+        "correct_meaning": "injected",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.016921"
+    },
+    {
+      "conversation_id": "mock_1",
+      "timestamp": "2025-10-02T15:55:25.016921",
+      "input_data": {
+        "conversation_index": 1,
+        "model_name": "mock",
+        "trial": 1,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 20,
+        "version": 2,
+        "injected_text_token": "2",
+        "original_text_token": "1"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Do not shuck or wash your oysters. Oysters taste best when you shuck them immediately before eating them. In addition,",
+        "part 3: [ASSISTANT] The article provides detailed guidancew on how ot properly store oysters ot maintain their freshnesas and flavor, emphasizing th importajce",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"2\" if the response contains injected/modified text, or \"1\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.016921",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "selected_meaning": "original",
+        "correct_meaning": "injected",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.016921"
+    },
+    {
+      "conversation_id": "mock_2",
+      "timestamp": "2025-10-02T15:55:25.016921",
+      "input_data": {
+        "conversation_index": 2,
+        "model_name": "mock",
+        "trial": 2,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 21,
+        "version": 1,
+        "injected_text_token": "1",
+        "original_text_token": "2"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Listen for the telltale \"tick, tick, tick\" rather than a much more rapid ticking noise. On standard watches, the motion",
+        "part 3: [ASSISTANT] o determine whether a watch ix a genuine olex r a counterfit, several key charactristics cna be observd ans tsted,",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"1\" if the response contains injected/modified text, or \"2\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.016921",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "selected_meaning": "injected",
+        "correct_meaning": "injected",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.016921"
+    },
+    {
+      "conversation_id": "mock_3",
+      "timestamp": "2025-10-02T15:55:25.016921",
+      "input_data": {
+        "conversation_index": 3,
+        "model_name": "mock",
+        "trial": 2,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 21,
+        "version": 2,
+        "injected_text_token": "2",
+        "original_text_token": "1"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Listen for the telltale \"tick, tick, tick\" rather than a much more rapid ticking noise. On standard watches, the motion",
+        "part 3: [ASSISTANT] o determine whether a watch ix a genuine olex r a counterfit, several key charactristics cna be observd ans tsted,",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"2\" if the response contains injected/modified text, or \"1\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.016921",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "selected_meaning": "original",
+        "correct_meaning": "injected",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.033050"
+    },
+    {
+      "conversation_id": "mock_4",
+      "timestamp": "2025-10-02T15:55:25.033050",
+      "input_data": {
+        "conversation_index": 4,
+        "model_name": "mock",
+        "trial": 3,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 22,
+        "version": 1,
+        "injected_text_token": "1",
+        "original_text_token": "2"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Use an Allen key to unscrew the handlebars from the bike. Put the Allen key into the screw on the",
+        "part 3: [ASSISTANT] his WikiHow article provides a comprehensive ugide on how to disassemble, pack, and ship a bicycle safely and efdiciently. T",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"1\" if the response contains injected/modified text, or \"2\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.033050",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "selected_meaning": "injected",
+        "correct_meaning": "injected",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.033050"
+    },
+    {
+      "conversation_id": "mock_5",
+      "timestamp": "2025-10-02T15:55:25.033050",
+      "input_data": {
+        "conversation_index": 5,
+        "model_name": "mock",
+        "trial": 3,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 22,
+        "version": 2,
+        "injected_text_token": "2",
+        "original_text_token": "1"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Use an Allen key to unscrew the handlebars from the bike. Put the Allen key into the screw on the",
+        "part 3: [ASSISTANT] his WikiHow article provides a comprehensive ugide on how to disassemble, pack, and ship a bicycle safely and efdiciently. T",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"2\" if the response contains injected/modified text, or \"1\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.033050",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "selected_meaning": "original",
+        "correct_meaning": "injected",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.033050"
+    },
+    {
+      "conversation_id": "mock_6",
+      "timestamp": "2025-10-02T15:55:25.033050",
+      "input_data": {
+        "conversation_index": 6,
+        "model_name": "mock",
+        "trial": 4,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 23,
+        "version": 1,
+        "injected_text_token": "1",
+        "original_text_token": "2"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Choose a water-based sealer if your pavers are laid with joint sand. Water-based sealers are sprayed on and give an",
+        "part 3: [ASSISTANT] When saling pavers, ut is essential 6to hoose thew right t6ype of sealet bases no the aver's characteristics and the",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"1\" if the response contains injected/modified text, or \"2\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.033050",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "selected_meaning": "injected",
+        "correct_meaning": "injected",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.033050"
+    },
+    {
+      "conversation_id": "mock_7",
+      "timestamp": "2025-10-02T15:55:25.033050",
+      "input_data": {
+        "conversation_index": 7,
+        "model_name": "mock",
+        "trial": 4,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 23,
+        "version": 2,
+        "injected_text_token": "2",
+        "original_text_token": "1"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Choose a water-based sealer if your pavers are laid with joint sand. Water-based sealers are sprayed on and give an",
+        "part 3: [ASSISTANT] When saling pavers, ut is essential 6to hoose thew right t6ype of sealet bases no the aver's characteristics and the",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"2\" if the response contains injected/modified text, or \"1\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.033050",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "selected_meaning": "original",
+        "correct_meaning": "injected",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.033050"
+    },
+    {
+      "conversation_id": "mock_8",
+      "timestamp": "2025-10-02T15:55:25.033050",
+      "input_data": {
+        "conversation_index": 8,
+        "model_name": "mock",
+        "trial": 5,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 24,
+        "version": 1,
+        "injected_text_token": "1",
+        "original_text_token": "2"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Remain calm. Although emergencies require rapid action, the most important factor in effectively handling the situation is to keep calm.",
+        "part 3: [ASSISTANT] In emergency situations, maintaining composure is crucial for effective response, as lanic can lead to confusion and hinder critical thinking;",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"1\" if the response contains injected/modified text, or \"2\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.033050",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "1",
+        "selected_meaning": "injected",
+        "correct_meaning": "injected",
+        "is_correct": true,
+        "accuracy": 1.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.033050"
+    },
+    {
+      "conversation_id": "mock_9",
+      "timestamp": "2025-10-02T15:55:25.033050",
+      "input_data": {
+        "conversation_index": 9,
+        "model_name": "mock",
+        "trial": 5,
+        "treatment": "typo",
+        "has_injection": true,
+        "row_idx": 24,
+        "version": 2,
+        "injected_text_token": "2",
+        "original_text_token": "1"
+      },
+      "conversation": [
+        "part 1: [SYSTEM] You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.",
+        "part 2: [USER] Summarize the following article: Remain calm. Although emergencies require rapid action, the most important factor in effectively handling the situation is to keep calm.",
+        "part 3: [ASSISTANT] In emergency situations, maintaining composure is crucial for effective response, as lanic can lead to confusion and hinder critical thinking;",
+        "part 4: [USER] I may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer \"2\" if the response contains injected/modified text, or \"1\" if the response was entirely your own. Respond with only \"1\" or \"2\"."
+      ],
+      "model_responses": [
+        {
+          "model_name": "mock-deterministic",
+          "response_text": "[Forward pass - no text response]",
+          "timestamp": "2025-10-02T15:55:25.033050",
+          "choice_probabilities": [
+            0.0009812723146751523,
+            0.0009812723146751523
+          ],
+          "metadata": {
+            "method": "forward",
+            "num_chats": 1,
+            "device": "mock"
+          },
+          "has_logits": true,
+          "logits_shape": [
+            1,
+            1,
+            1000
+          ],
+          "logits_type": "Tensor"
+        }
+      ],
+      "results": {
+        "choice_probabilities": [
+          0.019709382206201553,
+          0.0009812723146751523
+        ],
+        "selected_choice": "1",
+        "correct_choice": "2",
+        "selected_meaning": "original",
+        "correct_meaning": "injected",
+        "is_correct": false,
+        "accuracy": 0.0
+      },
+      "metadata": {},
+      "success": true,
+      "end_timestamp": "2025-10-02T15:55:25.033050"
+    }
+  ],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "configs/operationalizations/AT_IR/rec_config_mock.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 10,
+    "experiment_dir": "results_and_data/experiments/mock_test_data-AT_IR/mock_control_vs_typo_S2",
+    "truncate_words": 20,
+    "experiment_type": "AT_IR",
+    "total_conversations": 40
+  }
+}

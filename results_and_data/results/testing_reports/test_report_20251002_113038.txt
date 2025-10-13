@@ -1,0 +1,101 @@
+Testing Pipeline Report
+==================================================
+Generated: 2025-10-02 11:30:38
+
+Summary:
+  Total Tests: 5
+  Passed: 0
+  Failed: 5
+
+Detailed Results:
+------------------------------
+
+AT_2T_PREF: FAIL
+  Duration: 0.3s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 449, in <module>
+    sys.exit(main())
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 320, in main
+    print(f"\n\U0001f50d Reading experiment directory from config file: {args.config}")
+  File "C:\Users\jesse\anaconda3\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 2: character maps to <undefined>
+
+
+AT_2T_REC: FAIL
+  Duration: 0.2s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 449, in <module>
+    sys.exit(main())
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 320, in main
+    print(f"\n\U0001f50d Reading experiment directory from config file: {args.config}")
+  File "C:\Users\jesse\anaconda3\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 2: character maps to <undefined>
+
+
+AT_IR_REC: FAIL
+  Duration: 0.2s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 449, in <module>
+    sys.exit(main())
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 320, in main
+    print(f"\n\U0001f50d Reading experiment directory from config file: {args.config}")
+  File "C:\Users\jesse\anaconda3\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 2: character maps to <undefined>
+
+
+UT_2T_PREF: FAIL
+  Duration: 0.2s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 449, in <module>
+    sys.exit(main())
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 320, in main
+    print(f"\n\U0001f50d Reading experiment directory from config file: {args.config}")
+  File "C:\Users\jesse\anaconda3\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 2: character maps to <undefined>
+
+
+UT_2T_REC: FAIL
+  Duration: 0.2s
+  Return Code: 1
+  Output:
+=== Parallel Batch Runner for Assist Tag Recognition Experiments ===
+This script runs run_experiment.py on multiple experiment directories in parallel
+
+  Error:
+Traceback (most recent call last):
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 449, in <module>
+    sys.exit(main())
+  File "C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\scripts_Jesse\run_all_experiments_parallel.py", line 320, in main
+    print(f"\n\U0001f50d Reading experiment directory from config file: {args.config}")
+  File "C:\Users\jesse\anaconda3\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 2: character maps to <undefined>
+

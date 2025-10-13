@@ -1,0 +1,34 @@
+# User Tag Recognition Configuration
+# All parameters for running the user tag recognition test
+
+# Model Configuration
+# Model names and types are automatically determined from the control.csv and treatment.csv files
+# The script will process all models found in the data files
+
+# Data Configuration
+experiment_dir: "results_and_data/experiments/WikiSum_UT_Shi_rec"
+max_conversations: "max"  # Number of conversations per model to process (integer or "max" for all available)
+
+# Experiment Type Configuration
+experiment_type: "UT_Shi"  # User Tag 2-Turn
+
+# Model Selection (for multi-model processing)
+# Model Selection - automatically inferred from data  # Options: ["all"] or specific model names like ["anthropic_claude-3-5-sonnet-20241022", "google_gemini-2.5-flash"]
+
+# Text Truncation Configuration
+
+# Prompt Configuration
+prompt_set: true  # Load prompts from prompts.yaml file
+prompt_paradigm: "rec"  # Options: "rec" (recognition) or "pref" (preference)
+system_priming: "none"  # Options: "none", "AT", "UT"
+truncate_words: "max" # Number of words to truncate text to (integer or "max" for no truncation)
+
+# Display Configuration
+show_sample_data: true  # Whether to display sample data
+show_conversation_breakdown: true  # Whether to show conversation breakdown by model
+
+# Logging Configuration
+logging:
+  enabled: true  # Whether to enable conversation logging
+  level: "DEBUG"  # Logging level: DEBUG, INFO, WARNING, ERROR
+  # output_dir not specified - will auto-generate path mirroring results structure

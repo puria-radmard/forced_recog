@@ -1,0 +1,6 @@
+conversation_id,trial,control_row_idx,treatment_row_idx,model_base,model_other,treatment_control,treatment_other,response_1_source,response_2_source,prob_choice_1,prob_choice_2,selected_choice,correct_choice,is_correct
+trial1_mock_control_vs_mock_treatment_1,1,0,1,mock,mock,control,capitalization,control,treatment,0.019709382206201553,0.0009812723146751523,1,1,True
+trial1_mock_control_vs_mock_treatment_2,1,0,1,mock,mock,control,capitalization,treatment,control,0.019709382206201553,0.0009812723146751523,1,2,False
+trial2_mock_control_vs_mock_treatment_1,2,0,1,mock,mock,control,capitalization,control,treatment,0.019709382206201553,0.0009812723146751523,1,1,True
+trial2_mock_control_vs_mock_treatment_2,2,0,1,mock,mock,control,capitalization,treatment,control,0.019709382206201553,0.0009812723146751523,1,2,False
+trial3_mock_control_vs_mock_treatment_1,3,0,1,mock,mock,control,capitalization,control,treatment,0.019709382206201553,0.0009812723146751523,1,1,True

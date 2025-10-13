@@ -1,0 +1,12 @@
+experiment_dir: results_and_data/experiments/mock_test_data-AT_2T_rec
+experiment_type: AT_2T
+logging:
+  enabled: true
+  level: INFO
+  output_dir: results_and_data/logs/mock_test_data-AT_2T_rec
+max_conversations: 5
+prompt_paradigm: rec
+prompt_set: true
+show_conversation_breakdown: true
+show_sample_data: true
+truncate_words: 20

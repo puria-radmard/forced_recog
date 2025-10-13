@@ -1,0 +1,19 @@
+{
+  "experiment_name": "UT_2T_gpt-4.1-mini-2025-04-14_control_vs_typo_S2",
+  "start_time": "2025-10-13T12:47:01.886504",
+  "end_time": "2025-10-13T13:03:14.174473",
+  "conversations": [],
+  "metadata": {
+    "log_level": "DEBUG",
+    "logger_version": "1.0.0",
+    "config_path": "C:\\Users\\jesse\\Documents\\Code_Projects\\Python\\forced_recog\\configs\\operationalizations\\UT_2T\\rec_config_batch_Pr.yaml",
+    "selected_models": [
+      "all"
+    ],
+    "max_conversations": 40,
+    "experiment_dir": "results_and_data/experiments/WikiSum-UT_2T_rec_Pr/gpt-4.1-mini-2025-04-14_control_vs_typo_S2",
+    "truncate_words": null,
+    "experiment_type": "UT_2T",
+    "total_conversations": 40
+  }
+}

@@ -6,7 +6,7 @@ This script runs run_experiment.py on all experiment directories in parallel.
 It uses subprocess to spawn multiple processes and tracks their progress.
 
 USAGE:
-    python run_all_experiments_parallel.py --max-workers N --config CONFIG --dry-run
+    python scripts_Jesse/run_all_experiments_parallel.py --max-workers N --config CONFIG --dry-run
 
 EXAMPLES:
     # Run all experiments in parallel (default: 4 workers)
@@ -43,7 +43,7 @@ def find_experiment_directories(experiments_dir: str) -> List[str]:
         List of experiment directory paths
     """
     if not os.path.exists(experiments_dir):
-        print(f"❌ Experiments directory not found: {experiments_dir}")
+        print(f"[ERROR] Experiments directory not found: {experiments_dir}")
         return []
     
     experiment_dirs = []
@@ -56,7 +56,7 @@ def find_experiment_directories(experiments_dir: str) -> List[str]:
             if os.path.exists(control_file) and os.path.exists(treatment_file):
                 experiment_dirs.append(item_path)
             else:
-                print(f"⚠️  Skipping {item}: Missing control.csv or treatment.csv")
+                print(f"[WARNING] Skipping {item}: Missing control.csv or treatment.csv")
     
     return sorted(experiment_dirs)
 
@@ -80,14 +80,14 @@ def find_experiment_directories_from_config(config_file: str) -> List[str]:
         
         base_experiment_dir = config.get("experiment_dir", "")
         if not base_experiment_dir:
-            print(f"❌ No experiment_dir found in config file: {config_file}")
+            print(f"[ERROR] No experiment_dir found in config file: {config_file}")
             return []
         
-        print(f"📋 Using experiment directory from config: {base_experiment_dir}")
+        print(f"[INFO] Using experiment directory from config: {base_experiment_dir}")
         return find_experiment_directories(base_experiment_dir)
         
     except Exception as e:
-        print(f"❌ Error reading config file {config_file}: {e}")
+        print(f"[ERROR] Error reading config file {config_file}: {e}")
         return []
 
 
@@ -138,7 +138,7 @@ def shuffle_experiments_by_company(experiment_dirs: List[str]) -> List[str]:
             if i < len(company_groups[company]):
                 shuffled_dirs.append(company_groups[company][i])
     
-    print(f"🔄 Shuffled experiments by company to distribute API load:")
+    print(f"[INFO] Shuffled experiments by company to distribute API load:")
     company_counts = {}
     for exp_dir in shuffled_dirs:
         company = get_company_from_path(exp_dir)
@@ -167,18 +167,36 @@ def run_experiment_worker(experiment_dir: str, config_file: str, worker_id: int,
     """
     experiment_name = os.path.basename(experiment_dir)
     
+    # Get script directory for path resolution
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
     # Build command
+    # Keep paths relative so run_experiment.py can resolve them correctly from project root
+    project_root = os.path.dirname(script_dir)  # Go up one level from scripts_Jesse to project root
+    
+    # Make config file absolute if it's relative
+    if not os.path.isabs(config_file):
+        config_file = os.path.join(project_root, config_file)
+    
+    # Keep experiment_dir relative - run_experiment.py expects relative paths from project root
+    if os.path.isabs(experiment_dir):
+        # Convert absolute path to relative path from project root
+        experiment_dir = os.path.relpath(experiment_dir, project_root)
+    
+    # Normalize path separators to forward slashes for consistency
+    experiment_dir = experiment_dir.replace('\\', '/')
+    
     cmd = [
-        sys.executable, "run_experiment.py",
+        sys.executable, "scripts_Jesse/run_experiment.py",
         "--config", config_file,
         "--experiment-dir", experiment_dir
     ]
     
     if dry_run:
-        progress_queue.put(f"🔍 Worker {worker_id}: DRY RUN - Would execute: {' '.join(cmd)}")
+        progress_queue.put(f"[DRY] Worker {worker_id}: DRY RUN - Would execute: {' '.join(cmd)}")
         return experiment_name, True, "DRY RUN", 0.0
     
-    progress_queue.put(f"🚀 Worker {worker_id}: Starting {experiment_name}")
+    progress_queue.put(f"[START] Worker {worker_id}: Starting {experiment_name}")
     
     try:
         start_time = time.time()
@@ -189,6 +207,7 @@ def run_experiment_worker(experiment_dir: str, config_file: str, worker_id: int,
         
         # Run the command with real-time output capture
         # Set encoding to handle Unicode characters on Windows
+        # Set working directory to project root so relative paths work correctly
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
@@ -198,7 +217,8 @@ def run_experiment_worker(experiment_dir: str, config_file: str, worker_id: int,
             universal_newlines=True,
             encoding='utf-8',
             errors='replace',  # Replace problematic characters instead of failing
-            env=env
+            env=env,
+            cwd=project_root  # Run from the project root directory
         )
         
         # Capture output line by line
@@ -211,7 +231,7 @@ def run_experiment_worker(experiment_dir: str, config_file: str, worker_id: int,
                 output_lines.append(output.strip())
                 # Send progress updates for important lines
                 if any(keyword in output.lower() for keyword in ['processing', 'completed', 'error', 'failed']):
-                    progress_queue.put(f"📊 Worker {worker_id}: {output.strip()}")
+                    progress_queue.put(f"[INFO] Worker {worker_id}: {output.strip()}")
         
         # Wait for process to complete
         return_code = process.wait()
@@ -221,17 +241,17 @@ def run_experiment_worker(experiment_dir: str, config_file: str, worker_id: int,
         output_text = '\n'.join(output_lines)
         
         if return_code == 0:
-            progress_queue.put(f"✅ Worker {worker_id}: {experiment_name} completed successfully in {duration:.1f}s")
+            progress_queue.put(f"[OK] Worker {worker_id}: {experiment_name} completed successfully in {duration:.1f}s")
             return experiment_name, True, output_text, duration
         else:
-            progress_queue.put(f"❌ Worker {worker_id}: {experiment_name} failed with exit code {return_code}")
+            progress_queue.put(f"[ERROR] Worker {worker_id}: {experiment_name} failed with exit code {return_code}")
             return experiment_name, False, output_text, duration
             
     except Exception as e:
         end_time = time.time()
         duration = end_time - start_time if 'start_time' in locals() else 0.0
         error_msg = f"Error running experiment '{experiment_name}': {e}"
-        progress_queue.put(f"❌ Worker {worker_id}: {error_msg}")
+        progress_queue.put(f"[ERROR] Worker {worker_id}: {error_msg}")
         return experiment_name, False, error_msg, duration
 
 
@@ -293,45 +313,45 @@ def main():
     
     # Validate inputs
     if not os.path.exists(args.config):
-        print(f"❌ Configuration file not found: {args.config}")
+        print(f"[ERROR] Configuration file not found: {args.config}")
         return 1
     
     # Find experiment directories
     if args.experiments_dir != "results_and_data/experiments/to_run":
         # Use explicit directory if provided
-        print(f"\n🔍 Scanning for experiments in: {args.experiments_dir}")
+        print(f"\n[INFO] Scanning for experiments in: {args.experiments_dir}")
         experiment_dirs = find_experiment_directories(args.experiments_dir)
     else:
         # Use config file to determine experiment directory
-        print(f"\n🔍 Reading experiment directory from config file: {args.config}")
+        print(f"\n[INFO] Reading experiment directory from config file: {args.config}")
         experiment_dirs = find_experiment_directories_from_config(args.config)
     
     if not experiment_dirs:
-        print("❌ No valid experiment directories found!")
+        print("[ERROR] No valid experiment directories found!")
         return 1
     
     # Shuffle experiments to distribute different companies across workers
     experiment_dirs = shuffle_experiments_by_company(experiment_dirs)
     
-    print(f"📊 Found {len(experiment_dirs)} experiment directories:")
+    print(f"[INFO] Found {len(experiment_dirs)} experiment directories:")
     for i, exp_dir in enumerate(experiment_dirs, 1):
         exp_name = os.path.basename(exp_dir)
         print(f"  {i}. {exp_name}")
     
     if args.dry_run:
-        print(f"\n🔍 DRY RUN MODE - No experiments will be executed")
+        print(f"\n[DRY] DRY RUN MODE - No experiments will be executed")
         print(f"Configuration file: {args.config}")
         print(f"Max workers: {args.max_workers}")
     
     # Confirm execution
     if not args.dry_run:
-        print(f"\n⚠️  About to run {len(experiment_dirs)} experiments in parallel with {args.max_workers} workers...")
+        print(f"\n[WARNING] About to run {len(experiment_dirs)} experiments in parallel with {args.max_workers} workers...")
         if not args.continue_on_error:
-            print("⚠️  If any experiment fails, the batch will continue (use --continue-on-error for more control)")
+            print("[WARNING] If any experiment fails, the batch will continue (use --continue-on-error for more control)")
         
         response = input("Continue? (y/N): ").strip().lower()
         if response not in ['y', 'yes']:
-            print("❌ Cancelled by user")
+            print("[CANCELLED] Cancelled by user")
             return 0
     
     # Set up progress monitoring
@@ -347,7 +367,7 @@ def main():
     monitor_thread.start()
     
     # Run experiments in parallel
-    print(f"\n🚀 Starting parallel execution with {args.max_workers} workers...")
+    print(f"\n[START] Starting parallel execution with {args.max_workers} workers...")
     start_time = time.time()
     
     results = []
@@ -380,7 +400,7 @@ def main():
                     else:
                         failed += 1
                         if not args.continue_on_error:
-                            print(f"\n❌ Stopping batch due to failure in {experiment_name}")
+                            print(f"\n[STOP] Stopping batch due to failure in {experiment_name}")
                             # Cancel remaining futures
                             for f in future_to_experiment:
                                 f.cancel()
@@ -388,7 +408,7 @@ def main():
                             
                 except Exception as e:
                     experiment_name = os.path.basename(experiment_dir)
-                    print(f"❌ Exception in {experiment_name}: {e}")
+                    print(f"[ERROR] Exception in {experiment_name}: {e}")
                     failed += 1
                     if not args.continue_on_error:
                         break
@@ -403,7 +423,7 @@ def main():
     total_duration = end_time - start_time
     
     print(f"\n{'='*80}")
-    print(f"📊 PARALLEL BATCH EXECUTION SUMMARY")
+    print(f"[SUMMARY] PARALLEL BATCH EXECUTION SUMMARY")
     print(f"{'='*80}")
     print(f"Total experiments: {len(experiment_dirs)}")
     print(f"Successful: {successful}")
@@ -418,16 +438,16 @@ def main():
             print(f"Speedup vs sequential: {len(experiment_dirs) * avg_duration / total_duration:.1f}x")
     
     # Show detailed results
-    print(f"\n📋 Detailed Results:")
+    print(f"\n[RESULTS] Detailed Results:")
     for experiment_name, success, output, duration in results:
-        status = "✅ SUCCESS" if success else "❌ FAILED"
+        status = "[OK] SUCCESS" if success else "[ERROR] FAILED"
         print(f"  {status}: {experiment_name} ({duration:.1f}s)")
     
     if failed > 0:
-        print(f"\n❌ {failed} experiment(s) failed")
+        print(f"\n[ERROR] {failed} experiment(s) failed")
         return 1
     else:
-        print(f"\n✅ All experiments completed successfully!")
+        print(f"\n[OK] All experiments completed successfully!")
         return 0
 
 
