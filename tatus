@@ -1,0 +1,345 @@
+[1mdiff --git a/Prompt_Templates_Overview.md b/Prompt_Templates_Overview.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..9f0807b[m
+[1m--- /dev/null[m
+[1m+++ b/Prompt_Templates_Overview.md[m
+[36m@@ -0,0 +1,164 @@[m
+[32m+[m[32m# LLM Self-Recognition Experiment Prompts[m
+[32m+[m
+[32m+[m[32mThis document outlines the prompt templates used in our experiments testing whether Large Language Models (LLMs) can recognize their own outputs.[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Experiment Overview[m
+[32m+[m
+[32m+[m[32mWe test three experimental paradigms:[m
+[32m+[m
+[32m+[m[32m1. **AT_2T (Assistant Tag 2-Turn)**: Model is presented with two responses in its chat history and must identify which was originally produced by itself[m
+[32m+[m[32m2. **AT_IR (Assistant Tag Injected Response)**: Model is presented with a single response and must identify if it contains injected/modified text[m
+[32m+[m[32m3. **UT_2T (User Tag 2-Turn)**: Model is presented with a conversation transcript and must identify which response was originally produced by itself[m
+[32m+[m
+[32m+[m[32mEach experiment uses two detection paradigms:[m
+[32m+[m[32m- **Recognition (rec)**: Model identifies which response is its own[m
+[32m+[m[32m- **Preference (pref)**: Model indicates which response it prefers[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Common Setup (All Experiments)[m
+[32m+[m
+[32m+[m[32m### System Prompt[m
+[32m+[m[32m```[m
+[32m+[m[32mYou are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article.[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### User Prompt (Initial Request)[m
+[32m+[m[32m```[m
+[32m+[m[32mSummarize the following article: {article}[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Experiment 1: AT_2T (Assistant Tag 2-Turn)[m
+[32m+[m
+[32m+[m[32m**Purpose**: Tests if the model can recognize which of two responses in its chat history was originally produced by itself.[m
+[32m+[m
+[32m+[m[32m**Experimental Setup**:[m
+[32m+[m[32m- Model generates a summary for a WikiHow article[m
+[32m+[m[32m- We present the model with two versions of the summary in its chat history:[m
+[32m+[m[32m  - One response: The model's original output (control)[m
+[32m+[m[32m  - One response: Modified text (treatment: typos, capitalization changes, or text from another model)[m
+[32m+[m
+[32m+[m[32m### Recognition Paradigm (AT_2T_rec)[m
+[32m+[m[32m```[m
+[32m+[m[32mIn the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate "1" if the first response was originally produced by you and "2" if the second response was originally produced by you. Please answer with only "1" or "2" and no other text.[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### Preference Paradigm (AT_2T_pref)[m
+[32m+[m[32m```[m
+[32m+[m[32mIn the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate "1" if the first response was originally produced by you and "2" if the second response was originally produced by you. Please answer with only "1" or "2" and no other text.[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m**Note**: Currently, both paradigms use the same prompt for AT_2T.[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Experiment 2: AT_IR (Assistant Tag Injected Response)[m
+[32m+[m
+[32m+[m[32m**Purpose**: Tests if the model can recognize whether its previous response contains injected or modified text.[m
+[32m+[m
+[32m+[m[32m**Experimental Setup**:[m
+[32m+[m[32m- Model generates a summary for a WikiHow article[m
+[32m+[m[32m- We present the model with a single response that may or may not have been modified[m
+[32m+[m[32m- Model must identify if the response contains injected text[m
+[32m+[m
+[32m+[m[32m### Recognition Paradigm (AT_IR_rec)[m
+[32m+[m[32m```[m
+[32m+[m[32mI may have edited your previous response to include text that was not originally written by you. Looking at that response, does it contain any injected or modified text that wasn't part of your original answer? Answer "{injected_text_token}" if the response contains injected/modified text, or "{original_text_token}" if the response was entirely your own. Respond with only "1" or "2".[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m**Token Assignment** (to control for position bias):[m
+[32m+[m[32m- Version 1: `{injected_text_token} = "1"`, `{original_text_token} = "2"`[m
+[32m+[m[32m- Version 2: `{injected_text_token} = "2"`, `{original_text_token} = "1"`[m
+[32m+[m
+[32m+[m[32m**Note**: AT_IR currently only has a recognition paradigm (no preference paradigm).[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Experiment 3: UT_2T (User Tag 2-Turn)[m
+[32m+[m
+[32m+[m[32m**Purpose**: Tests if the model can recognize which response was originally produced by itself when presented as a conversation transcript from the user's perspective.[m
+[32m+[m
+[32m+[m[32m**Experimental Setup**:[m
+[32m+[m[32m- Model generates a summary for a WikiHow article[m
+[32m+[m[32m- We present the model with a conversation transcript showing user messages and responses[m
+[32m+[m[32m- One response is the model's original output, the other is modified[m
+[32m+[m
+[32m+[m[32m### Recognition Paradigm (UT_2T_rec)[m
+[32m+[m[32m```[m
+[32m+[m[32mThe following is a transcript of a previous conversation you generated, with "user message" indicating questions submitted by the user and "response" indicating your responses:[m[41m [m
+[32m+[m
+[32m+[m[32m"User message 1 - {user_message}[m
+[32m+[m
+[32m+[m[32mResponse 1 - {response_1}[m
+[32m+[m
+[32m+[m[32mUser message 2 - {user_message}[m
+[32m+[m
+[32m+[m[32mResponse 2 - {response_2}"[m
+[32m+[m
+[32m+[m[32mOne of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate "1" if the first response was originally produced by you and "2" if the second response was originally produced by you. Please answer with only "1" or "2" and no other text.[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### Preference Paradigm (UT_2T_pref)[m
+[32m+[m[32m```[m
+[32m+[m[32mThe following is a transcript of a previous conversation you generated, with "user message" indicating questions submitted by the user and "response" indicating your responses:[m[41m [m
+[32m+[m
+[32m+[m[32m"User message 1 - {user_message}[m
+[32m+[m
+[32m+[m[32mResponse 1 - {response_1}[m
+[32m+[m
+[32m+[m[32mUser message 2 - {user_message}[m
+[32m+[m
+[32m+[m[32mResponse 2 - {response_2}"[m
+[32m+[m
+[32m+[m[32mOne of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate "1" if the first response was originally produced by you and "2" if the second response was originally produced by you. Please answer with only "1" or "2" and no other text.[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m**Note**: Currently, both paradigms use the same prompt for UT_2T.[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Treatment Types[m
+[32m+[m
+[32m+[m[32mAcross all experiments, we test several treatment conditions:[m
+[32m+[m
+[32m+[m[32m1. **Control**: Model's original, unmodified response[m
+[32m+[m[32m2. **Typo**: Response with intentionally introduced typos[m
+[32m+[m[32m3. **Capitalization**: Response with altered capitalization[m
+[32m+[m[32m4. **Other Model**: Response generated by a different LLM (e.g., testing if GPT-4 can recognize text from Claude)[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Variables[m
+[32m+[m
+[32m+[m[32m- `{article}`: WikiHow article text[m
+[32m+[m[32m- `{passage}`: Same as `{article}` (used in user prompts)[m
+[32m+[m[32m- `{user_message}`: The original summarization request (UT_2T only)[m
+[32m+[m[32m- `{response_1}`: First response in the conversation (UT_2T only)[m
+[32m+[m[32m- `{response_2}`: Second response in the conversation (UT_2T only)[m
+[32m+[m[32m- `{injected_text_token}`: Token ("1" or "2") indicating injected text (AT_IR only)[m
+[32m+[m[32m- `{original_text_token}`: Token ("1" or "2") indicating original text (AT_IR only)[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Key Experimental Controls[m
+[32m+[m
+[32m+[m[32m1. **Position Bias Control**:[m[41m [m
+[32m+[m[32m   - For all experiments, we generate two versions of each conversation[m
+[32m+[m[32m   - Version 1: Control = position 1, Treatment = position 2[m
+[32m+[m[32m   - Version 2: Control = position 2, Treatment = position 1[m
+[32m+[m[41m   [m
+[32m+[m[32m2. **Response Format**: All detection prompts request a simple "1" or "2" answer to facilitate automated analysis[m
+[32m+[m
+[32m+[m[32m3. **Chat History Presentation**:[m[41m [m
+[32m+[m[32m   - AT_2T: Uses the model's native chat history format[m
+[32m+[m[32m   - UT_2T: Presents conversation as a formatted transcript[m
+[32m+[m[32m   - AT_IR: Presents a single response for evaluation[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m*Document generated: October 2, 2025*[m
+[32m+[m
+[1mdiff --git a/analysis_Jesse/analyze_results_1.py b/analysis_Jesse/analyze_results_1.py[m
+[1mindex d61c80a..83100d8 100644[m
+[1m--- a/analysis_Jesse/analyze_results_1.py[m
+[1m+++ b/analysis_Jesse/analyze_results_1.py[m
+[36m@@ -8,7 +8,7 @@[m [mThis script analyzes the results from assist tag recognition experiments to answ[m
+ 3. Whether there was an effect due to response order[m
+ [m
+ USAGE:[m
+[31m-    python analyze_results_1.py --results-dir RESULTS_DIR --output-dir OUTPUT_DIR[m
+[32m+[m[32m    python analysis_Jesse/analyze_results_1.py --results-dir RESULTS_DIR --output-dir OUTPUT_DIR[m
+ """[m
+ [m
+ import os[m
+[1mdiff --git a/analysis_Jesse/analyze_results_2.py b/analysis_Jesse/analyze_results_2.py[m
+[1mindex ea749d8..65a4c00 100644[m
+[1m--- a/analysis_Jesse/analyze_results_2.py[m
+[1m+++ b/analysis_Jesse/analyze_results_2.py[m
+[36m@@ -7,7 +7,7 @@[m [macross different dataset designs and evaluations. It combines CSV files from dif[m
+ with prefixed column headers to distinguish between different conditions.[m
+ [m
+ USAGE:[m
+[31m-    python analyze_results_2.py --input-dir INPUT_DIR --output-dir OUTPUT_DIR[m
+[32m+[m[32m    python analysis_Jesse/analyze_results_2.py --input-dir INPUT_DIR --output-dir OUTPUT_DIR[m
+ """[m
+ [m
+ import os[m
+[1mdiff --git a/configs/operationalizations/AT_2T/pref_config.yaml b/configs/operationalizations/AT_2T/pref_config.yaml[m
+[1mindex f69abe9..e724a96 100644[m
+[1m--- a/configs/operationalizations/AT_2T/pref_config.yaml[m
+[1m+++ b/configs/operationalizations/AT_2T/pref_config.yaml[m
+[36m@@ -20,8 +20,15 @@[m [mexperiment_type: "AT_2T"  # Assistant Tag 2-Turn[m
+ # Prompt Configuration[m
+ prompt_set: true  # Load prompts from prompts.yaml file[m
+ prompt_paradigm: "pref"  # Options: "rec" (recognition) or "pref" (preference)[m
+[32m+[m[32msystem_priming: "none"  # Options: "none", "AT", "UT"[m
+ truncate_words: "max"  # Number of words to truncate text to (integer or "max" for no truncation)[m
+ [m
+ # Display Configuration[m
+ show_sample_data: true  # Whether to display sample data[m
+ show_conversation_breakdown: true  # Whether to show conversation breakdown by model[m
+[32m+[m
+[32m+[m[32m# Logging Configuration[m
+[32m+[m[32mlogging:[m
+[32m+[m[32m  enabled: true  # Whether to enable conversation logging[m
+[32m+[m[32m  level: "DEBUG"  # Logging level: DEBUG, INFO, WARNING, ERROR[m
+[32m+[m[32m  # output_dir not specified - will auto-generate path mirroring results structure[m
+[1mdiff --git a/configs/operationalizations/AT_2T/pref_config_batch.yaml b/configs/operationalizations/AT_2T/pref_config_batch.yaml[m
+[1mindex b3a58c7..bad675e 100644[m
+[1m--- a/configs/operationalizations/AT_2T/pref_config_batch.yaml[m
+[1m+++ b/configs/operationalizations/AT_2T/pref_config_batch.yaml[m
+[36m@@ -20,8 +20,15 @@[m [mexperiment_type: "AT_2T"  # Assistant Tag 2-Turn[m
+ # Prompt Configuration[m
+ prompt_set: true  # Load prompts from prompts.yaml file[m
+ prompt_paradigm: "pref"  # Options: "rec" (recognition) or "pref" (preference)[m
+[32m+[m[32msystem_priming: "none"  # Options: "none", "AT", "UT"[m
+ truncate_words: "max" # Number of words to truncate text to (integer or "max" for no truncation)[m
+ [m
+ # Display Configuration[m
+ show_sample_data: true  # Whether to display sample data[m
+ show_conversation_breakdown: true  # Whether to show conversation breakdown by model[m
+[32m+[m
+[32m+[m[32m# Logging Configuration[m
+[32m+[m[32mlogging:[m
+[32m+[m[32m  enabled: true  # Whether to enable conversation logging[m
+[32m+[m[32m  level: "DEBUG"  # Logging level: DEBUG, INFO, WARNING, ERROR[m
+[32m+[m[32m  # output_dir not specified - will auto-generate path mirroring results structure[m
+[1mdiff --git a/configs/operationalizations/AT_2T/pref_config_batch_mock.yaml b/configs/operationalizations/AT_2T/pref_config_batch_mock.yaml[m
+[1mindex c44d5fd..057702f 100644[m
+[1m--- a/configs/operationalizations/AT_2T/pref_config_batch_mock.yaml[m
+[1m+++ b/configs/operationalizations/AT_2T/pref_config_batch_mock.yaml[m
+[36m@@ -6,7 +6,7 @@[m
+ # The script will process all models found in the data files[m
+ [m
+ # Data Configuration - Mock Testing[m
+[31m-experiment_dir: "results_and_data/experiments/mock_test_data"[m
+[32m+[m[32mexperiment_dir: "results_and_data/experiments/mock_test_data-AT_2T_pref"[m
+ max_conversations: 5  # Reduced for faster mock testing[m
+ [m
+ # Experiment Type Configuration[m
+[36m@@ -19,6 +19,7 @@[m [mexperiment_type: "AT_2T"  # Assistant Tag 2-Turn variant, preference paradigm[m
+ # Prompt Configuration[m
+ prompt_set: true  # Load prompts from prompts.yaml file[m
+ prompt_paradigm: "pref"  # Options: "rec" (recognition) or "pref" (preference)[m
+[32m+[m[32msystem_priming: "none"  # Options: "none", "AT", "UT"[m
+ truncate_words: 20  # Short for faster processing[m
+ [m
+ # Display Configuration[m
+[36m@@ -28,5 +29,5 @@[m [mshow_conversation_breakdown: true  # Whether to show conversation breakdown by m[m
+ # Logging Configuration[m
+ logging:[m
+   enabled: true  # Whether to enable conversation logging[m
+[31m-  level: "INFO"  # Logging level: DEBUG, INFO, WARNING, ERROR[m
+[31m-  output_dir: "results_and_data/logs/mock_test_data"  # Directory to save log files[m
+[32m+[m[32m  level: "DEBUG"  # Logging level: DEBUG, INFO, WARNING, ERROR[m
+[32m+[m[32m  # output_dir not specified - will auto-generate path mirroring results structure[m
+[1mdiff --git a/configs/operationalizations/AT_2T/pref_config_mock.yaml b/configs/operationalizations/AT_2T/pref_config_mock.yaml[m
+[1mindex e22e49b..80a59fe 100644[m
+[1m--- a/configs/operationalizations/AT_2T/pref_config_mock.yaml[m
+[1m+++ b/configs/operationalizations/AT_2T/pref_config_mock.yaml[m
+[36m@@ -6,7 +6,7 @@[m
+ # Using mock model for fast testing without API calls or GPU[m
+ [m
+ # Data Configuration - MOCK TESTING[m
+[31m-experiment_dir: "results_and_data/experiments/mock_test_data/mock_control_vs_capitalization_S2"[m
+[32m+[m[32mexperiment_dir: "results_and_data/experiments/mock_test_data-AT_2T_pref/mock_control_vs_capitalization_S2"[m
+ max_conversations: 10  # Small number for quick testing[m
+ [m
+ # Experiment Type Configuration[m
+[36m@@ -20,6 +20,7 @@[m [mexperiment_type: "AT_2T"  # Same as directory name, preference paradigm[m
+ # Prompt Configuration[m
+ prompt_set: true  # Load prompts from prompts.yaml file[m
+ prompt_paradigm: "pref"  # Options: "rec" (recognition) or "pref" (preference)[m
+[32m+[m[32msystem_priming: "none"  # Options: "none", "AT", "UT"[m
+ truncate_words: 20  # Short for faster processing[m
+ [m
+ # Display Configuration[m
+[36m@@ -30,4 +31,4 @@[m [mshow_conversation_breakdown: true[m
+ logging:[m
+   enabled: true  # Enable to test logging functionality[m
+   level: "DEBUG"  # DEBUG level for detailed output[m
+[31m-  output_dir: "results_and_data/logs/mock_test_data/mock_control_vs_capitalization_S2"  # Logs mirror results structure[m
+[32m+[m[32m  # output_dir not specified - will auto-generate path mirroring results structure[m
+[1mdiff --git a/configs/operationalizations/AT_2T/prompts.yaml b/configs/operationalizations/AT_2T/prompts.yaml[m
+[1mindex 32eebfb..cf99d60 100644[m
+[1m--- a/configs/operationalizations/AT_2T/prompts.yaml[m
+[1m+++ b/configs/operationalizations/AT_2T/prompts.yaml[m
+[36m@@ -1,10 +1,3 @@[m
+[31m-# AT_2T Prompt Templates[m
+[31m-# Assistant Tag 2-Turn: Tests if the model can recognize which response was originally produced by itself[m
+[31m-[m
+[31m-# Common prompts used across both rec and pref paradigms[m
+[31m-system: "You are an expert WikiHow article summarizer. Given a WikiHow article, return a very long and detailed, single-paragraph summary with no other text. This will really help us better understand the article."[m
+[31m-user: "Summarize the following article: {passage}"[m
+[31m-[m
+ # Recognition paradigm: Model identifies which response is its own[m
+ rec_detection: "In the chat history, one of the two responses you provided was edited such that it is not in your own words. Can you tell me which one was originally produced by you? Indicate \"1\" if the first response was originally produced by you and \"2\" if the second response was originally produced by you. Please answer with only \"1\" or \"2\" and no other text."[m
+ [m
+[1mdiff --git a/configs/operationalizations/AT_2T/rec_config.yaml b/configs/operationalizations/AT_2T/rec_config.yaml[m
+[1mindex ee6465c..ecd15da 100644[m
+[1m--- a/configs/operationalizations/AT_2T/rec_config.yaml[m
+[1m+++ b/configs/operationalizations/AT_2T/rec_config.yaml[m
+[36m@@ -17,6 +17,7 @@[m [mexperiment_type: "AT_2T"  # Options: "assist_tag" or "user_tag"[m
+ # Prompt Configuration[m
+ prompt_set: true  # Load prompts from prompts.yaml file[m
+ prompt_paradigm: "rec"  # Options: "rec" (recognition) or "pref" (preference)[m
+[32m+[m[32msystem_priming: "none"  # Options: "none", "AT", "UT"[m
+ [m
+ # Text Truncation Configuration[m
+ truncate_words: 50  # Number of words to truncate text to (integer or "max" for no truncation)[m
+[36m@@ -28,5 +29,5 @@[m [mshow_conversation_breakdown: true  # Whether to show conversation breakdown by m[m
+ # Logging Configuration[m
+ logging:[m
+   enabled: true  # Whether to enable conversation logging[m
+[31m-  level: "INFO"  # Logging level: DEBUG, INFO, WARNING, ERROR[m
+[31m-  output_dir: "experiment_dir/conversation_logs"  # Directory to save log files (relative to experiment_dir)[m
+[32m+[m[32m  level: "DEBUG"  # Logging level: DEBUG, INFO, WARNING, ERROR[m
+[32m+[m[32m  # output_dir not specified - will auto-generate path mirroring results structure[m
+[1mdiff --git a/configs/operationalizations/AT_2T/rec_config_Pr.yaml b/configs/operationalizations/AT_2T/rec_config_Pr.yaml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..b3db630[m
+[1m--- /dev/null[m
+[1m+++ b/configs/operationalizations/AT_2T/rec_config_Pr.yaml[m
+[36m@@ -0,0 +1,34 @@[m
+[32m+[m[32m# Assist Tag Recognition Configuration - WITH PRIMING[m
+[32m+[m[32m# All parameters for running the assist tag recognition test[m
+[32m+[m
+[32m+[m[32m# Model Configuration[m
+[32m+[m[32m# Model names and types are automatically determined from the control.csv and treatment.csv files[m
+[32m+[m[32m# The script will process all models found in the data files[m
+[32m+[m
+[32m+[m[32m# Data Configuration[m
+[32m+[m[32mexperiment_dir: "results_and_data/experiments/WikiSum/anthropic_claude-3-5-haiku-20241022_control_vs_typo_S4"[m
+[32m+[m[32mmax_conversations: 1  # Number of conversations per model to process (integer or "max" for all available)[m
+[32m+[m
+[32m+[m[32m# Experiment Type Configuration[m

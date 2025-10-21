@@ -1,0 +1,92 @@
+================================================================================
+CREATING COMBINED EXPERIMENT COMPARISON PLOTS
+================================================================================
+Input directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\results_and_data/analysis/analyze_results_2_combined
+Output directory: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\results_and_data/analysis/combined_comparison
+
+Loading data...
+  [OK] Loaded AT_2T_caps_typo: (6, 12)
+  [OK] Loaded AT_2T_model_comps: (7, 12)
+  [OK] Loaded AT_IR_caps_typo: (11, 8)
+  [OK] Loaded AT_IR_other_models: (2, 8)
+  [OK] Loaded UT_2T_caps_typo: (6, 12)
+  [OK] Loaded UT_2T_model_comps: (7, 12)
+  [OK] Loaded UT_IR_caps_typo: (11, 8)
+  [OK] Loaded UT_IR_other_models: (2, 8)
+
+Creating Pref vs Rec comparison plots...
+  [OK] Created: AT_2T_vs_UT_2T_caps_typo_pref_rec.png
+  [OK] Created: AT_2T_vs_UT_2T_model_comps_pref_rec.png
+
+Loading individual experiment data for primed comparisons...
+  [OK] Loaded AT_2T_rec_Pr caps_typo: (4, 4)
+  [OK] Loaded AT_2T_rec_Pr model_comps: (7, 4)
+  [OK] Loaded AT_2T_rec_NPr caps_typo: (4, 4)
+  [OK] Loaded AT_2T_rec_NPr model_comps: (7, 4)
+  [OK] Loaded UT_2T_rec_Pr caps_typo: (4, 4)
+  [OK] Loaded UT_2T_rec_Pr model_comps: (7, 4)
+  [OK] Loaded UT_2T_rec_NPr caps_typo: (4, 4)
+  [OK] Loaded UT_2T_rec_NPr model_comps: (7, 4)
+  [OK] Loaded AT_IR_rec_Pr caps_typo: (4, 4)
+  [OK] Loaded AT_IR_rec_Pr other_models: (2, 4)
+  [OK] Loaded AT_IR_rec_NPr caps_typo: (4, 4)
+  [OK] Loaded AT_IR_rec_NPr other_models: (2, 4)
+  [OK] Loaded UT_IR_rec_Pr caps_typo: (4, 4)
+  [OK] Loaded UT_IR_rec_Pr other_models: (2, 4)
+  [OK] Loaded UT_IR_rec_NPr caps_typo: (4, 4)
+  [OK] Loaded UT_IR_rec_NPr other_models: (2, 4)
+
+Creating Primed vs Not-Primed comparison plots...
+    [DEBUG] AT_2T_vs_UT_2T_caps_typo_primed.png: 4 common columns
+    [DEBUG] Col anthropic_claude-3-5-haiku-20241022: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col anthropic_claude-sonnet-4-20250514: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col gpt-4.1-mini-2025-04-14: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col gpt-4.1-2025-04-14: Pr(4 vs 4), NPr(4 vs 4)
+  [OK] Created: AT_2T_vs_UT_2T_caps_typo_primed.png
+    [DEBUG] AT_2T_vs_UT_2T_model_comps_primed.png: 4 common columns
+    [DEBUG] Col anthropic_claude-3-5-haiku-20241022: Pr(6 vs 6), NPr(6 vs 6)
+    [DEBUG] Col anthropic_claude-sonnet-4-20250514: Pr(6 vs 6), NPr(6 vs 6)
+    [DEBUG] Col gpt-4.1-mini-2025-04-14: Pr(6 vs 6), NPr(6 vs 6)
+    [DEBUG] Col gpt-4.1-2025-04-14: Pr(6 vs 6), NPr(6 vs 6)
+  [OK] Created: AT_2T_vs_UT_2T_model_comps_primed.png
+    [DEBUG] AT_2T_vs_AT_IR_caps_typo_primed.png: 4 common columns
+    [DEBUG] Col anthropic_claude-3-5-haiku-20241022: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col anthropic_claude-sonnet-4-20250514: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col gpt-4.1-mini-2025-04-14: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col gpt-4.1-2025-04-14: Pr(4 vs 4), NPr(4 vs 4)
+  [OK] Created: AT_2T_vs_AT_IR_caps_typo_primed.png
+    [DEBUG] AT_2T_vs_AT_IR_model_comps_primed.png: 4 common columns
+    [DEBUG] Col anthropic_claude-3-5-haiku-20241022: Pr(1 vs 6), NPr(1 vs 6)
+    [DEBUG] Col anthropic_claude-sonnet-4-20250514: Pr(1 vs 6), NPr(1 vs 6)
+    [DEBUG] Col gpt-4.1-mini-2025-04-14: Pr(1 vs 6), NPr(1 vs 6)
+    [DEBUG] Col gpt-4.1-2025-04-14: Pr(1 vs 6), NPr(1 vs 6)
+  [OK] Created: AT_2T_vs_AT_IR_model_comps_primed.png
+    [DEBUG] UT_2T_vs_UT_IR_caps_typo_primed.png: 4 common columns
+    [DEBUG] Col anthropic_claude-3-5-haiku-20241022: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col anthropic_claude-sonnet-4-20250514: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col gpt-4.1-mini-2025-04-14: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col gpt-4.1-2025-04-14: Pr(4 vs 4), NPr(4 vs 4)
+  [OK] Created: UT_2T_vs_UT_IR_caps_typo_primed.png
+    [DEBUG] UT_2T_vs_UT_IR_model_comps_primed.png: 4 common columns
+    [DEBUG] Col anthropic_claude-3-5-haiku-20241022: Pr(1 vs 6), NPr(1 vs 6)
+    [DEBUG] Col anthropic_claude-sonnet-4-20250514: Pr(1 vs 6), NPr(1 vs 6)
+    [DEBUG] Col gpt-4.1-mini-2025-04-14: Pr(1 vs 6), NPr(1 vs 6)
+    [DEBUG] Col gpt-4.1-2025-04-14: Pr(1 vs 6), NPr(1 vs 6)
+  [OK] Created: UT_2T_vs_UT_IR_model_comps_primed.png
+    [DEBUG] AT_IR_vs_UT_IR_caps_typo_primed.png: 4 common columns
+    [DEBUG] Col anthropic_claude-3-5-haiku-20241022: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col anthropic_claude-sonnet-4-20250514: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col gpt-4.1-mini-2025-04-14: Pr(4 vs 4), NPr(4 vs 4)
+    [DEBUG] Col gpt-4.1-2025-04-14: Pr(4 vs 4), NPr(4 vs 4)
+  [OK] Created: AT_IR_vs_UT_IR_caps_typo_primed.png
+    [DEBUG] AT_IR_vs_UT_IR_other_models_primed.png: 4 common columns
+    [DEBUG] Col anthropic_claude-3-5-haiku-20241022: Pr(1 vs 1), NPr(1 vs 1)
+    [DEBUG] Col anthropic_claude-sonnet-4-20250514: Pr(1 vs 1), NPr(1 vs 1)
+    [DEBUG] Col gpt-4.1-mini-2025-04-14: Pr(1 vs 1), NPr(1 vs 1)
+    [DEBUG] Col gpt-4.1-2025-04-14: Pr(1 vs 1), NPr(1 vs 1)
+  [OK] Created: AT_IR_vs_UT_IR_other_models_primed.png
+
+================================================================================
+COMPLETE!
+================================================================================
+Plots saved to: C:\Users\jesse\Documents\Code_Projects\Python\forced_recog\results_and_data/analysis/combined_comparison

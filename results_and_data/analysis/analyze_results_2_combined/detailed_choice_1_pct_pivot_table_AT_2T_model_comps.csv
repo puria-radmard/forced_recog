@@ -1,0 +1,8 @@
+treatment,claude-3-5-haiku-20241022,claude-sonnet-4-20250514,gpt-4.1-mini-2025-04-14,gpt-4.1-2025-04-14,claude-3-5-haiku-20241022,claude-sonnet-4-20250514,gpt-4.1-mini-2025-04-14,gpt-4.1-2025-04-14,claude-3-5-haiku-20241022,claude-sonnet-4-20250514,gpt-4.1-mini-2025-04-14,gpt-4.1-2025-04-14
+model_comparison_anthropic_claude-3-5-haiku-20241022,,0.475,0.425,0.55,,0.95,0.6,0.6,,0.725,0.525,0.925
+model_comparison_anthropic_claude-sonnet-4-20250514,0.375,,0.2,0.5,0.875,,0.7,0.725,0.7,,0.725,0.925
+model_comparison_google_gemini-2.5-flash,0.275,0.05,0.15,0.5,0.9,0.75,0.7,0.675,0.725,0.4,0.675,0.95
+model_comparison_google_gemini-2.5-pro,0.075,0.05,0.225,0.55,0.875,0.725,0.85,0.65,0.675,0.45,0.65,0.95
+model_comparison_gpt-4o-mini,0.075,0.425,0.325,0.45,0.95,0.9,0.8,0.675,0.675,0.65,0.55,0.975
+model_comparison_gpt-4.1-mini-2025-04-14,0.25,0.325,,0.425,0.875,0.7,,0.575,0.675,0.45,,0.95
+model_comparison_gpt-4.1-2025-04-14,0.1,0.275,0.125,,0.875,0.8,0.75,,0.525,0.55,0.65,

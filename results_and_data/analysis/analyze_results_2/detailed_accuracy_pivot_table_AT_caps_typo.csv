@@ -1,5 +1,5 @@
-treatment,pref_claude-3-5-haiku-20241022,pref_claude-sonnet-4-20250514,pref_gpt-4.1-mini-2025-04-14,pref_gpt-4.1-2025-04-14,rec_claude-3-5-haiku-20241022,rec_claude-sonnet-4-20250514,rec_gpt-4.1-mini-2025-04-14,rec_gpt-4.1-2025-04-14
-capitalization_S2,1.0,1.0,1.0,1.0,0.625,1.0,1.0,1.0
-capitalization_S4,0.575,1.0,0.675,0.675,0.475,0.925,0.75,0.5
-typo_S2,1.0,1.0,1.0,1.0,0.675,1.0,0.975,0.75
-typo_S4,1.0,1.0,1.0,1.0,0.75,1.0,1.0,0.975
+treatment,rec_Pr_claude-3-5-haiku-20241022,rec_Pr_claude-sonnet-4-20250514,rec_Pr_gpt-4.1-mini-2025-04-14,rec_Pr_gpt-4.1-2025-04-14,pref_claude-3-5-haiku-20241022,pref_claude-sonnet-4-20250514,pref_gpt-4.1-mini-2025-04-14,pref_gpt-4.1-2025-04-14,rec_claude-3-5-haiku-20241022,rec_claude-sonnet-4-20250514,rec_gpt-4.1-mini-2025-04-14,rec_gpt-4.1-2025-04-14
+capitalization_S2,0.475,1.0,1.0,0.925,1.0,1.0,1.0,1.0,0.625,1.0,1.0,1.0
+capitalization_S4,0.4,0.95,0.95,0.5,0.575,1.0,0.675,0.675,0.475,0.925,0.75,0.5
+typo_S2,0.225,1.0,1.0,0.9,1.0,1.0,1.0,1.0,0.675,1.0,0.975,0.75
+typo_S4,0.375,1.0,1.0,0.95,1.0,1.0,1.0,1.0,0.75,1.0,1.0,0.975

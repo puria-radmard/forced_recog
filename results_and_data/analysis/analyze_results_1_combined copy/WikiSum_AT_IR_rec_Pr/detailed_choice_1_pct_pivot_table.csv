@@ -1,0 +1,7 @@
+treatment,anthropic_claude-3-5-haiku-20241022,anthropic_claude-sonnet-4-20250514,gpt-4.1-mini-2025-04-14,gpt-4.1-2025-04-14
+typo_S2,0.5,0.5,0.5,0.5
+typo_S4,0.5,0.5,0.5,0.5
+capitalization_S2,0.5,0.5,0.5,0.5
+capitalization_S4,0.4,0.475,0.4,0.625
+control,0.225,0.5,0.425,0.525
+other_model,0.238,0.496,0.458,0.5
