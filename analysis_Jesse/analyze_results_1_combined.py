@@ -398,7 +398,9 @@ def analyze_accuracy_by_conditions(df: pd.DataFrame, exp_info: Dict) -> Dict:
                     # Check if self-comparison
                     is_self_comparison = (base_model == other_model)
                     
-                    if is_self_comparison:
+                    # For IR experiments, self-comparison is the control condition and should be included
+                    # For 2T experiments, self-comparison doesn't make sense and should be NaN
+                    if is_self_comparison and exp_info['exp_type'] == '2T':
                         accuracy = np.nan
                         choice_1_pct = np.nan
                     else:
@@ -497,7 +499,7 @@ def analyze_accuracy_by_conditions(df: pd.DataFrame, exp_info: Dict) -> Dict:
     return analysis
 
 
-def create_detailed_heatmaps(analysis: Dict, output_dir: str, organized_models: List[str]) -> None:
+def create_detailed_heatmaps(analysis: Dict, output_dir: str, organized_models: List[str], exp_name: str = "") -> None:
     """Create heatmaps for the detailed pivot tables."""
     print("  Creating heatmaps...")
     
@@ -543,7 +545,8 @@ def create_detailed_heatmaps(analysis: Dict, output_dir: str, organized_models: 
                 legend_elements = [Patch(facecolor='darkgrey', label='Not Applicable')]
                 ax.legend(handles=legend_elements, loc='lower right', bbox_to_anchor=(1.15, -0.15))
             
-            plt.title('Accuracy Heatmap: Model vs Treatment', fontsize=14, pad=20)
+            title = f'Accuracy Heatmap: Model vs Treatment ({exp_name})' if exp_name else 'Accuracy Heatmap: Model vs Treatment'
+            plt.title(title, fontsize=14, pad=20)
             plt.xlabel('Model', fontsize=12)
             plt.ylabel('Treatment Type', fontsize=12)
             plt.xticks(rotation=45, ha='right')
@@ -594,7 +597,8 @@ def create_detailed_heatmaps(analysis: Dict, output_dir: str, organized_models: 
                 legend_elements = [Patch(facecolor='darkgrey', label='Not Applicable')]
                 ax.legend(handles=legend_elements, loc='lower right', bbox_to_anchor=(1.15, -0.15))
             
-            plt.title('Choice 1 Proportion Heatmap: Model vs Treatment', fontsize=14, pad=20)
+            title = f'Choice 1 Proportion Heatmap: Model vs Treatment ({exp_name})' if exp_name else 'Choice 1 Proportion Heatmap: Model vs Treatment'
+            plt.title(title, fontsize=14, pad=20)
             plt.xlabel('Model', fontsize=12)
             plt.ylabel('Treatment Type', fontsize=12)
             plt.xticks(rotation=45, ha='right')
@@ -672,8 +676,8 @@ def process_wikisum_directory(dir_path: str, exp_info: Dict, output_base_dir: st
     else:
         organized_models = []
     
-    # Create heatmaps
-    create_detailed_heatmaps(analysis, output_dir, organized_models)
+    # Create heatmaps with experiment name in title
+    create_detailed_heatmaps(analysis, output_dir, organized_models, exp_name=dirname)
     
     # Save results
     save_detailed_results(df, analysis, output_dir)

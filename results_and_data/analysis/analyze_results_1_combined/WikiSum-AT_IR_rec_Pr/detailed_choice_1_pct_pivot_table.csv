@@ -3,10 +3,10 @@ capitalization_S2,0.5,0.5,0.5,0.5
 capitalization_S4,0.4,0.475,0.4,0.625
 typo_S2,0.5,0.5,0.5,0.5
 typo_S4,0.5,0.5,0.5,0.5
-model_comparison_anthropic_claude-3-5-haiku-20241022,,0.5,0.475,0.5
-model_comparison_anthropic_claude-sonnet-4-20250514,0.275,,0.475,0.5
+model_comparison_anthropic_claude-3-5-haiku-20241022,0.225,0.5,0.475,0.5
+model_comparison_anthropic_claude-sonnet-4-20250514,0.275,0.5,0.475,0.5
 model_comparison_google_gemini-2.5-flash,0.15,0.5,0.5,0.5
 model_comparison_google_gemini-2.5-pro,0.25,0.475,0.45,0.5
 model_comparison_gpt-4o-mini,0.275,0.5,0.45,0.475
-model_comparison_gpt-4.1-mini-2025-04-14,0.225,0.5,,0.525
-model_comparison_gpt-4.1-2025-04-14,0.25,0.5,0.4,
+model_comparison_gpt-4.1-mini-2025-04-14,0.225,0.5,0.425,0.525
+model_comparison_gpt-4.1-2025-04-14,0.25,0.5,0.4,0.525
